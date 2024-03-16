@@ -33,7 +33,7 @@
       <tr>
        <td>Nguyễn Thị Linh Chi</td>
        <td></td>
-       <td>https://github.com/ngtueminh</td>
+       <td></td>
        <td>@gm.uit.edu.vn</td>  
       </tr>
       <tr>
