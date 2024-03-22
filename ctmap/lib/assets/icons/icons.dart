@@ -14,6 +14,9 @@ class AppIcons {
   static const IconData help = Icons.help_outline;
   static const IconData logout = Icons.logout;
   static const IconData dropdown = Icons.arrow_drop_down;
+  static const IconData visibility=Icons.visibility_outlined;
+  static const IconData visibility_off=Icons.visibility_off_outlined;
+  static const IconData left_arrow = Icons.arrow_back;
 
   // Định nghĩa kích thước mặc định của icon
   static const double defaultSize = 24.0; // Kích thước mặc định 24x24
