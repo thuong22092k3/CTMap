@@ -7,13 +7,20 @@ class AppIcons {
   static const IconData person = Icons.person_outline;
   static const IconData search = Icons.search;
   static const IconData filter = Icons.filter_alt;
-   static const IconData add_location = Icons.add_location_alt_outlined;
+  static const IconData add_location = Icons.add_location_alt_outlined;
+  static const IconData email = Icons.email_outlined;
+  static const IconData lock = Icons.lock_outline;
+  static const IconData calendar = Icons.calendar_month_outlined;
+  static const IconData help = Icons.help_outline;
+  static const IconData logout = Icons.logout;
+  static const IconData dropdown = Icons.arrow_drop_down;
 
   // Định nghĩa kích thước mặc định của icon
   static const double defaultSize = 24.0; // Kích thước mặc định 24x24
 
   // Hàm tạo icon với kích thước được chỉ định
-  static Icon getIcon(IconData iconData, {double size = defaultSize, Color? color}) {
+  static Icon getIcon(IconData iconData,
+      {double size = defaultSize, Color? color}) {
     return Icon(
       iconData,
       size: size,
