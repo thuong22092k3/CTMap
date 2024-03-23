@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../pages/screens/home_map.dart';
 import '../pages/screens/news.dart';
 import '../pages/screens/statistic.dart';
-import '../pages/screens/profile.dart';
+import '../pages/screens/Profile/profile.dart';
 import '../assets/icons/icons.dart';
 
 class BottomNavigationWidget extends StatefulWidget {

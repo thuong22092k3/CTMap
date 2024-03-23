@@ -3,7 +3,7 @@ import '../widgets/bottom_tab.dart';
 import '../pages/screens/home_map.dart';
 import '../pages/screens/news.dart';
 import '../pages/screens/statistic.dart';
-import '../pages/screens/profile.dart';
+import 'screens/Profile/profile.dart';
 
 class MainLayout extends StatefulWidget {
   @override

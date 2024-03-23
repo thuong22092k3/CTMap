@@ -6,12 +6,12 @@ import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/services.dart';
 
-class ForgotPassword extends StatefulWidget {
+class ChangePassword extends StatefulWidget {
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController _controller = TextEditingController();
   bool _isChecked = false;
 

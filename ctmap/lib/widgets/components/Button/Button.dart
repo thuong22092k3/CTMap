@@ -10,6 +10,10 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final Color? btnColor;
   final IconData? icon;
+  final TextAlign? textAlign;
+  final double? borderRadius;
+  final double? iconSize;
+  final Color? iconColor;
 
   const CustomButton({
     Key? key,
@@ -21,6 +25,10 @@ class CustomButton extends StatelessWidget {
     this.btnHeight,
     this.btnColor = AppColors.red,
     this.icon,
+    this.iconSize,
+    this.iconColor,
+    this.textAlign,
+    this.borderRadius = 10,
   }) : super(key: key);
 
   @override
@@ -31,16 +39,18 @@ class CustomButton extends StatelessWidget {
         minimumSize: Size(btnWidth ?? MediaQuery.of(context).size.width * 0.06,
             btnHeight ?? MediaQuery.of(context).size.height * 0.06),
         backgroundColor: btnColor,
-        elevation: 1.0,
+        elevation: 0.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(borderRadius!),
         ),
       ),
-      child: Center(
+      // child: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
+        
           children: [
-            if (icon != null) Icon(icon, color: btnTextColor),
+            if (icon != null) Icon(icon, color: iconColor, size: iconSize,),
             if (icon != null && btnText != null) SizedBox(width: 8),
             if (btnText != null)
               Text(
@@ -52,7 +62,7 @@ class CustomButton extends StatelessWidget {
                 ),
               ),
           ],
-        ),
+        // ),
       ),
     );
   }
