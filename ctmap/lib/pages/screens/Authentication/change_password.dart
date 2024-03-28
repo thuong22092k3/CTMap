@@ -5,6 +5,8 @@ import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/services.dart';
+import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+
 
 class ChangePassword extends StatefulWidget {
   @override
@@ -25,7 +27,12 @@ class _ChangePasswordState extends State<ChangePassword> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPassword()),
+                  );
+                },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),

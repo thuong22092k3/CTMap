@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
+import 'package:ctmap/widgets/components/Button/TextButton.dart';
+import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/screens/Profile/edit_profile.dart';
+import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 
 class Profile extends StatelessWidget {
   @override
@@ -79,6 +83,11 @@ class Profile extends StatelessWidget {
                         CustomButton(
                           onTap: () {
                             // Xử lý khi nhấn vào nút "Chỉnh sửa thông tin"
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile()),
+                            );
                           },
                           btnText: 'Chỉnh sửa thông tin',
                           icon: AppIcons.edit,
@@ -90,6 +99,11 @@ class Profile extends StatelessWidget {
                         ),
                         CustomButton(
                           onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()),
+                            );
                             // Xử lý khi nhấn vào nút "Đổi mật khẩu"
                           },
                           btnText: 'Đổi mật khẩu',

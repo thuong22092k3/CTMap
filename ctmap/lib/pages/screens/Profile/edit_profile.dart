@@ -4,6 +4,7 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/screens/Profile/profile.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -27,7 +28,12 @@ class _EditProfileState extends State<EditProfile> {
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 0),
             child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Profile()),
+                  );
+                },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
                 btnTextColor: AppColors.white,

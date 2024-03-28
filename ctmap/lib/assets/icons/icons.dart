@@ -13,7 +13,7 @@ class AppIcons {
   static const IconData calendar = Icons.calendar_month_outlined;
   static const IconData help = Icons.help_outline;
   static const IconData logout = Icons.logout;
-  static const IconData dropdown = Icons.arrow_drop_down;
+  static const IconData dropdown = Icons.keyboard_arrow_down_rounded;
   static const IconData visibility = Icons.visibility_outlined;
   static const IconData visibility_off = Icons.visibility_off_outlined;
   static const IconData left_arrow = Icons.arrow_back;

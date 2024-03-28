@@ -4,6 +4,7 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/screens/Authentication/login.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -24,7 +25,12 @@ class _SignupState extends State<Signup> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -78,7 +84,7 @@ class _SignupState extends State<Signup> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng nhập"
+                // Xử lý khi nhấn vào nút "Đăng ký"
               },
               btnText: 'Đăng ký',
               btnWidth: 300,
@@ -93,7 +99,11 @@ class _SignupState extends State<Signup> {
                 ),
                 CustomTextButton(
                   onTap: () {
-                    // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
+                    // Xử lý khi nhấn vào nút "đăng nhập"
                   },
                   btnText: 'Đăng nhập',
                   fontSize: 14,
@@ -103,7 +113,7 @@ class _SignupState extends State<Signup> {
             Spacer(),
             CustomTextButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                // Xử lý khi nhấn vào nút "lúc khác"
               },
               btnText: 'Lúc khác',
               fontSize: 14,

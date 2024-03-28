@@ -4,7 +4,9 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:flutter/services.dart';
+import 'package:ctmap/pages/screens/Authentication/change_password.dart';
+import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+
 
 class Confirm extends StatefulWidget {
   @override
@@ -25,7 +27,12 @@ class _ConfirmState extends State<Confirm> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPassword()),
+                  );
+                },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -84,7 +91,11 @@ class _ConfirmState extends State<Confirm> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng nhập"
+                // Xử lý khi nhấn vào nút "Xác nhận"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChangePassword()),
+                );
               },
               btnText: 'Xác nhận',
               btnWidth: 300,

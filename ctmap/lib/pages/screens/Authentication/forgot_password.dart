@@ -4,7 +4,8 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:flutter/services.dart';
+import 'package:ctmap/pages/screens/Authentication/login.dart';
+import 'package:ctmap/pages/screens/Authentication/confirm.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -25,7 +26,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
+                },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -57,7 +63,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng nhập"
+                // Xử lý khi nhấn vào nút "Xác nhận"
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Confirm()),
+                  );
               },
               btnText: 'Xác nhận',
               btnWidth: 300,
@@ -66,14 +76,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Spacer(),
             CustomTextButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                // Xử lý khi nhấn vào nút "Lúc khác"
               },
               btnText: 'Lúc khác',
               fontSize: 14,
               btnTextColor: AppColors.primaryGray,
             )
           ],
-          
         ),
       ),
     );

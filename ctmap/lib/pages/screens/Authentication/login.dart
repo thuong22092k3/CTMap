@@ -5,6 +5,9 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/Checkbox/Checkbox.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
+import 'package:ctmap/pages/screens/Profile/profile.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -39,7 +42,7 @@ class _LoginState extends State<Login> {
             SizedBox(height: 30),
             CustomTextField(
               hintText: 'Mật khẩu',
-              icon: AppIcons.lock, 
+              icon: AppIcons.lock,
               controller: _controller,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
@@ -66,7 +69,10 @@ class _LoginState extends State<Login> {
                 Spacer(),
                 CustomTextButton(
                   onTap: () {
-                    // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPassword()),
+                    ); // Xử lý khi nhấn vào nút "Quên mật khẩu"
                   },
                   btnText: 'Quên mật khẩu?',
                 )
@@ -76,6 +82,10 @@ class _LoginState extends State<Login> {
             CustomButton(
               onTap: () {
                 // Xử lý khi nhấn vào nút "Đăng nhập"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
               },
               btnText: 'Đăng nhập',
               btnWidth: 300,
@@ -90,7 +100,11 @@ class _LoginState extends State<Login> {
                 ),
                 CustomTextButton(
                   onTap: () {
-                    // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                    // Xử lý khi nhấn vào nút "Đăng ký"
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Signup()),
+                    );
                   },
                   btnText: 'Đăng ký',
                   fontSize: 14,
@@ -100,7 +114,7 @@ class _LoginState extends State<Login> {
             Spacer(),
             CustomTextButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                //luc khac
               },
               btnText: 'Lúc khác',
               fontSize: 14,
