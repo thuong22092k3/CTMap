@@ -8,6 +8,8 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
+import 'package:ctmap/pages/layout.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -84,7 +86,7 @@ class _LoginState extends State<Login> {
                 // Xử lý khi nhấn vào nút "Đăng nhập"
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Profile()),
+                  MaterialPageRoute(builder: (context) => MainLayout()),
                 );
               },
               btnText: 'Đăng nhập',
