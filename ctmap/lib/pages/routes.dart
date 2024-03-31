@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ctmap/pages/screens/home_map.dart';
-import 'package:ctmap/pages/screens/news.dart';
+import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
+import 'package:ctmap/pages/screens/News/news.dart';
 import 'package:ctmap/pages/screens/statistic.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
 import 'package:ctmap/pages/screens/Profile/edit_profile.dart';

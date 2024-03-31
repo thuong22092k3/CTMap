@@ -6,6 +6,8 @@ import '../../widgets/components/Dropdown/Dropdown.dart';
 import '../../widgets/components/Chart/BarChart.dart';
 
 class Statistic extends StatefulWidget {
+  const Statistic({super.key});
+
   @override
   _StatisticState createState() => _StatisticState();
 }
@@ -29,9 +31,9 @@ class _StatisticState extends State<Statistic> {
               child: Container(
                 color: AppColors.red,
                 padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: Center(
+                child: const Center(
                   child: Text(
-                    'Thống kê',
+                    'Thống Kê',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28,
@@ -46,7 +48,7 @@ class _StatisticState extends State<Statistic> {
             delegate: SliverChildListDelegate(
               [
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

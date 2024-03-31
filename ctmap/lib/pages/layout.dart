@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_tab.dart';
-import '../pages/screens/home_map.dart';
-import '../pages/screens/news.dart';
+import 'screens/Home_Map/home_map.dart';
+import 'screens/News/news.dart';
 import '../pages/screens/statistic.dart';
 import 'screens/Profile/profile.dart';
 
