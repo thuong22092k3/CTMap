@@ -10,21 +10,6 @@ import 'package:ctmap/pages/screens/Authentication/confirm.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/change_password.dart';
 
-
-class RootApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Root App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialRoute: '/',
-      routes: routes,
-    );
-  }
-}
-
 final Map<String, WidgetBuilder> routes = {
   '/': (context) => Home(), 
   '/news': (context) => News(),

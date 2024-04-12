@@ -1,14 +1,13 @@
-
-import 'dart:ffi';
-
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:ctmap/data/type.dart';
 
-const mapboxToken = 'pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw';
+const mapboxToken =
+    'pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw';
 
 const myPosition = LatLng(10.870137995752456, 106.8038409948349);
 
@@ -20,6 +19,16 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  void _onMarkerTapped(AccidentData data, BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          child: DetailSheet(),
+        );
+      },
+    );
+  }
 
   bool isSearchPressed = false;
   bool isFilterPressed = false;
@@ -28,9 +37,11 @@ class HomeState extends State<Home> {
   bool isOpened = false;
 
   void openDetailSheet(BuildContext context) {
-    showModalBottomSheet(context: context, builder: (_) {
-       return DetailSheet();
-    });
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return DetailSheet();
+        });
     setState(() {
       isOpened = !isOpened;
     });
@@ -57,18 +68,21 @@ class HomeState extends State<Home> {
                   'id': 'mapbox.mapbox-streets-v8',
                 },
               ),
-              const MarkerLayer(
+              MarkerLayer(
                 markers: [
-                  Marker(
-                    point: myPosition,
-                    // width: 80,
-                    // height: 80,
-                    child: Icon(
-                      Icons.school,
-                      color: Colors.lightBlueAccent,
-                      size: 40,
+                  for (var accidentData in accidentDataList)
+                    Marker(
+                      point: accidentData.position,
+                      child: GestureDetector(
+                        onTap: () {
+                          _onMarkerTapped(accidentData, context);
+                        },
+                        child: NumberedLocationIcon(
+                          iconData: AppIcons.location,
+                          number: accidentData.number ?? 0,
+                        ),
+                      ),
                     ),
-                  )
                 ],
               ),
             ],
@@ -80,7 +94,8 @@ class HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 FloatingActionButton(
-                  backgroundColor: isSearchPressed? AppColors.red : AppColors.white,
+                  backgroundColor:
+                      isSearchPressed ? AppColors.red : AppColors.white,
                   onPressed: () {
                     setState(() {
                       isSearchPressed = !isSearchPressed;
@@ -89,38 +104,38 @@ class HomeState extends State<Home> {
                   child: Icon(
                     AppIcons.search,
                     size: 30,
-                    color: isSearchPressed ? AppColors.white : AppColors.red, 
+                    color: isSearchPressed ? AppColors.white : AppColors.red,
                   ),
                 ),
                 const SizedBox(height: 16),
                 FloatingActionButton(
-                  backgroundColor: isFilterPressed? AppColors.red : AppColors.white,
+                  backgroundColor:
+                      isFilterPressed ? AppColors.red : AppColors.white,
                   onPressed: () {
                     setState(() {
                       isFilterPressed = !isFilterPressed;
                       openDetailSheet(context);
                     });
-                    
                   },
                   child: Icon(
                     AppIcons.filter,
                     size: 30,
-                    color: isFilterPressed ? AppColors.white : AppColors.red, 
+                    color: isFilterPressed ? AppColors.white : AppColors.red,
                   ),
                 ),
                 const SizedBox(height: 16),
                 FloatingActionButton(
-                  backgroundColor: isAddPressed ? AppColors.red : AppColors.white,
+                  backgroundColor:
+                      isAddPressed ? AppColors.red : AppColors.white,
                   onPressed: () {
                     setState(() {
-                       isAddPressed = !isAddPressed;
+                      isAddPressed = !isAddPressed;
                     });
-
                   },
                   child: Icon(
                     AppIcons.add_location,
                     size: 30,
-                    color: isAddPressed ? AppColors.white : AppColors.red, 
+                    color: isAddPressed ? AppColors.white : AppColors.red,
                   ),
                 ),
               ],
@@ -129,5 +144,17 @@ class HomeState extends State<Home> {
         ],
       ),
     );
+  }
+
+  String _calculateSeverity(int deaths, int injuries) {
+    if (deaths > 0 && injuries > 0) {
+      return 'Nghiêm trọng';
+    } else if (deaths > 0) {
+      return 'Nghiêm trọng';
+    } else if (injuries > 0) {
+      return 'Nặng';
+    } else {
+      return 'Bình thường';
+    }
   }
 }
