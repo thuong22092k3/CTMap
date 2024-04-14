@@ -1,60 +1,53 @@
+import 'package:ctmap/assets/colors/colors.dart';
 import 'package:flutter/material.dart';
-import '../pages/screens/Home_Map/home_map.dart';
-import '../pages/screens/News/news.dart';
-import '../pages/screens/statistic.dart';
-import '../pages/screens/Profile/profile.dart';
+import 'package:go_router/go_router.dart';
 import '../assets/icons/icons.dart';
 
-class BottomNavigationWidget extends StatefulWidget {
-  @override
-  _BottomNavigationWidgetState createState() => _BottomNavigationWidgetState();
-}
 
-class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
-  int _selectedIndex = 0;
+class ScaffoldWithNavBar extends StatelessWidget {
+  const ScaffoldWithNavBar({
+    required this.navigationShell,
+    Key? key,
+  }) : super(key: key ?? const ValueKey<String>('ScaffoldWithNavBar'));
 
-  final List<Widget> _screens = [
-    Home(),
-    News(),
-    Statistic(),
-    Profile(),
-  ];
+  final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: AppIcons.getIcon(AppIcons.map, size: 30.0), 
+            icon: Icon(AppIcons.map, size: 30.0),
             label: 'Bản đồ',
           ),
           BottomNavigationBarItem(
-            icon: AppIcons.getIcon(AppIcons.newspaper, size: 30.0), 
+            icon: Icon(AppIcons.newspaper, size: 30.0),
             label: 'Tin tức',
           ),
           BottomNavigationBarItem(
-            icon: AppIcons.getIcon(AppIcons.barChart, size: 30.0), 
+            icon: Icon(AppIcons.barChart, size: 30.0),
             label: 'Thống kê',
           ),
           BottomNavigationBarItem(
-            icon: AppIcons.getIcon(AppIcons.person, size: 30.0), 
+            icon: Icon(AppIcons.person, size: 30.0),
             label: 'Tài khoản',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.red, 
-        unselectedItemColor: Colors.grey, 
+        currentIndex: navigationShell.currentIndex,
+        onTap: (int index) => _onTap(context, index),
+        selectedItemColor: AppColors.red,
+        unselectedItemColor: AppColors.primaryGray,
         showUnselectedLabels: true,
-        onTap: _onItemTapped,
       ),
     );
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _onTap(BuildContext context, int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 }

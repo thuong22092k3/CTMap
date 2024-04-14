@@ -84,10 +84,7 @@ class _LoginState extends State<Login> {
             CustomButton(
               onTap: () {
                 // Xử lý khi nhấn vào nút "Đăng nhập"
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainLayout()),
-                );
+
               },
               btnText: 'Đăng nhập',
               btnWidth: 300,

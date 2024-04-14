@@ -39,7 +39,6 @@ class _ConfirmState extends State<Confirm> {
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
-              SizedBox(width: 25),
               Text(
                 widget.confirmText,
                 style: TextStyle(
