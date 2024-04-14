@@ -1,9 +1,13 @@
+import 'package:ctmap/pages/screens/Authentication/change_password.dart';
+import 'package:ctmap/pages/screens/Authentication/confirm.dart';
+import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+import 'package:ctmap/pages/screens/Profile/edit_profile.dart';
 import 'package:flutter/material.dart';
-import '../widgets/bottom_tab.dart';
-import 'screens/Home_Map/home_map.dart';
-import 'screens/News/news.dart';
-import '../pages/screens/statistic.dart';
-import 'screens/Profile/profile.dart';
+import '../../widgets/bottom_tab.dart';
+import '../screens/Home_Map/home_map.dart';
+import '../screens/News/news.dart';
+import '../screens/statistic.dart';
+import '../screens/Profile/profile.dart';
 
 class MainLayout extends StatefulWidget {
   @override
@@ -18,6 +22,19 @@ class _MainLayoutState extends State<MainLayout> {
     News(),
     Statistic(),
     Profile(),
+    EditProfile(),
+    ChangePassword(
+      changePasswordText: 'Đổi mật khẩu',
+      showButton: false,
+    ),
+    Confirm(
+      confirmText: 'Đổi mật khẩu',
+      showButton: false,
+    ),
+    ForgotPassword(
+      forgotPasswordText: 'Đổi mật khẩu',
+      showButton: false,
+    ),
   ];
 
   @override

@@ -8,7 +8,7 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
-import 'package:ctmap/pages/layout.dart';
+import 'package:ctmap/pages/routes/layout.dart';
 
 
 class Login extends StatefulWidget {

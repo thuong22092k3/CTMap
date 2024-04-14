@@ -7,10 +7,13 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/change_password.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 
-
 class Confirm extends StatefulWidget {
   @override
   _ConfirmState createState() => _ConfirmState();
+  final String confirmText;
+  final bool showButton;
+
+  Confirm({this.confirmText = 'Quên mật khẩu', this.showButton = true});
 }
 
 class _ConfirmState extends State<Confirm> {
@@ -38,7 +41,7 @@ class _ConfirmState extends State<Confirm> {
               ),
               SizedBox(width: 25),
               Text(
-                'Xác nhận',
+                widget.confirmText,
                 style: TextStyle(
                   fontSize: 32,
                   color: AppColors.red,
@@ -47,7 +50,7 @@ class _ConfirmState extends State<Confirm> {
             ]),
             SizedBox(height: 20),
             Text(
-              'Vui lòng nhập mã xác nhận được gửi qua email của bạn để .........!',
+              'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu!',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.primaryGray,
@@ -122,14 +125,15 @@ class _ConfirmState extends State<Confirm> {
               style: TextStyle(fontSize: 13, color: AppColors.gray),
             ),
             Spacer(),
-            CustomTextButton(
-              onTap: () {
-                // Xử lý khi nhấn vào nút "Quên mật khẩu"
-              },
-              btnText: 'Lúc khác',
-              fontSize: 14,
-              btnTextColor: AppColors.primaryGray,
-            )
+            if (widget.showButton)
+              CustomTextButton(
+                onTap: () {
+                  // Xử lý khi nhấn vào nút "Lúc khác"
+                },
+                btnText: 'Lúc khác',
+                fontSize: 14,
+                btnTextColor: AppColors.primaryGray,
+              )
           ],
         ),
       ),

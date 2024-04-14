@@ -79,7 +79,7 @@ class HomeState extends State<Home> {
                         },
                         child: NumberedLocationIcon(
                           iconData: AppIcons.location,
-                          number: accidentData.number ?? 0,
+                          number: accidentData.level ?? 0,
                         ),
                       ),
                     ),

@@ -173,12 +173,12 @@ class _StatisticState extends State<Statistic> {
                         children: [
                           SizedBox(
                             height: 300,
-                            child: CustomBarChart(),
+                            child: CustomBarChart(dataMode: DataMode.level),
                           ),
                           SizedBox(height: 20),
                           SizedBox(
                             height: 300,
-                            child: CustomBarChart(),
+                            child: CustomBarChart(dataMode: DataMode.cause),
                           ),
                         ],
                       ),

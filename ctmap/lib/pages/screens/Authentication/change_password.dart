@@ -7,10 +7,14 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/services.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 
-
 class ChangePassword extends StatefulWidget {
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
+  final String changePasswordText;
+  final bool showButton;
+
+  ChangePassword(
+      {this.changePasswordText = 'Quên mật khẩu', this.showButton = true});
 }
 
 class _ChangePasswordState extends State<ChangePassword> {
@@ -37,7 +41,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 iconSize: 30,
               ),
               Text(
-                'Quên mật khẩu',
+                widget.changePasswordText,
                 style: TextStyle(
                   fontSize: 32,
                   color: AppColors.red,
@@ -46,7 +50,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             ]),
             SizedBox(height: 20),
             Text(
-              'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu',
+              'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu!',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.primaryGray,
@@ -73,21 +77,22 @@ class _ChangePasswordState extends State<ChangePassword> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng nhập"
+                // Xử lý khi nhấn vào nút "Đổi mật khẩu"
               },
               btnText: 'Đổi mật khẩu',
               btnWidth: 300,
               btnHeight: 50,
             ),
             Spacer(),
-            CustomTextButton(
-              onTap: () {
-                // Xử lý khi nhấn vào nút "Quên mật khẩu"
-              },
-              btnText: 'Lúc khác',
-              fontSize: 14,
-              btnTextColor: AppColors.primaryGray,
-            )
+            if (widget.showButton)
+              CustomTextButton(
+                onTap: () {
+                  // Xử lý khi nhấn vào nút "Lúc khác"
+                },
+                btnText: 'Lúc khác',
+                fontSize: 14,
+                btnTextColor: AppColors.primaryGray,
+              )
           ],
         ),
       ),
