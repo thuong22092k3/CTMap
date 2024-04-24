@@ -21,11 +21,10 @@ class AppIcons {
   static const IconData left_arrow = Icons.arrow_back;
   static const IconData edit = Icons.edit_outlined;
   static const IconData camera = Icons.photo_camera_outlined;
+  static const IconData delete = Icons.delete_outlined;
 
- 
-  static const double defaultSize = 24.0; 
+  static const double defaultSize = 24.0;
 
-  
   static Icon getIcon(IconData iconData,
       {double size = defaultSize, Color? color}) {
     return Icon(
@@ -40,11 +39,13 @@ class NumberedLocationIcon extends StatelessWidget {
   final IconData iconData;
   final int number;
   final double iconSize;
+  final bool isMatched;
 
   NumberedLocationIcon({
     required this.iconData,
     required this.number,
     this.iconSize = 40,
+    this.isMatched = true,
   });
 
   // Hàm trả về màu dựa trên số
@@ -67,7 +68,8 @@ class NumberedLocationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color numberColor = getColorBasedOnNumber(number);
+    Color numberColor =
+        isMatched ? getColorBasedOnNumber(number) : AppColors.dartGrey;
 
     return Stack(
       children: [
@@ -80,17 +82,15 @@ class NumberedLocationIcon extends StatelessWidget {
           top: iconSize / 6,
           left: iconSize / 2.8,
           child: Container(
-            padding:
-                EdgeInsets.all(3),
+            padding: EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: Colors.white, 
-              shape: BoxShape
-                  .circle,
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
             child: Text(
               number.toString(),
               style: TextStyle(
-                color: numberColor,
+                color: isMatched ? numberColor : AppColors.dartGrey,
                 fontWeight: FontWeight.bold,
                 fontSize: iconSize / 5,
               ),

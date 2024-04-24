@@ -1,6 +1,7 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
+import 'package:ctmap/services/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,12 +20,42 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  List<AccidentData> accidentDataList = [];
+  void initState() {
+    super.initState();
+    getAccidents();
+  }
+
+  Future<void> getAccidents() async {
+    List<AccidentData> accidents = await getAllAccidents();
+    if (accidents.isNotEmpty) {
+      print('Dữ liệu đã được lấy thành công.');
+      for (var accident in accidents) {
+        print('Date: ${accident.date}');
+        print('Deaths: ${accident.deaths}');
+        print('Injuries: ${accident.injuries}');
+        print('Level: ${accident.level}');
+        print('Cause: ${accident.cause}');
+        print('Position: ${accident.position}');
+        print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
+        print('Link: ${accident.link}');
+        print('-----------------------');
+      }
+    } else {
+      print('Không có dữ liệu.');
+    }
+    setState(() {
+      accidentDataList = accidents;
+    });
+  }
+
   void _onMarkerTapped(AccidentData data, BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          child: DetailSheet(),
+          heightFactor: 0.8,
+          child: DetailSheet(accidentData: data),
         );
       },
     );
@@ -36,11 +67,11 @@ class HomeState extends State<Home> {
 
   bool isOpened = false;
 
-  void openDetailSheet(BuildContext context) {
+  void openDetailSheet(AccidentData data, BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return DetailSheet();
+          return DetailSheet(accidentData: data);
         });
     setState(() {
       isOpened = !isOpened;
@@ -49,6 +80,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    print('Accident Data List: $accidentDataList');
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -68,23 +100,25 @@ class HomeState extends State<Home> {
                   'id': 'mapbox.mapbox-streets-v8',
                 },
               ),
-              MarkerLayer(
-                markers: [
-                  for (var accidentData in accidentDataList)
-                    Marker(
-                      point: accidentData.position,
-                      child: GestureDetector(
-                        onTap: () {
-                          _onMarkerTapped(accidentData, context);
-                        },
-                        child: NumberedLocationIcon(
-                          iconData: AppIcons.location,
-                          number: accidentData.level ?? 0,
+              if (accidentDataList
+                  .isNotEmpty)
+                MarkerLayer(
+                  markers: [
+                    for (var accidentData in accidentDataList)
+                      Marker(
+                        point: accidentData.position,
+                        child: GestureDetector(
+                          onTap: () {
+                            _onMarkerTapped(accidentData, context);
+                          },
+                          child: NumberedLocationIcon(
+                            iconData: AppIcons.location,
+                            number: accidentData.level,
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
           Positioned(
@@ -114,7 +148,7 @@ class HomeState extends State<Home> {
                   onPressed: () {
                     setState(() {
                       isFilterPressed = !isFilterPressed;
-                      openDetailSheet(context);
+                      // openDetailSheet(context);
                     });
                   },
                   child: Icon(
