@@ -34,7 +34,11 @@ class CustomDropdown extends StatelessWidget {
         icon: Icon(AppIcons.dropdown, color: AppColors.red), 
         iconSize: 24,
         isExpanded: true,
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(
+          color: Colors.black,
+          fontFamily: 'Mulish',
+          fontSize: 14,
+        ),
         items: items.map((String value) {
           return DropdownMenuItem<String>(
             value: value,

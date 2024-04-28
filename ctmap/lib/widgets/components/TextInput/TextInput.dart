@@ -55,6 +55,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           Expanded(
             child: TextField(
+              enableSuggestions: false,
+              autocorrect: false,
               controller: widget.controller,
               style: TextStyle(color: Colors.black),
               obscureText: widget.isPassword ? _obscureText : false,
@@ -80,6 +82,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         },
                       )
                     : null,
+                // enabledBorder: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(100),
+                //   borderSide: BorderSide.none,
+                // ),
+                // focusedBorder: OutlineInputBorder(
+                //   borderRadius: BorderRadius.circular(100),
+                //   borderSide: BorderSide.none,
+                // ),
               ),
             ),
           ),

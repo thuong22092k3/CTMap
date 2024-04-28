@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:ctmap/data/type.dart';
 import 'package:latlong2/latlong.dart';
 
-const String BASE_URL = 'http://192.168.137.104:3000';// đổi "192.168.137.104" thành địa chỉ IPV4 của máy 
+const String BASE_URL = 'http://192.168.0.123:3000';// đổi "192.168.137.104" thành địa chỉ IPV4 của máy 
 
 DateTime parseDate(String dateStr) {
   List<String> parts = dateStr.split('/');

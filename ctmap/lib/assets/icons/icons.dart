@@ -22,7 +22,8 @@ class AppIcons {
   static const IconData edit = Icons.edit_outlined;
   static const IconData camera = Icons.photo_camera_outlined;
   static const IconData delete = Icons.delete_outlined;
-
+  static const IconData back = Icons.arrow_back_ios;
+  static const IconData close = Icons.close;
   static const double defaultSize = 24.0;
 
   static Icon getIcon(IconData iconData,

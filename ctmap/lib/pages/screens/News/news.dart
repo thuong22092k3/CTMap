@@ -131,7 +131,7 @@ class RSSDemoState extends State<News> {
         return ListTile(
           title: title(item.title ?? ''),
           subtitle: subtitle(item.pubDate.toString()),
-          leading: thumbnail(item.enclosure?.url ?? ''),
+          //leading: thumbnail(item.enclosure?.url ?? ''),
           trailing: rightIcon(),
           contentPadding: const EdgeInsets.all(5.0),
           onTap: () => openFeed(Uri.parse(item.link ?? '')),

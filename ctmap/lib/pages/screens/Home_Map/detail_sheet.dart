@@ -12,7 +12,7 @@ class DetailSheet extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.zero,
@@ -30,16 +30,16 @@ class DetailSheet extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Chi tiết vụ tai nạn',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: AppColors.red,
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(AppIcons.close),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -69,7 +69,7 @@ class DetailSheet extends StatelessWidget {
           child: Row(
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   AppIcons.edit,
                   color: AppColors.blue,
                 ),
@@ -78,7 +78,7 @@ class DetailSheet extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   AppIcons.delete,
                   color: AppColors.red,
                 ),
@@ -102,21 +102,22 @@ class DetailSheet extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: Text(
-              title + ':',
-              style: TextStyle(
+              '$title:',
+              textAlign: TextAlign.right,
+              style: const TextStyle(
                 fontSize: 12,
               ),
             ),
           ),
         ),
-        SizedBox(width: 20),
+        const SizedBox(width: 20),
         Expanded(
           flex: 2,
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
               ),
             ),
@@ -126,33 +127,33 @@ class DetailSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildSeverityRow(int level) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Mức độ:",
-              style: TextStyle(
-                fontSize: 12,
-              ),
+Widget _buildSeverityRow(int level) {
+  return Row(
+    children: [
+      const Expanded(
+        flex: 1,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            "Mức độ:",
+            style: TextStyle(
+              fontSize: 12,
             ),
           ),
         ),
-        SizedBox(width: 20),
-        Expanded(
-          flex: 2,
-          child: Row(
-            children: [
-              for (int i = 1; i <= 5; i++)
-                NumberedLocationIcon(
-                  iconData: AppIcons.location,
-                  number: i,
-                  isMatched:
-                      i == level, 
-                ),
+      ),
+      const SizedBox(width: 20),
+      Expanded(
+        flex: 2,
+        child: Row(
+          children: [
+            for (int i = 1; i <= 5; i++)
+              NumberedLocationIcon(
+                iconData: AppIcons.location,
+                number: i,
+                isMatched:
+                    i == level, 
+              ),
             ],
           ),
         ),
