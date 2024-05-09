@@ -1,6 +1,6 @@
-import 'package:ctmap/data/type.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:ctmap/data/type.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 
 enum DataMode {
@@ -10,8 +10,11 @@ enum DataMode {
 
 class CustomBarChart extends StatelessWidget {
   final DataMode dataMode;
+  final List<AccidentData> accidentDataList;
 
-  const CustomBarChart({Key? key, required this.dataMode}) : super(key: key);
+  const CustomBarChart(
+      {Key? key, required this.dataMode, required this.accidentDataList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +27,19 @@ class CustomBarChart extends StatelessWidget {
             dataMode == DataMode.level ? barGroupsByLevel : barGroupsByCause,
         gridData: FlGridData(
           show: true,
-          horizontalInterval: 5,
+          horizontalInterval: 10,
           drawVerticalLine: false,
         ),
         alignment: BarChartAlignment.spaceAround,
-        maxY: 20,
+        maxY: 100,
       ),
     );
   }
 
   List<BarChartGroupData> get barGroupsByLevel {
-    final uniqueLevels = Set<int>();
-
-    accidentDataList.forEach((accident) {
-      uniqueLevels.add(accident.level);
-    });
+    List<int> uniqueLevels =
+        accidentDataList.map((accident) => accident.level).toSet().toList();
+    uniqueLevels.sort();
 
     final List<BarChartGroupData> groups = [];
 
@@ -59,9 +60,9 @@ class CustomBarChart extends StatelessWidget {
 
       groups.add(
         BarChartGroupData(
-          x: level,
+          x: level.toInt(),
           barRods: rods,
-          showingTooltipIndicators: const [],
+          showingTooltipIndicators: const [0],
         ),
       );
     });
@@ -70,12 +71,9 @@ class CustomBarChart extends StatelessWidget {
   }
 
   List<BarChartGroupData> get barGroupsByCause {
-    final uniqueCauses = Set<int>();
-
-    accidentDataList.forEach((accident) {
-      uniqueCauses.add(accident.cause);
-    });
-
+    List<int> uniqueCauses =
+        accidentDataList.map((accident) => accident.cause).toSet().toList();
+    uniqueCauses.sort();
     final List<BarChartGroupData> groups = [];
 
     uniqueCauses.forEach((cause) {
@@ -95,9 +93,9 @@ class CustomBarChart extends StatelessWidget {
 
       groups.add(
         BarChartGroupData(
-          x: cause,
+          x: cause.toInt(),
           barRods: rods,
-          showingTooltipIndicators: const [],
+          showingTooltipIndicators: const [0],
         ),
       );
     });
@@ -106,7 +104,7 @@ class CustomBarChart extends StatelessWidget {
   }
 
   BarTouchData get barTouchData => BarTouchData(
-        enabled: false,
+        enabled: true,
         touchTooltipData: BarTouchTooltipData(
           tooltipBgColor: Colors.transparent,
           tooltipPadding: EdgeInsets.zero,
@@ -162,8 +160,7 @@ class CustomBarChart extends StatelessWidget {
           text = 'Tốc độ';
           break;
         case 3:
-          text =
-              'PTGT';
+          text = 'PTGT';
           break;
         case 4:
           text = 'Thời tiết';
@@ -213,7 +210,7 @@ class CustomBarChart extends StatelessWidget {
           axisNameSize: 5,
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 5,
+            interval: 10,
             getTitlesWidget: customTitleWidget,
           ),
         ),

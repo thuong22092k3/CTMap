@@ -1,63 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:ctmap/data/type.dart';
+import 'package:geocoding/geocoding.dart';
 
 class CustomTable extends StatelessWidget {
-  final List<String> provinces;
+  final List<AccidentData> accidentDataList;
 
-  const CustomTable({Key? key, required this.provinces}) : super(key: key);
+  const CustomTable({Key? key, required this.accidentDataList})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    
+    Map<String, int> cityAccidentCount = {};
+    accidentDataList.forEach((accident) {
+      String city = accident.position.toString();
+      if (cityAccidentCount.containsKey(city)) {
+        cityAccidentCount[city] = cityAccidentCount[city]! + 1;
+      } else {
+        cityAccidentCount[city] = 1;
+      }
+    });
+
+    // Sắp xếp danh sách các thành phố dựa trên số lượng tai nạn
+    List<String> sortedCities = cityAccidentCount.keys.toList()
+      ..sort((a, b) => cityAccidentCount[b]!.compareTo(cityAccidentCount[a]!));
+
     return DataTable(
-      columnSpacing: 10.0,
-      dividerThickness: 1.0, 
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-      ),
       columns: [
-        DataColumn(
-          label: Text(
-            'STT',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        DataColumn(
-          label: Text(
-            'Tỉnh thành',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
+        DataColumn(label: Text('Thành phố')),
+        DataColumn(label: Text('SL')),
       ],
-      rows: List.generate(
-        provinces.length,
-        (index) => DataRow(
-          cells: [
-            DataCell(Text((index + 1).toString())),
-            DataCell(Text(provinces[index])),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ExamplePage extends StatelessWidget {
-  final List<String> provinces = ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Danh sách tỉnh thành'),
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTableTheme(
-          data: DataTableThemeData(
-            headingRowColor: MaterialStateColor.resolveWith((states) => Colors.grey),
-          ),
-          child: CustomTable(provinces: provinces),
-        ),
-      ),
+      rows: sortedCities
+          .map((city) => DataRow(cells: [
+                DataCell(Text(city)),
+                DataCell(Text(cityAccidentCount[city].toString())),
+              ]))
+          .toList(),
     );
   }
 }

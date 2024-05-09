@@ -1,3 +1,5 @@
+import 'package:ctmap/data/type.dart';
+import 'package:ctmap/services/api.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
@@ -21,9 +23,28 @@ class _StatisticState extends State<Statistic> {
   bool showChart = true;
   bool isListButtonSelected = false;
   bool isChartButtonSelected = true;
+  List<AccidentData> accidentDataList = [];
+  void initState() {
+    super.initState();
+    getAccidents();
+  }
+
+  Future<void> getAccidents() async {
+    List<AccidentData> accidents = await getAllAccidents();
+    if (accidents.isNotEmpty) {
+      print('Dữ liệu đã được lấy thành công.');
+    } else {
+      print('Không có dữ liệu.');
+    }
+    setState(() {
+      accidentDataList = accidents;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    // final accidentDataList = context.read(accidentDataProvider).state;
+    print('Accident Data List in Statistic: $accidentDataList');
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -70,7 +91,9 @@ class _StatisticState extends State<Statistic> {
                         borderRadius: 5,
                         btnWidth: 140,
                         fontSize: 14,
-                        btnColor: isChartButtonSelected ? AppColors.red : AppColors.primaryGray,
+                        btnColor: isChartButtonSelected
+                            ? AppColors.red
+                            : AppColors.primaryGray,
                       ),
                       SizedBox(width: 20),
                       CustomButton(
@@ -78,7 +101,7 @@ class _StatisticState extends State<Statistic> {
                           setState(() {
                             showChart = false;
                             isListButtonSelected = true;
-                            isChartButtonSelected=false;
+                            isChartButtonSelected = false;
                           });
                         },
                         btnText: "Danh sách",
@@ -95,8 +118,8 @@ class _StatisticState extends State<Statistic> {
                   SizedBox(height: 20),
                   if (showChart)
                     Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 20),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -173,19 +196,25 @@ class _StatisticState extends State<Statistic> {
                         children: [
                           SizedBox(
                             height: 300,
-                            child: CustomBarChart(dataMode: DataMode.level),
+                            child: CustomBarChart(
+                              dataMode: DataMode.level,
+                              accidentDataList: accidentDataList,
+                            ),
                           ),
                           SizedBox(height: 20),
                           SizedBox(
                             height: 300,
-                            child: CustomBarChart(dataMode: DataMode.cause),
+                            child: CustomBarChart(
+                              dataMode: DataMode.cause,
+                              accidentDataList: accidentDataList,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   if (!showChart)
                     SizedBox(
-                      child: CustomTable(provinces: cities),
+                      child: CustomTable(accidentDataList: accidentDataList),
                     ),
                 ],
               ),
