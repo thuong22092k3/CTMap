@@ -52,7 +52,7 @@ class DetailSheet extends StatelessWidget {
               SizedBox(height: 10),
               _buildSeverityRow(accidentData.level),
               SizedBox(height: 10),
-              _buildInfoRow('Loại tai nạn', '${accidentData.cause}'),
+              _buildInfoRow('Loại tai nạn', '${_displayCause(accidentData.cause)}'),
               SizedBox(height: 10),
               _buildInfoRow('Số phương tiện liên quan',
                   '${accidentData.sophuongtienlienquan}'),
@@ -160,4 +160,20 @@ Widget _buildSeverityRow(int level) {
       ],
     );
   }
+  String _displayCause(int cause){
+      switch (cause) {
+      case 1:
+        return "Rượu bia/ Ma túy";
+      case 2:
+        return "Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…";
+      case 3:
+        return "Phương tiện không đảm bảo an toàn";
+      case 4:
+        return "Thời tiết";
+      case 5:
+        return "Cơ sở hạ tầng giao thông";
+      default:
+        return "Khác";
+    }
+    }
 }
