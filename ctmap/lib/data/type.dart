@@ -24,6 +24,18 @@ class AccidentData {
   });
 }
 
+class UserData {
+  final String userName;
+  final String email;
+  final String password;
+
+  UserData({
+    required this.userName,
+    required this.email,
+    required this.password,
+  });
+}
+
 List<AccidentData> accidentDataList = [
   // AccidentData(
   //     // //id: 1,

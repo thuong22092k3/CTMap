@@ -17,19 +17,16 @@ const mapboxToken =
 
 var myPosition = LatLng(10.870137995752456, 106.8038409948349);
 
-
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
   HomeState createState() => HomeState();
-  
 }
 
 class HomeState extends State<Home> {
   final MapController _mapController = MapController();
-  
+
   List<AccidentData> accidentDataList = [];
 
   @override
@@ -61,7 +58,13 @@ class HomeState extends State<Home> {
     });
   }
 
+//Thêm zoom
+  void _moveToPosition(LatLng position) {
+    _mapController.move(position, 18.0);
+  }
+
   void _onMarkerTapped(AccidentData data, BuildContext context) {
+    _moveToPosition(data.position);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -72,7 +75,7 @@ class HomeState extends State<Home> {
       },
     );
   }
-  
+
   bool isSearchPressed = false;
   // bool isFilterPressed = false;
   // bool isAddPressed = false;
@@ -82,25 +85,21 @@ class HomeState extends State<Home> {
     Marker marker = Marker(
       width: 50,
       height: 50,
-      point: tapLatlng, 
+      point: tapLatlng,
       child: IconButton(
-          icon: const Icon(
-            AppIcons.add_location,
-            size: 40,
-            color: Colors.red,
-          ), 
-          onPressed: () {
-          },
+        icon: const Icon(
+          AppIcons.add_location,
+          size: 40,
+          color: Colors.red,
         ),
+        onPressed: () {},
+      ),
     );
     markers.add(marker);
-    
+
     openNewSheet();
-    
-    
-    setState(() {
-      
-    });
+
+    setState(() {});
   }
 
   //DETAIL SHEET
@@ -123,59 +122,58 @@ class HomeState extends State<Home> {
   bool isCurLocation = false;
   void showAddTypeDialog() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Center(
-          child: AlertDialog(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            // title: const Text(
-            //   "Chọn cách thêm",
-            //   style: TextStyle(
-            //     color: AppColors.red, 
-            //     fontSize: 18, 
-                
-            //   ),
-            //   textAlign: TextAlign.center,
-            // ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CustomButton(
-                  onTap: () {
-                    setState(() {
-                      isSelfAdd = true;
-                      Navigator.of(context).pop();
-                    });
-                  },
-                  btnText: "Tự thêm trên bản đồ",
-                  btnHeight: 30,
-                  borderRadius: 5,
-                  btnWidth: 200,
-                  fontSize: 14,
-                  btnColor: AppColors.red ,
-                ),
-                CustomButton(
-                  onTap: () {
-                    getCurrentLocation();
-                    setState(() {
-                      isCurLocation = true;
-                      Navigator.of(context).pop();
-                    });
-                  },
-                  btnText: "Truy cập vị trí hiện tại",
-                  btnHeight: 30,
-                  borderRadius: 5,
-                  btnWidth: 200,
-                  fontSize: 14,
-                  btnColor: AppColors.red ,
-                ),
-              ],
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: AlertDialog(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              // title: const Text(
+              //   "Chọn cách thêm",
+              //   style: TextStyle(
+              //     color: AppColors.red,
+              //     fontSize: 18,
+
+              //   ),
+              //   textAlign: TextAlign.center,
+              // ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CustomButton(
+                    onTap: () {
+                      setState(() {
+                        isSelfAdd = true;
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    btnText: "Tự thêm trên bản đồ",
+                    btnHeight: 30,
+                    borderRadius: 5,
+                    btnWidth: 200,
+                    fontSize: 14,
+                    btnColor: AppColors.red,
+                  ),
+                  CustomButton(
+                    onTap: () {
+                      getCurrentLocation();
+                      setState(() {
+                        isCurLocation = true;
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    btnText: "Truy cập vị trí hiện tại",
+                    btnHeight: 30,
+                    borderRadius: 5,
+                    btnWidth: 200,
+                    fontSize: 14,
+                    btnColor: AppColors.red,
+                  ),
+                ],
+              ),
             ),
-          ),
-          
-        );
-      }
-    ).then((value) {
+          );
+        }).then((value) {
       setState(() {
         isAddDialogOpened = false;
       });
@@ -185,7 +183,7 @@ class HomeState extends State<Home> {
     });
   }
 
-  //SEARCH 
+  //SEARCH
   TextEditingController textController = TextEditingController();
 
   //FILTER SHEET
@@ -195,7 +193,6 @@ class HomeState extends State<Home> {
       context: context,
       builder: (context) {
         return const FilterSheet();
-
       },
     ).then((value) {
       setState(() {
@@ -213,7 +210,7 @@ class HomeState extends State<Home> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return const NewSheet(); 
+        return const NewSheet();
       },
     ).then((value) {
       setState(() {
@@ -245,12 +242,12 @@ class HomeState extends State<Home> {
         return Future.error('Location permissions are denied');
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately. 
+      // Permissions are denied forever, handle appropriately.
       return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-    } 
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
 
     var position = await Geolocator.getCurrentPosition();
     LatLng curLocation = LatLng(position.latitude, position.longitude);
@@ -264,30 +261,29 @@ class HomeState extends State<Home> {
     Marker marker = Marker(
       width: 50,
       height: 50,
-      point: curLocation, 
+      point: curLocation,
       child: IconButton(
-          icon: const Icon(
-            AppIcons.add_location,
-            size: 40,
-            color: Colors.red,
-          ), 
-          onPressed: () {
-          },
+        icon: const Icon(
+          AppIcons.add_location,
+          size: 40,
+          color: Colors.red,
         ),
+        onPressed: () {},
+      ),
     );
     markers.add(marker);
-    
+
     openNewSheet();
 
     //addMarker(curLocation);
-    
+
     print(position.latitude);
     print(position);
     print(curLocation);
 
-    return(curLocation);
+    return (curLocation);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     print('Accident Data List: $accidentDataList');
@@ -302,11 +298,11 @@ class HomeState extends State<Home> {
               maxZoom: 25,
               initialZoom: 11,
               onTap: (tapPosition, latLng) {
-                if(isSelfAdd == true){
+                if (isSelfAdd == true) {
                   tapLatlng = latLng;
                   addMarker(tapLatlng);
                   print(tapLatlng);
-                }         
+                }
               },
             ),
             children: [
@@ -319,136 +315,130 @@ class HomeState extends State<Home> {
                 },
               ),
               //if (accidentDataList.isNotEmpty)
-                MarkerLayer(
-                  markers: [
-                    for (var accidentData in accidentDataList)
-                      Marker(
-                        point: accidentData.position,
-                        child: GestureDetector(
-                          onTap: () {
-                            _onMarkerTapped(accidentData, context);
-                          },
-                          child: NumberedLocationIcon(
-                            iconData: AppIcons.location,
-                            number: accidentData.level,
-                          ),
+              MarkerLayer(
+                markers: [
+                  for (var accidentData in accidentDataList)
+                    Marker(
+                      point: accidentData.position,
+                      child: GestureDetector(
+                        onTap: () {
+                          _onMarkerTapped(accidentData, context);
+                        },
+                        child: NumberedLocationIcon(
+                          iconData: AppIcons.location,
+                          number: accidentData.level,
                         ),
                       ),
-                    
-                  ],
-                  
-                  //markers: markers,
-                ),
-        
+                    ),
+                ],
+
+                //markers: markers,
+              ),
             ],
           ),
           Positioned(
-              top: 16,
-              right: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AnimSearchBar(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width - 32,
-                    textController: textController,
-                    onSuffixTap: () {
-                      setState(() {
-                        textController.clear();
-                      });
-                    },
-                    onSubmitted: (String value) {
-                      debugPrint("onSubmitted value: $value");
-                    },
-                    textInputAction: TextInputAction.search,
-                    searchBarOpen: (a) {
-                      a = 0;
-                    },
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Container(
-                      decoration: BoxDecoration(
+            top: 16,
+            right: 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                AnimSearchBar(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width - 32,
+                  textController: textController,
+                  onSuffixTap: () {
+                    setState(() {
+                      textController.clear();
+                    });
+                  },
+                  onSubmitted: (String value) {
+                    debugPrint("onSubmitted value: $value");
+                  },
+                  textInputAction: TextInputAction.search,
+                  searchBarOpen: (a) {
+                    a = 0;
+                  },
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(0, 0, 0, 25),
+                          blurRadius: 1,
+                          spreadRadius: 0.0,
+                          offset: Offset(0, 3),
+                          blurStyle: BlurStyle.normal,
+                        ),
+                      ],
+                    ),
+                    child: FloatingActionButton(
+                      backgroundColor:
+                          isFilterOpened ? AppColors.red : AppColors.white,
+                      onPressed: () {
+                        setState(() {
+                          if (!isFilterOpened) {
+                            openFilterSheet();
+                          }
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(0, 0, 0, 25),
-                            blurRadius: 1,
-                            spreadRadius: 0.0,
-                            offset: Offset(0, 3),
-                            blurStyle: BlurStyle.normal,
-
-                          ),
-                        ],
                       ),
-                      child: FloatingActionButton( 
-                        backgroundColor: isFilterOpened ? AppColors.red : AppColors.white,
-                        onPressed: () {
-                          setState(() {
-                            if (!isFilterOpened) {
-                              openFilterSheet();
-                            }
-                          });
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(
-                          AppIcons.filter,
-                          size: 30,
-                          color: isFilterOpened ? AppColors.white : AppColors.red,
-                        ),
+                      child: Icon(
+                        AppIcons.filter,
+                        size: 30,
+                        color: isFilterOpened ? AppColors.white : AppColors.red,
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 10),
-
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Container(
-                      decoration: BoxDecoration(
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromARGB(0, 0, 0, 25),
+                          blurRadius: 1,
+                          spreadRadius: 0.0,
+                          offset: Offset(0, 3),
+                          blurStyle: BlurStyle.normal,
+                        ),
+                      ],
+                    ),
+                    child: FloatingActionButton(
+                      backgroundColor:
+                          isAddDialogOpened ? AppColors.red : AppColors.white,
+                      onPressed: () {
+                        setState(() {
+                          if (!isAddDialogOpened) {
+                            showAddTypeDialog();
+                          }
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromARGB(0, 0, 0, 25),
-                            blurRadius: 1,
-                            spreadRadius: 0.0,
-                            offset: Offset(0, 3),
-                            blurStyle: BlurStyle.normal,
-
-                          ),
-                        ],
                       ),
-                      child: FloatingActionButton(
-                        backgroundColor: isAddDialogOpened ? AppColors.red : AppColors.white,
-                        onPressed: () {
-                          setState(() {
-                            if (!isAddDialogOpened) {
-                              showAddTypeDialog();
-                            }
-                          });
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(
-                          AppIcons.add_location,
-                          size: 30,
-                          color: isAddDialogOpened ? AppColors.white : AppColors.red,
-                        ),
+                      child: Icon(
+                        AppIcons.add_location,
+                        size: 30,
+                        color:
+                            isAddDialogOpened ? AppColors.white : AppColors.red,
                       ),
                     ),
                   ),
-
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
         ],
       ),
     );

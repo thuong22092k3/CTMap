@@ -5,6 +5,7 @@ import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/login.dart';
+import 'package:ctmap/services/api.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -12,42 +13,53 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  final TextEditingController _controller = TextEditingController();
-  bool _isChecked = false;
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: EdgeInsets.all(25), //thêm padding
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        padding: EdgeInsets.all(25),
+        child: ListView(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              CustomTextButton(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
-                },
-                icon: AppIcons.left_arrow,
-                iconSize: 30,
-              ),
-              SizedBox(width: 25),
-              Text(
-                'Đăng Ký',
-                style: TextStyle(
-                  fontSize: 32,
-                  color: AppColors.red,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomTextButton(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Login()),
+                    );
+                  },
+                  icon: AppIcons.left_arrow,
+                  iconSize: 30,
                 ),
-              ),
-            ]),
+                SizedBox(width: 25),
+                Text(
+                  'Đăng Ký',
+                  style: TextStyle(
+                    fontSize: 32,
+                    color: AppColors.red,
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: 60),
             CustomTextField(
               hintText: 'Username',
-              icon: AppIcons.person, // Thay đổi icon tùy ý
-              controller: _controller,
+              icon: AppIcons.person,
+              controller: _usernameController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -55,8 +67,8 @@ class _SignupState extends State<Signup> {
             SizedBox(height: 30),
             CustomTextField(
               hintText: 'Email',
-              icon: AppIcons.email, // Thay đổi icon tùy ý
-              controller: _controller,
+              icon: AppIcons.email,
+              controller: _emailController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -64,8 +76,8 @@ class _SignupState extends State<Signup> {
             SizedBox(height: 30),
             CustomTextField(
               hintText: 'Mật khẩu',
-              icon: AppIcons.lock, // Thay đổi icon tùy ý
-              controller: _controller,
+              icon: AppIcons.lock,
+              controller: _passwordController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -74,8 +86,8 @@ class _SignupState extends State<Signup> {
             SizedBox(height: 30),
             CustomTextField(
               hintText: 'Nhập lại mật khẩu',
-              icon: AppIcons.lock, // Thay đổi icon tùy ý
-              controller: _controller,
+              icon: AppIcons.lock,
+              controller: _passwordController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -84,7 +96,7 @@ class _SignupState extends State<Signup> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng ký"
+                _signUp();
               },
               btnText: 'Đăng ký',
               btnWidth: 300,
@@ -103,7 +115,6 @@ class _SignupState extends State<Signup> {
                       context,
                       MaterialPageRoute(builder: (context) => Login()),
                     );
-                    // Xử lý khi nhấn vào nút "đăng nhập"
                   },
                   btnText: 'Đăng nhập',
                   fontSize: 14,
@@ -118,10 +129,33 @@ class _SignupState extends State<Signup> {
               btnText: 'Lúc khác',
               fontSize: 14,
               btnTextColor: AppColors.primaryGray,
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    var userData = {
+      'userName': username,
+      'email': email,
+      'password': password,
+    };
+    print('User data: $userData');
+    try {
+      await signUp(userData);
+      print("User is successfully created");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    } catch (error) {
+      print("Error occurred during sign up: $error");
+    }
   }
 }
