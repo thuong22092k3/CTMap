@@ -8,8 +8,7 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
-import 'package:ctmap/pages/routes/layout.dart';
-
+import 'package:ctmap/services/api.dart'; // Import your login function here
 
 class Login extends StatefulWidget {
   @override
@@ -17,14 +16,40 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController =
+      TextEditingController(); // Assuming you also need password
   bool _isChecked = false;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() async {
+    String userName = _usernameController.text;
+    String password =
+        _passwordController.text; // Use this if password is required
+    var response = await login(userName);
+    if (response['success']) {
+      print(
+          'Login successful for user: $userName'); // Success message in terminal
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Profile()),
+      );
+    } else {
+      print('Login failed: ${response['message']}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(25), //thêm padding
+        padding: EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -36,7 +61,7 @@ class _LoginState extends State<Login> {
             CustomTextField(
               hintText: 'Email hoặc Username',
               icon: AppIcons.email,
-              controller: _controller,
+              controller: _usernameController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -45,7 +70,7 @@ class _LoginState extends State<Login> {
             CustomTextField(
               hintText: 'Mật khẩu',
               icon: AppIcons.lock,
-              controller: _controller,
+              controller: _passwordController,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
@@ -62,7 +87,6 @@ class _LoginState extends State<Login> {
                     });
                   },
                   margin: EdgeInsets.only(right: 8.0),
-                  // Các thuộc tính khác của CustomCheckbox
                 ),
                 Text(
                   'Ghi nhớ đăng nhập',
@@ -74,7 +98,7 @@ class _LoginState extends State<Login> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => ForgotPassword()),
-                    ); // Xử lý khi nhấn vào nút "Quên mật khẩu"
+                    );
                   },
                   btnText: 'Quên mật khẩu?',
                 )
@@ -82,10 +106,7 @@ class _LoginState extends State<Login> {
             ),
             SizedBox(height: 30),
             CustomButton(
-              onTap: () {
-                // Xử lý khi nhấn vào nút "Đăng nhập"
-
-              },
+              onTap: _handleLogin,
               btnText: 'Đăng nhập',
               btnWidth: 300,
               btnHeight: 50,
@@ -99,7 +120,6 @@ class _LoginState extends State<Login> {
                 ),
                 CustomTextButton(
                   onTap: () {
-                    // Xử lý khi nhấn vào nút "Đăng ký"
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Signup()),
@@ -113,7 +133,7 @@ class _LoginState extends State<Login> {
             Spacer(),
             CustomTextButton(
               onTap: () {
-                //luc khac
+                // Handle "Later" button tap
               },
               btnText: 'Lúc khác',
               fontSize: 14,

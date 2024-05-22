@@ -91,3 +91,45 @@ Future<void> signUp(Map<String, dynamic> userData) async {
     print('Error: $e');
   }
 }
+
+Future<Map<String, dynamic>> login(String userName) async {
+  try {
+    final response = await http.get(
+      Uri.parse('$BASE_URL${PATH.User['LOGIN']}?userName=$userName'),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData;
+    } else {
+      return {
+        'success': false,
+        'message': 'Request failed with status: ${response.statusCode}'
+      };
+    }
+  } catch (e) {
+    return {'success': false, 'message': 'Error: $e'};
+  }
+}
+
+Future<Map<String, dynamic>> updateUser(
+    String id, Map<String, dynamic> userData) async {
+  try {
+    final response = await http.put(
+      Uri.parse('$BASE_URL${PATH.User['EDIT']}'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'id': id, ...userData}),
+    );
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return {
+        'success': false,
+        'message': 'Request failed with status: ${response.statusCode}'
+      };
+    }
+  } catch (e) {
+    return {'success': false, 'message': 'Error: $e'};
+  }
+}
