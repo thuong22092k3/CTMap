@@ -1,3 +1,4 @@
+import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/bottom_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,10 +34,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: rootNavKey,
     routes: [
       StatefulShellRoute.indexedStack(
-          builder: ((context, state, navigationShell) => ScaffoldWithNavBar(navigationShell: navigationShell)),
+          builder: (context, state, navigationShell) =>
+              ScaffoldWithNavBar(navigationShell: navigationShell),
           branches: [
             StatefulShellBranch(
-              routes: <RouteBase>[
+              routes: [
                 GoRoute(
                   path: RoutePaths.home,
                   builder: (context, state) => Home(),
@@ -44,7 +46,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ],
             ),
             StatefulShellBranch(
-              routes: <RouteBase>[
+              routes: [
                 GoRoute(
                   path: RoutePaths.news,
                   builder: (context, state) => News(),
@@ -52,7 +54,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ],
             ),
             StatefulShellBranch(
-              routes: <RouteBase>[
+              routes: [
                 GoRoute(
                   path: RoutePaths.statistic,
                   builder: (context, state) => Statistic(),
@@ -60,10 +62,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ],
             ),
             StatefulShellBranch(
-              routes: <RouteBase>[
+              routes: [
                 GoRoute(
                   path: RoutePaths.profile,
-                  builder: (context, state) => Profile(),
+                  builder: (context, state) {
+                    final userState = ref.watch(userStateProvider);
+                    print(
+                        'Checking if user is logged in: ${userState.isLoggedIn}');
+                    return userState.isLoggedIn ? Profile() : Login();
+                  },
                 ),
               ],
             ),

@@ -1,13 +1,16 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/anim_search_bar.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ctmap/data/type.dart';
@@ -284,163 +287,181 @@ class HomeState extends State<Home> {
     return (curLocation);
   }
 
+  void _handleAdd(BuildContext context, WidgetRef ref) {
+    final userState = ref.read(userStateProvider);
+    if (userState.isLoggedIn) {
+      showAddTypeDialog();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      ).then((_) {
+        // After login, check if the user is logged in, then show add dialog
+        if (ref.read(userStateProvider).isLoggedIn) {
+          showAddTypeDialog();
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Accident Data List: $accidentDataList');
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: myPosition,
-              minZoom: 5,
-              maxZoom: 25,
-              initialZoom: 11,
-              onTap: (tapPosition, latLng) {
-                if (isSelfAdd == true) {
-                  tapLatlng = latLng;
-                  addMarker(tapLatlng);
-                  print(tapLatlng);
-                }
-              },
-            ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                    "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
-                additionalOptions: const {
-                  'accessToken': mapboxToken,
-                  'id': 'mapbox.mapbox-streets-v8',
-                },
+    return Consumer(
+      builder: (context, ref, _) {
+        return Scaffold(
+          body: Stack(
+            children: <Widget>[
+              FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: myPosition,
+                  minZoom: 5,
+                  maxZoom: 25,
+                  initialZoom: 11,
+                  onTap: (tapPosition, latLng) {
+                    if (isSelfAdd == true) {
+                      tapLatlng = latLng;
+                      addMarker(tapLatlng);
+                      print(tapLatlng);
+                    }
+                  },
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
+                    additionalOptions: const {
+                      'accessToken': mapboxToken,
+                      'id': 'mapbox.mapbox-streets-v8',
+                    },
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      for (var accidentData in accidentDataList)
+                        Marker(
+                          point: accidentData.position,
+                          child: GestureDetector(
+                            onTap: () {
+                              _onMarkerTapped(accidentData, context);
+                            },
+                            child: NumberedLocationIcon(
+                              iconData: AppIcons.location,
+                              number: accidentData.level,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
               ),
-              //if (accidentDataList.isNotEmpty)
-              MarkerLayer(
-                markers: [
-                  for (var accidentData in accidentDataList)
-                    Marker(
-                      point: accidentData.position,
-                      child: GestureDetector(
-                        onTap: () {
-                          _onMarkerTapped(accidentData, context);
-                        },
-                        child: NumberedLocationIcon(
-                          iconData: AppIcons.location,
-                          number: accidentData.level,
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AnimSearchBar(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width - 32,
+                      textController: textController,
+                      onSuffixTap: () {
+                        setState(() {
+                          textController.clear();
+                        });
+                      },
+                      onSubmitted: (String value) {
+                        debugPrint("onSubmitted value: $value");
+                      },
+                      textInputAction: TextInputAction.search,
+                      searchBarOpen: (a) {
+                        a = 0;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(0, 0, 0, 25),
+                              blurRadius: 1,
+                              spreadRadius: 0.0,
+                              offset: Offset(0, 3),
+                              blurStyle: BlurStyle.normal,
+                            ),
+                          ],
+                        ),
+                        child: FloatingActionButton(
+                          backgroundColor:
+                              isFilterOpened ? AppColors.red : AppColors.white,
+                          onPressed: () {
+                            setState(() {
+                              if (!isFilterOpened) {
+                                openFilterSheet();
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            AppIcons.filter,
+                            size: 30,
+                            color: isFilterOpened
+                                ? AppColors.white
+                                : AppColors.red,
+                          ),
                         ),
                       ),
                     ),
-                ],
-
-                //markers: markers,
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(0, 0, 0, 25),
+                              blurRadius: 1,
+                              spreadRadius: 0.0,
+                              offset: Offset(0, 3),
+                              blurStyle: BlurStyle.normal,
+                            ),
+                          ],
+                        ),
+                        child: FloatingActionButton(
+                          backgroundColor: isAddDialogOpened
+                              ? AppColors.red
+                              : AppColors.white,
+                          onPressed: () {
+                            _handleAdd(context, ref);
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            AppIcons.add_location,
+                            size: 30,
+                            color: isAddDialogOpened
+                                ? AppColors.white
+                                : AppColors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                AnimSearchBar(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width - 32,
-                  textController: textController,
-                  onSuffixTap: () {
-                    setState(() {
-                      textController.clear();
-                    });
-                  },
-                  onSubmitted: (String value) {
-                    debugPrint("onSubmitted value: $value");
-                  },
-                  textInputAction: TextInputAction.search,
-                  searchBarOpen: (a) {
-                    a = 0;
-                  },
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(0, 0, 0, 25),
-                          blurRadius: 1,
-                          spreadRadius: 0.0,
-                          offset: Offset(0, 3),
-                          blurStyle: BlurStyle.normal,
-                        ),
-                      ],
-                    ),
-                    child: FloatingActionButton(
-                      backgroundColor:
-                          isFilterOpened ? AppColors.red : AppColors.white,
-                      onPressed: () {
-                        setState(() {
-                          if (!isFilterOpened) {
-                            openFilterSheet();
-                          }
-                        });
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        AppIcons.filter,
-                        size: 30,
-                        color: isFilterOpened ? AppColors.white : AppColors.red,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color.fromARGB(0, 0, 0, 25),
-                          blurRadius: 1,
-                          spreadRadius: 0.0,
-                          offset: Offset(0, 3),
-                          blurStyle: BlurStyle.normal,
-                        ),
-                      ],
-                    ),
-                    child: FloatingActionButton(
-                      backgroundColor:
-                          isAddDialogOpened ? AppColors.red : AppColors.white,
-                      onPressed: () {
-                        setState(() {
-                          if (!isAddDialogOpened) {
-                            showAddTypeDialog();
-                          }
-                        });
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        AppIcons.add_location,
-                        size: 30,
-                        color:
-                            isAddDialogOpened ? AppColors.white : AppColors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

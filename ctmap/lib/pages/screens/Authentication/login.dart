@@ -1,4 +1,6 @@
+import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
@@ -7,18 +9,18 @@ import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
+import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
-import 'package:ctmap/services/api.dart'; // Import your login function here
 
-class Login extends StatefulWidget {
+class Login extends ConsumerStatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends ConsumerState<Login> {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController =
-      TextEditingController(); // Assuming you also need password
+  final TextEditingController _passwordController = TextEditingController();
   bool _isChecked = false;
 
   @override
@@ -30,16 +32,26 @@ class _LoginState extends State<Login> {
 
   void _handleLogin() async {
     String userName = _usernameController.text;
-    String password =
-        _passwordController.text; // Use this if password is required
-    var response = await login(userName);
+    String password = _passwordController.text;
+    var response = await login(userName, password);
+
     if (response['success']) {
-      print(
-          'Login successful for user: $userName'); // Success message in terminal
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Profile()),
-      );
+      String? email = response['data']['email'];
+      if (email != null) {
+        ref.read(userStateProvider.notifier).logIn(userName, email, password);
+        final userState = ref.read(userStateProvider);
+
+        print('Login successful for user: ${userState.username}');
+        print('User email: ${userState.email}');
+        print('User password: ${userState.password}');
+        print('Is user logged in: ${userState.isLoggedIn}');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      } else {
+        print('Login failed: Email is null');
+      }
     } else {
       print('Login failed: ${response['message']}');
     }

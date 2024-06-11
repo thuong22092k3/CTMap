@@ -92,11 +92,19 @@ Future<void> signUp(Map<String, dynamic> userData) async {
   }
 }
 
-Future<Map<String, dynamic>> login(String userName) async {
+Future<Map<String, dynamic>> login(String userName, String password) async {
   try {
+    final loginUrl =
+        '$BASE_URL${PATH.User['LOGIN']}?userName=$userName&password=$password';
+    print('Login URL: $loginUrl');
     final response = await http.get(
-      Uri.parse('$BASE_URL${PATH.User['LOGIN']}?userName=$userName'),
+      Uri.parse(loginUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       return responseData;
@@ -119,10 +127,15 @@ Future<Map<String, dynamic>> updateUser(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: json.encode({'id': id, ...userData}),
+      body: json.encode({
+        'id': id,
+        ...userData,
+      }),
     );
+
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData;
     } else {
       return {
         'success': false,
