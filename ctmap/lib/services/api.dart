@@ -96,34 +96,43 @@ Future<Map<String, dynamic>> login(String userName, String password) async {
   try {
     final loginUrl =
         '$BASE_URL${PATH.User['LOGIN']}?userName=$userName&password=$password';
-    print('Login URL: $loginUrl');
     final response = await http.get(
       Uri.parse(loginUrl),
       headers: {
         'Content-Type': 'application/json',
       },
     );
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      return responseData;
+      return {
+        'success': true,
+        'data': responseData['data'],
+      };
     } else {
       return {
         'success': false,
-        'message': 'Request failed with status: ${response.statusCode}'
+        'message': 'Request failed with status: ${response.statusCode}',
       };
     }
   } catch (e) {
-    return {'success': false, 'message': 'Error: $e'};
+    return {
+      'success': false,
+      'message': 'Error: $e',
+    };
   }
 }
 
 Future<Map<String, dynamic>> updateUser(
     String id, Map<String, dynamic> userData) async {
+  final String updateUrl = '$BASE_URL${PATH.User['EDIT']}';
+
+  print('Updating user with ID: $id');
+  print('Update URL: $updateUrl');
+  print('User Data: $userData');
+
   try {
     final response = await http.put(
-      Uri.parse('$BASE_URL${PATH.User['EDIT']}'),
+      Uri.parse(updateUrl),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -135,14 +144,23 @@ Future<Map<String, dynamic>> updateUser(
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
-      return responseData;
+      print('Update response data: $responseData');
+      return {
+        'success': true,
+        'data': responseData,
+      };
     } else {
+      print('Request failed with status: ${response.statusCode}');
       return {
         'success': false,
-        'message': 'Request failed with status: ${response.statusCode}'
+        'message': 'Request failed with status: ${response.statusCode}',
       };
     }
   } catch (e) {
-    return {'success': false, 'message': 'Error: $e'};
+    print('Error: $e');
+    return {
+      'success': false,
+      'message': 'Error: $e',
+    };
   }
 }

@@ -5,13 +5,15 @@ final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState>(
 );
 
 class UserState {
-  final String username;
+  final String id;
+  final String userName;
   final String email;
   final String password;
   final bool isLoggedIn;
 
   UserState({
-    this.username = '',
+    this.id = '',
+    this.userName = '',
     this.email = '',
     this.password = '',
     this.isLoggedIn = false,
@@ -21,9 +23,10 @@ class UserState {
 class UserStateNotifier extends StateNotifier<UserState> {
   UserStateNotifier() : super(UserState());
 
-  void logIn(String username, String email, String password) {
+  void logIn(String id, String userName, String email, String password) {
     state = UserState(
-      username: username,
+      id: id,
+      userName: userName,
       email: email,
       password: password,
       isLoggedIn: true,

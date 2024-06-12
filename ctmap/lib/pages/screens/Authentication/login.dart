@@ -1,4 +1,3 @@
-import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -11,7 +10,7 @@ import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
-import 'package:ctmap/pages/screens/Profile/profile.dart';
+import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 
 class Login extends ConsumerStatefulWidget {
   @override
@@ -36,12 +35,16 @@ class _LoginState extends ConsumerState<Login> {
     var response = await login(userName, password);
 
     if (response['success']) {
-      String? email = response['data']['email'];
-      if (email != null) {
-        ref.read(userStateProvider.notifier).logIn(userName, email, password);
+      String id = response['data']['_id'];
+      String email = response['data']['email'];
+      if (id.isNotEmpty && email.isNotEmpty) {
+        ref
+            .read(userStateProvider.notifier)
+            .logIn(id, userName, email, password);
         final userState = ref.read(userStateProvider);
 
-        print('Login successful for user: ${userState.username}');
+        print('Login successful for user: ${userState.userName}');
+        print('User ID: ${userState.id}');
         print('User email: ${userState.email}');
         print('User password: ${userState.password}');
         print('Is user logged in: ${userState.isLoggedIn}');
@@ -50,10 +53,16 @@ class _LoginState extends ConsumerState<Login> {
           MaterialPageRoute(builder: (context) => Home()),
         );
       } else {
-        print('Login failed: Email is null');
+        print('Login failed: Missing user ID or email');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: Missing user ID or email')),
+        );
       }
     } else {
       print('Login failed: ${response['message']}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: ${response['message']}')),
+      );
     }
   }
 
