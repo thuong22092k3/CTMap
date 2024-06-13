@@ -164,3 +164,81 @@ Future<Map<String, dynamic>> updateUser(
     };
   }
 }
+
+Future<bool> sendVerificationCodeToEmail(String email) async {
+  print('Sending verification code to: $email'); // Print the email
+  try {
+    final response = await http.post(
+      Uri.parse('$BASE_URL${PATH.User['SEND']}'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email}),
+    );
+
+    if (response.statusCode == 200) {
+      print('Mã xác nhận đã được gửi đến email của bạn');
+      return true;
+    } else {
+      print('Gửi mã xác nhận thất bại: ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    print('Error sending verification code: $e');
+    return false;
+  }
+}
+
+Future<bool> verifyCode(String email, String code) async {
+  print('Verifying code for email: $email with code: $code');
+
+  try {
+    final response = await http.post(
+      Uri.parse('$BASE_URL${PATH.User['VERIFY']}'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email, 'code': code}),
+    );
+
+    // In ra trạng thái và phản hồi từ server
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      // Check the 'message' key to validate OTP
+      if (responseData.containsKey('message')) {
+        String message = responseData['message'];
+        if (message == 'Mã xác nhận hợp lệ') {
+          print('OTP verified successfully.');
+          return true;
+        } else {
+          print('OTP verification failed: $message');
+          return false;
+        }
+      } else {
+        print('OTP verification response does not contain message key.');
+        return false;
+      }
+    } else {
+      print(
+          'OTP verification request failed with status: ${response.statusCode}');
+      return false;
+    }
+  } catch (e) {
+    print('Error during OTP verification: $e');
+    return false;
+  }
+}
+
+Future<void> changePassword(String email, String password) async {
+  final response = await http.post(
+    Uri.parse('$BASE_URL${PATH.User['CHANGE_PASSWORD']}'),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({'email': email, 'password': password}),
+  );
+
+  if (response.statusCode == 200) {
+    print('Đổi mật khẩu thành công');
+  } else {
+    print('Đổi mật khẩu thất bại: ${response.body}');
+  }
+}

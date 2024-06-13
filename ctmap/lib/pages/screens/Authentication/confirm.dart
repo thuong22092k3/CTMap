@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/change_password.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+import 'package:ctmap/state_management/user_state.dart';
+import 'package:ctmap/services/api.dart';
 
-class Confirm extends StatefulWidget {
+class Confirm extends ConsumerStatefulWidget {
   @override
   _ConfirmState createState() => _ConfirmState();
   final String confirmText;
@@ -16,15 +18,55 @@ class Confirm extends StatefulWidget {
   Confirm({this.confirmText = 'Quên mật khẩu', this.showButton = true});
 }
 
-class _ConfirmState extends State<Confirm> {
+class _ConfirmState extends ConsumerState<Confirm> {
   final TextEditingController _controller = TextEditingController();
-  bool _isChecked = false;
+
+  Future<void> verifyOtpCode(String code) async {
+    final userState = ref.watch(userStateProvider);
+    final String email = userState.email;
+
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đang xác thực mã OTP...')),
+      );
+
+      bool isValid = await verifyCode(email, code);
+      if (isValid) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangePassword(),
+          ),
+        );
+        print("OTP is valid: $code");
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Mã OTP không hợp lệ. Vui lòng thử lại.')),
+        );
+        print("Invalid OTP: $code");
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
+      );
+      print("Error verifying OTP: $error");
+    }
+  }
+
+  void resendCode() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Mã OTP đã được gửi lại!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final userState = ref.watch(userStateProvider);
+    String email = userState.email;
+
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(25), //thêm padding
+        padding: EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -49,55 +91,29 @@ class _ConfirmState extends State<Confirm> {
             ]),
             SizedBox(height: 20),
             Text(
-              'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu!',
+              'Vui lòng nhập mã OTP đã gửi đến email của bạn!',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.primaryGray,
               ),
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
+            Container(
+              width: 300,
+              child: TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Nhập mã OTP',
                 ),
-                SizedBox(width: 5), // Khoảng cách giữa các TextField
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
-                ),
-                SizedBox(width: 5), // Khoảng cách giữa các TextField
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
-                ),
-                SizedBox(width: 5), // Khoảng cách giữa các TextField
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
-                ),
-                SizedBox(width: 5), // Khoảng cách giữa các TextField
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
-                ),
-                SizedBox(width: 5), // Khoảng cách giữa các TextField
-                Container(
-                  width: 50, // Độ rộng cụ thể của TextField
-                  child: TextField(),
-                ),
-              ],
+              ),
             ),
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Xác nhận"
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChangePassword()),
-                );
+                verifyOtpCode(_controller.text);
               },
               btnText: 'Xác nhận',
               btnWidth: 300,
@@ -111,9 +127,7 @@ class _ConfirmState extends State<Confirm> {
                   style: TextStyle(fontSize: 14, color: AppColors.black),
                 ),
                 CustomTextButton(
-                  onTap: () {
-                    // Xử lý khi nhấn vào nút "Quên mật khẩu"
-                  },
+                  onTap: resendCode,
                   btnText: 'Gửi lại mã',
                   fontSize: 14,
                 )
@@ -127,7 +141,7 @@ class _ConfirmState extends State<Confirm> {
             if (widget.showButton)
               CustomTextButton(
                 onTap: () {
-                  // Xử lý khi nhấn vào nút "Lúc khác"
+                  // Handle 'Lúc khác'
                 },
                 btnText: 'Lúc khác',
                 fontSize: 14,

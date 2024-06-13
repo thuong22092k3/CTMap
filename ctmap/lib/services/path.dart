@@ -9,5 +9,8 @@ class PATH {
     'SIGN_UP': '/singUp',
     'LOGIN': '/login',
     'EDIT': '/edit',
+    'SEND': '/send_verification_code',
+    'VERIFY': '/verify_code',
+    'CHANGE_PASSWORD': '/change_password',
   };
 }

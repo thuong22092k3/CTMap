@@ -4,8 +4,8 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Authentication/confirm.dart';
+import 'package:ctmap/services/api.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -19,23 +19,34 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _controller = TextEditingController();
-  bool _isChecked = false;
+
+  Future<void> sendVerificationCode(String email) async {
+    print('Sending OTP to email: $email'); // Print the email
+    bool success = await sendVerificationCodeToEmail(email);
+    if (success) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Confirm()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(25), //thêm padding
+        padding: EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Login()),
-                  );
+                  Navigator.pop(context);
                 },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
@@ -58,8 +69,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
             SizedBox(height: 20),
             CustomTextField(
-              hintText: 'Mật khẩu',
-              icon: AppIcons.email, // Thay đổi icon tùy ý
+              hintText: 'Email',
+              icon: AppIcons.email,
               controller: _controller,
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
@@ -68,11 +79,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             SizedBox(height: 40),
             CustomButton(
               onTap: () {
-                // Xử lý khi nhấn vào nút "Xác nhận"
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Confirm()),
-                );
+                sendVerificationCode(_controller.text);
               },
               btnText: 'Xác nhận',
               btnWidth: 300,
@@ -82,12 +89,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             if (widget.showButton)
               CustomTextButton(
                 onTap: () {
-                  // Xử lý khi nhấn vào nút "Lúc khác"
+                  Navigator.pop(context);
                 },
                 btnText: 'Lúc khác',
                 fontSize: 14,
                 btnTextColor: AppColors.primaryGray,
-              )
+              ),
           ],
         ),
       ),

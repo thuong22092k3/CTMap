@@ -28,11 +28,15 @@ class UserData {
   final String userName;
   final String email;
   final String password;
+  final String? resetPasswordToken;
+  final DateTime? resetPasswordExpires;
 
   UserData({
     required this.userName,
     required this.email,
     required this.password,
+    this.resetPasswordToken,
+    this.resetPasswordExpires,
   });
 }
 

@@ -10,6 +10,8 @@ class UserState {
   final String email;
   final String password;
   final bool isLoggedIn;
+  final String? resetPasswordToken;
+  final DateTime? resetPasswordExpires;
 
   UserState({
     this.id = '',
@@ -17,19 +19,24 @@ class UserState {
     this.email = '',
     this.password = '',
     this.isLoggedIn = false,
+    this.resetPasswordToken,
+    this.resetPasswordExpires,
   });
 }
 
 class UserStateNotifier extends StateNotifier<UserState> {
   UserStateNotifier() : super(UserState());
 
-  void logIn(String id, String userName, String email, String password) {
+  void logIn(String id, String userName, String email, String password,
+      {String? resetPasswordToken, DateTime? resetPasswordExpires}) {
     state = UserState(
       id: id,
       userName: userName,
       email: email,
       password: password,
       isLoggedIn: true,
+      resetPasswordToken: resetPasswordToken,
+      resetPasswordExpires: resetPasswordExpires,
     );
   }
 
