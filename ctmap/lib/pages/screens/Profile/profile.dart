@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Profile/edit_profile.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
+import 'package:ctmap/state_management/user_state.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,7 +30,6 @@ class Profile extends StatelessWidget {
               ],
             ),
           ),
-
           Container(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
@@ -37,10 +37,11 @@ class Profile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 50,
+                  // You can add image or avatar here
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Username',
+                  ref.watch(userStateProvider).userName,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class Profile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'user@gmail.com',
+                  ref.watch(userStateProvider).email,
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.black,
@@ -64,7 +65,6 @@ class Profile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Phần 1: Các nút chức năng
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -82,7 +82,6 @@ class Profile extends StatelessWidget {
                       children: [
                         CustomButton(
                           onTap: () {
-                            // Xử lý khi nhấn vào nút "Chỉnh sửa thông tin"
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -104,24 +103,54 @@ class Profile extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => ForgotPassword()),
                             );
-                            // Xử lý khi nhấn vào nút "Đổi mật khẩu"
                           },
                           btnText: 'Đổi mật khẩu',
                           icon: AppIcons.lock,
-                          btnColor: null, // Màu trong suốt
-                          btnTextColor: AppColors.black, // Màu chữ
+                          btnColor: null,
+                          btnTextColor: AppColors.black,
                           iconColor: AppColors.black.withOpacity(0.5),
                           borderRadius: 0,
                           fontSize: 16,
                         ),
                         CustomButton(
                           onTap: () {
-                            // Xử lý khi nhấn vào nút "Trợ giúp"
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Trợ giúp',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.red)),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                          'Nếu có lỗi hoặc trục trặc kĩ thuật xin liên hệ CSKH.'),
+                                      SizedBox(height: 10),
+                                      Text('Email: 21521509@gmail.com'),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text(
+                                        'Đóng',
+                                        style: TextStyle(color: AppColors.red),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           btnText: 'Trợ giúp',
                           icon: AppIcons.help,
-                          btnColor: null, // Màu trong suốt
-                          btnTextColor: AppColors.black, // Màu chữ
+                          btnColor: null,
+                          btnTextColor: AppColors.black,
                           iconColor: AppColors.black.withOpacity(0.5),
                           borderRadius: 0,
                           fontSize: 16,
@@ -130,7 +159,6 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Phần 2: Nút Đăng xuất
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -145,12 +173,13 @@ class Profile extends StatelessWidget {
                     ),
                     child: CustomButton(
                       onTap: () {
-                        // Xử lý khi nhấn vào nút "Đăng xuất"
+                        ref.read(userStateProvider.notifier).logOut();
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
                       btnText: 'Đăng xuất',
                       icon: AppIcons.logout,
-                      btnColor: null, // Màu trong suốt
-                      btnTextColor: AppColors.black, // Màu chữ
+                      btnColor: null,
+                      btnTextColor: AppColors.black,
                       iconColor: AppColors.black.withOpacity(0.5),
                       borderRadius: 0,
                       fontSize: 16,

@@ -154,7 +154,10 @@ class _LoginState extends ConsumerState<Login> {
             Spacer(),
             CustomTextButton(
               onTap: () {
-                // Handle "Later" button tap
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
               },
               btnText: 'Lúc khác',
               fontSize: 14,
