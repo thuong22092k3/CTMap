@@ -1,7 +1,9 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/data/type.dart';
+import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
@@ -9,17 +11,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewSheet extends StatefulWidget {
+class NewSheet extends ConsumerStatefulWidget {
   final LatLng addPosition;
-  // final Function onAddAccident;
 
   NewSheet({Key? key, required this.addPosition}) : super(key: key);
+
   @override
   _NewSheetState createState() => _NewSheetState();
 }
 
-class _NewSheetState extends State<NewSheet> {
+class _NewSheetState extends ConsumerState<NewSheet> {
   List<String> acciType = [
     'Rượu bia/ Ma túy',
     'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
@@ -32,7 +35,6 @@ class _NewSheetState extends State<NewSheet> {
   String selectedAcciType = 'Rượu bia/ Ma túy';
 
   late TextEditingController _ngayController;
-  //late TextEditingController _mucDoController;
   late TextEditingController _loaiController;
   late TextEditingController _soPhuongTienController;
   late TextEditingController _soNguoiChetController;
@@ -43,7 +45,6 @@ class _NewSheetState extends State<NewSheet> {
     super.initState();
     _ngayController = TextEditingController();
     _ngayController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    //_mucDoController = TextEditingController();
     _loaiController = TextEditingController();
     _soPhuongTienController = TextEditingController();
     _soNguoiChetController = TextEditingController();
@@ -53,7 +54,6 @@ class _NewSheetState extends State<NewSheet> {
   @override
   void dispose() {
     _ngayController.dispose();
-    //_mucDoController.dispose();
     _loaiController.dispose();
     _soPhuongTienController.dispose();
     _soNguoiChetController.dispose();
@@ -136,6 +136,8 @@ class _NewSheetState extends State<NewSheet> {
       );
     } else {
       try {
+        final userState = ref.read(userStateProvider);
+
         DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
         int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
         int deaths = int.parse(_soNguoiChetController.text);
@@ -145,6 +147,7 @@ class _NewSheetState extends State<NewSheet> {
         LatLng position = widget.addPosition;
         String positionStr = '${position.longitude} ${position.latitude}';
         String link = '';
+        String userName = userState.userName;
 
         final accidentData = {
           'date': DateFormat('dd/MM/yyyy').format(date),
@@ -154,6 +157,7 @@ class _NewSheetState extends State<NewSheet> {
           'cause': cause.toString(),
           'position': positionStr,
           'link': link.toString(),
+          'userName': userName,
           'sophuongtienlienquan': sophuongtienlienquan.toString(),
         };
 

@@ -5,7 +5,7 @@ import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
 import 'package:ctmap/services/api.dart';
-import 'package:ctmap/state_management/user_state.dart';
+import 'package:ctmap/state_management/user_state.dart' as userState;
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/Location_Nominatim.dart';
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/anim_search_bar.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -287,8 +287,8 @@ class HomeState extends State<Home> {
   }
 
   void _handleAdd(BuildContext context, WidgetRef ref) {
-    final userState = ref.read(userStateProvider);
-    if (userState.isLoggedIn) {
+    final userStateRef = ref.read(userState.userStateProvider);
+    if (userStateRef.isLoggedIn) {
       showAddTypeDialog();
     } else {
       Navigator.push(
@@ -296,7 +296,7 @@ class HomeState extends State<Home> {
         MaterialPageRoute(builder: (context) => Login()),
       ).then((_) {
         // After login, check if the user is logged in, then show add dialog
-        if (ref.read(userStateProvider).isLoggedIn) {
+        if (ref.read(userState.userStateProvider).isLoggedIn) {
           showAddTypeDialog();
         }
       });

@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 
 class AccidentData {
-  // final int id;
+  final String id;
   final DateTime date;
   final int deaths;
   final int injuries;
@@ -10,9 +10,10 @@ class AccidentData {
   final LatLng position;
   final String link;
   final int sophuongtienlienquan;
+  final String userName;
 
   AccidentData({
-    // required this.id,
+    required this.id,
     required this.date,
     required this.deaths,
     required this.injuries,
@@ -21,6 +22,7 @@ class AccidentData {
     required this.cause,
     required this.link,
     required this.sophuongtienlienquan,
+    required this.userName,
   });
 }
 

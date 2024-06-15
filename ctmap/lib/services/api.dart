@@ -36,6 +36,7 @@ Future<List<AccidentData>> getAllAccidents() async {
                 double lng = double.parse(positions[0]);
                 double lat = double.parse(positions[1]);
                 AccidentData accidentData = AccidentData(
+                  id: accident['_id'] ?? '',
                   date: parseDate(
                       accident['date'] ?? '01/01/1970'), // Default date
                   deaths: int.parse(accident['deaths'].toString() ?? '0'),
@@ -46,6 +47,7 @@ Future<List<AccidentData>> getAllAccidents() async {
                   link: accident['link'] ?? '',
                   sophuongtienlienquan: int.parse(
                       accident['sophuongtienlienquan'].toString() ?? '0'),
+                  userName: accident['userName'] ?? '',
                 );
                 accidents.add(accidentData);
               } catch (e) {
@@ -92,21 +94,24 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
   }
 }
 
-Future<void> deleteAccident(LatLng position) async {
+Future<void> deleteAccident(String id) async {
   try {
     final response = await http.delete(
-      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}?id=$id'),
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
-      print('Accident deleted successfully.');
-      print('Response body: ${response.body}');
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      if (responseData['success'] == true) {
+        print('Accident deleted successfully.');
+      } else {
+        print('Failed to delete accident: ${responseData['message']}');
+        throw Exception(
+            'Failed to delete accident: ${responseData['message']}');
+      }
     } else {
-      print('Failed to delete accident. Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Request failed with status: ${response.statusCode}');
       throw Exception(
           'Failed to delete accident. Status code: ${response.statusCode}');
     }
