@@ -118,7 +118,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Thêm vụ tai nạn',
+                    'Lọc vụ tai nạn',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -273,24 +273,26 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
           ),
           const SizedBox(width: 10),
-          SizedBox(
-            width: 250,
-            height: 40,
-            child: CustomDropdown(
-              items: acciType,
-              selectedItem: selectedAcciType,
-              dropdownHeight: 40,
-              onChanged: (newValue) {
-                setState(() {
-                  selectedAcciType = newValue ?? selectedAcciType;
-                });
-              },
+          Flexible(
+            child: SizedBox(
+              height: 40,
+              child: CustomDropdown(
+                items: acciType,
+                selectedItem: selectedAcciType,
+                dropdownHeight: 40,
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedAcciType = newValue ?? selectedAcciType;
+                  });
+                },
+              ),
             ),
           )
         ],
       ),
     );
   }
+
 
 
 

@@ -61,7 +61,10 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
   try {
     final response = await http.post(
       Uri.parse('$BASE_URL${PATH.Accident['ADD_ACCIDENT']}'),
-      body: accidentData,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(accidentData), 
     );
     if (response.statusCode == 200) {
       print('Data: ${response.body}');
@@ -72,6 +75,32 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
     print('Error: $e');
   }
 }
+
+Future<void> deleteAccident(LatLng position) async {
+  try {
+    final response = await http.delete(
+      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}'), 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Accident deleted successfully.');
+      print('Response body: ${response.body}');
+    } else {
+      print('Failed to delete accident. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to delete accident. Status code: ${response.statusCode}');
+
+    }
+  } catch (e) {
+    print('Error deleting accident: $e');
+    throw Exception('Error deleting accident: $e');
+  }
+}
+
+
 
 Future<void> signUp(Map<String, dynamic> userData) async {
   try {

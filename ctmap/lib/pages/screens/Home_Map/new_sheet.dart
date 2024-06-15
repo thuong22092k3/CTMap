@@ -1,29 +1,39 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/data/type.dart';
+import 'package:ctmap/services/api.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 
 class NewSheet extends StatefulWidget {
-  const NewSheet({super.key});
+  final LatLng addPosition;
+  
+  NewSheet({Key? key, required this.addPosition}): super(key: key);
+  
+  
 
   @override
   _NewSheetState createState() => _NewSheetState();
   
 }
 
-class _NewSheetState extends State
+class _NewSheetState extends State<NewSheet>
 {
   List<String> acciType = [
     'Rượu bia/ Ma túy',
-    'Vi phạm tốc độ, mất lái ...',
+    'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
     'Phương tiện không đảm bảo an toàn',
     'Thời tiết',
     'Cơ sở hạ tầng giao thông',
     'Khác',
   ];
+
+
 
   String selectedAcciType = 'Rượu bia/ Ma túy';
 
@@ -38,6 +48,7 @@ class _NewSheetState extends State
   void initState() {
     super.initState();
     _ngayController = TextEditingController();
+    _ngayController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     //_mucDoController = TextEditingController();
     _loaiController = TextEditingController();
     _soPhuongTienController = TextEditingController();
@@ -85,10 +96,124 @@ class _NewSheetState extends State
     );
     if (pickedDate != null) {
       setState(() {
-        _ngayController.text = pickedDate.toString().split(" ")[0];
+        _ngayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
       });
+    } 
+  }
+
+  void _validateAndSubmit() async {
+  if (_ngayController.text.isEmpty ||
+      _soPhuongTienController.text.isEmpty ||
+      _soNguoiChetController.text.isEmpty ||
+      _soNguoiBiThuongController.text.isEmpty ||
+      selectedAcciType.isEmpty) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            "Lỗi",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          ),
+          content: Text(
+            "Vui lòng nhập đầy đủ thông tin.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            Center(
+              child: CustomButton(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                btnColor: AppColors.red,
+                btnText: "Đã hiểu",
+                btnTextColor: AppColors.white,
+                btnHeight: 30,
+                borderRadius: 5,
+                btnWidth: 140,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    try {
+      // Prepare accident data
+      DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
+      int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
+      int deaths = int.parse(_soNguoiChetController.text);
+      int injuries = int.parse(_soNguoiBiThuongController.text);
+      int level = calculateAccidentLevel(deaths, injuries);
+      int cause = acciType.indexOf(selectedAcciType) + 1;
+      LatLng position = widget.addPosition;
+      String link = '';
+
+      final accidentData = {
+        'date': DateFormat('dd/MM/yyyy').format(date),
+        'deaths': deaths.toString(),
+        'injuries': injuries.toString(),
+        'level': level.toString(),
+        'cause': cause.toString(),
+        'position': position.toString(),
+        'link': link.toString(),
+        'sophuongtienlienquan': sophuongtienlienquan.toString(),
+      };
+
+      // Call addAccident function
+      await addAccident(accidentData);
+
+      // Close sheet after successful addition
+      Navigator.of(context).pop();
+    } catch (e) {
+      print('Error: $e');
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Lỗi",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.red,
+              ),
+            ),
+            content: Text(
+              "Đã xảy ra lỗi khi thêm vụ tai nạn. Vui lòng thử lại sau.",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
+            actions: [
+              Center(
+                child: CustomButton(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  btnColor: AppColors.red,
+                  btnText: "Đã hiểu",
+                  btnTextColor: AppColors.white,
+                  btnHeight: 30,
+                  borderRadius: 5,
+                  btnWidth: 140,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -154,12 +279,9 @@ class _NewSheetState extends State
                     fontSize: 14,
                   ),
                   CustomButton(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                    onTap:  _validateAndSubmit,
                     btnColor: AppColors.red,
                     btnText: "Xác nhận",
-                    
                     btnTextColor: AppColors.white,
                     btnHeight: 30,
                     borderRadius: 5,

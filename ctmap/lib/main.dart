@@ -15,12 +15,13 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: goRouter,
       theme: ThemeData(
-        textTheme: TextTheme(
-          bodyText1: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText1
-          bodyText2: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText2
-          headline1: TextStyle(fontFamily: 'Mulish'), // Font cho headline1
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText1
+          bodyMedium: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText2
+          displayLarge: TextStyle(fontFamily: 'Mulish'), // Font cho headline1
           // Thêm các phong cách font khác tùy theo nhu cầu
         ),
       ),

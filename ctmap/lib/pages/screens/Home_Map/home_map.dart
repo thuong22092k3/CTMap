@@ -6,6 +6,7 @@ import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
+import 'package:ctmap/widgets/components/Animated%20Search%20Bar/Location_Nominatim.dart';
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/anim_search_bar.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +73,7 @@ class HomeState extends State<Home> {
       context: context,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.8,
+          heightFactor: 1,
           child: DetailSheet(accidentData: data),
         );
       },
@@ -100,7 +101,7 @@ class HomeState extends State<Home> {
     );
     markers.add(marker);
 
-    openNewSheet();
+    openNewSheet(tapLatLng);
 
     setState(() {});
   }
@@ -109,7 +110,7 @@ class HomeState extends State<Home> {
   bool isOpened = false;
 
   void openDetailSheet(AccidentData data, BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet<dynamic>(
         context: context,
         builder: (_) {
           return DetailSheet(accidentData: data);
@@ -131,15 +132,6 @@ class HomeState extends State<Home> {
             child: AlertDialog(
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              // title: const Text(
-              //   "Chọn cách thêm",
-              //   style: TextStyle(
-              //     color: AppColors.red,
-              //     fontSize: 18,
-
-              //   ),
-              //   textAlign: TextAlign.center,
-              // ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -209,11 +201,11 @@ class HomeState extends State<Home> {
 
   //ADD SHEET
   bool isNewOpened = false;
-  void openNewSheet() {
+  void openNewSheet(LatLng position) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return const NewSheet();
+        return NewSheet(addPosition: position);
       },
     ).then((value) {
       setState(() {
@@ -276,7 +268,7 @@ class HomeState extends State<Home> {
     );
     markers.add(marker);
 
-    openNewSheet();
+    openNewSheet(curLocation);
 
     //addMarker(curLocation);
 
@@ -304,6 +296,10 @@ class HomeState extends State<Home> {
     }
   }
 
+//SEARCH
+  LatLng? _center;
+  final TextEditingController _controller = TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     print('Accident Data List: $accidentDataList');
@@ -319,6 +315,10 @@ class HomeState extends State<Home> {
                   minZoom: 5,
                   maxZoom: 25,
                   initialZoom: 11,
+                  interactionOptions: const InteractionOptions(
+                    //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
+                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate
+                  ),
                   onTap: (tapPosition, latLng) {
                     if (isSelfAdd == true) {
                       tapLatlng = latLng;
@@ -330,7 +330,9 @@ class HomeState extends State<Home> {
                 children: [
                   TileLayer(
                     urlTemplate:
-                        "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
+                      "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
+                    //     "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    //userAgentPackageName: 'com.example.app',
                     additionalOptions: const {
                       'accessToken': mapboxToken,
                       'id': 'mapbox.mapbox-streets-v8',
@@ -352,6 +354,7 @@ class HomeState extends State<Home> {
                           ),
                         ),
                     ],
+                    //markers: markers,
                   ),
                 ],
               ),
@@ -362,20 +365,40 @@ class HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     AnimSearchBar(
+                      width: MediaQuery.of(context).size.width - 20,
                       height: 50,
-                      width: MediaQuery.of(context).size.width - 32,
-                      textController: textController,
+                      textController: _controller,
+                      helpText: "Tìm kiếm",
+                      suffixIcon: Icon(AppIcons.close, color: AppColors.white),
+                      prefixIcon: Icon(AppIcons.search, color: AppColors.red),
+                      textFieldColor: Colors.red,
+                      initialBackgroundColor: Colors.white,
+                      initialIconColor: Colors.blue,
                       onSuffixTap: () {
                         setState(() {
-                          textController.clear();
+                          _controller.clear();
+                          _center = myPosition;
                         });
+                        _mapController.move(myPosition, 11.0);
                       },
-                      onSubmitted: (String value) {
-                        debugPrint("onSubmitted value: $value");
+                      onSubmitted: (value) async {
+                        if (value.isNotEmpty) {
+                          final locations = await searchLocation(value);
+                          if (locations.isNotEmpty) {
+                            final location = locations.first;
+                            setState(() {
+                              _center = LatLng(location.lat, location.lon);
+                            });
+                            _mapController.move(_center!, 14.0);
+                          }
+                        }
                       },
-                      textInputAction: TextInputAction.search,
-                      searchBarOpen: (a) {
-                        a = 0;
+                      searchBarOpen: (toggle) {
+                        if (toggle == 0) {
+                          setState(() {
+                            _controller.clear();
+                          });
+                        }
                       },
                     ),
                     const SizedBox(height: 10),
@@ -440,7 +463,12 @@ class HomeState extends State<Home> {
                               ? AppColors.red
                               : AppColors.white,
                           onPressed: () {
-                            _handleAdd(context, ref);
+                            //_handleAdd(context, ref);
+                            setState(() {
+                            if (!isAddDialogOpened) {
+                              showAddTypeDialog();
+                            }
+                          });
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

@@ -1,8 +1,11 @@
-import 'dart:math';
-import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:math';
+import 'package:latlong2/latlong.dart';
+import 'Location_Nominatim.dart';
 class AnimSearchBar extends StatefulWidget {
   final double width;
   final double height;
@@ -114,9 +117,9 @@ class _AnimSearchBarState extends State<AnimSearchBar>
           children: [
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
-              top: 0.0, 
-              right: 10.0, 
-              bottom: 0.0, 
+              top: 0.0,
+              right: 10.0,
+              bottom: 0.0,
               curve: Curves.easeOut,
               child: AnimatedOpacity(
                 opacity: (toggle == 0) ? 0.0 : 1.0,
@@ -154,17 +157,17 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                           print(e);
                         }
                       },
-                      child: widget.suffixIcon ?? Icon(
-                              Icons.close,
-                              size: 30.0,
-                              color: widget.textFieldIconColor,
-                            ),
+                      child: widget.suffixIcon ??
+                          Icon(
+                            Icons.close,
+                            size: 30.0,
+                            color: widget.textFieldIconColor,
+                          ),
                     ),
                   ),
                 ),
               ),
             ),
-
             AnimatedPositioned(
               duration: Duration(milliseconds: widget.animationDurationInMilli),
               left: (toggle == 0) ? 20.0 : 40.0,
@@ -177,61 +180,71 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                   padding: const EdgeInsets.only(left: 10),
                   alignment: Alignment.topCenter,
                   width: widget.width / 1.7,
-                  child: TextField(
-                    enableSuggestions: false,
-                    autocorrect: false,
-
-                    controller: widget.textController,
-                    inputFormatters: widget.inputFormatters,
-                    focusNode: focusNode,
-                    textInputAction: widget.textInputAction,
-                    cursorRadius: Radius.circular(10.0),
-                    cursorWidth: 1.0,
-                    onChanged: (value) {
-                      textFieldValue = value;
-                    },
-                    onSubmitted: (value) => {
-                      widget.onSubmitted(value),
-                      unfocusKeyboard(),
-                      setState(() {
-                        toggle = 0;
-                      }),
-                      widget.textController.clear(),
-                    },
-                    onEditingComplete: () {
-                      unfocusKeyboard();
-                      setState(() {
-                        toggle = 0;
-                      });
-                    },
-                    style: widget.style ?? TextStyle(color: Colors.white),
-                    cursorColor: Colors.white,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(bottom: 5),
-                      isDense: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      labelText: widget.helpText,
-                      labelStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.w500,
+                  child: TypeAheadField<Location>(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      controller: widget.textController,
+                      inputFormatters: widget.inputFormatters,
+                      focusNode: focusNode,
+                      textInputAction: widget.textInputAction,
+                      cursorRadius: Radius.circular(10.0),
+                      cursorWidth: 1.0,
+                      onChanged: (value) {
+                        textFieldValue = value;
+                      },
+                      onSubmitted: (value) => {
+                        widget.onSubmitted(value),
+                        unfocusKeyboard(),
+                        setState(() {
+                          toggle = 0;
+                        }),
+                        widget.textController.clear(),
+                      },
+                      onEditingComplete: () {
+                        unfocusKeyboard();
+                        setState(() {
+                          toggle = 0;
+                        });
+                      },
+                      style: widget.style ?? TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(bottom: 5),
+                        isDense: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        labelText: widget.helpText,
+                        labelStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        alignLabelWithHint: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
-                      alignLabelWithHint: true,
-                      // border: OutlineInputBorder(
-                      //   borderRadius: BorderRadius.circular(10),
-                      //   borderSide: BorderSide.none,
-                      // ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(100),
-                        borderSide: BorderSide.none,
-                      ),
-                      
-                      
                     ),
+                    suggestionsCallback: (pattern) async {
+                      if (pattern.isEmpty) {
+                        return [];
+                      }
+                      return await searchLocation(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion.displayName),
+                      );
+                    },
+                    onSuggestionSelected: (suggestion) {
+                      widget.textController.text = suggestion.displayName;
+                      widget.onSubmitted(suggestion.displayName);
+                    },
                   ),
                 ),
               ),
@@ -244,7 +257,8 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 setState(() {
                   if (toggle == 0) {
                     toggle = 1;
-                    if (widget.autoFocus) FocusScope.of(context).requestFocus(focusNode);
+                    if (widget.autoFocus)
+                      FocusScope.of(context).requestFocus(focusNode);
                     _con.forward();
                   } else {
                     toggle = 0;
@@ -259,12 +273,12 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 icon: widget.prefixIcon != null
                     ? toggle == 1
                         ? Icon(
-                            AppIcons.back,
+                            Icons.arrow_back,
                             color: widget.textFieldIconColor,
                           )
                         : widget.prefixIcon!
                     : Icon(
-                        toggle == 1 ? AppIcons.back : AppIcons.search,
+                        toggle == 1 ? Icons.arrow_back : Icons.search,
                         color: toggle == 0
                             ? widget.initialIconColor
                             : widget.textFieldIconColor,
@@ -293,7 +307,6 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 },
               ),
             ),
-
           ],
         ),
       ),

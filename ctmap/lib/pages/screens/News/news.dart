@@ -3,6 +3,7 @@ import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';  // Import the intl package
 
 import '../../../assets/colors/colors.dart';
 
@@ -26,6 +27,10 @@ class RSSDemoState extends State<News> {
   static const String placeholderImg = 'images/no_image.png';
   late GlobalKey<RefreshIndicatorState> _refreshKey;
 
+  // Pagination variables
+  final int _itemsPerPage = 20;
+  int _itemsToShow = 20;
+
   updateTitle(title) {
     setState(() {
       _title = title;
@@ -43,6 +48,7 @@ class RSSDemoState extends State<News> {
       if (await canLaunchUrl(url)) {
         await launchUrl(
           url,
+          mode: LaunchMode.inAppWebView,
         );
         return;
       }
@@ -92,9 +98,10 @@ class RSSDemoState extends State<News> {
     );
   }
 
-  subtitle(subTitle) {
+  subtitle(DateTime pubDate) {
+    final formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(pubDate);
     return Text(
-      subTitle,
+      formattedDate,
       style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w100),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -123,20 +130,42 @@ class RSSDemoState extends State<News> {
     );
   }
 
+  List<Widget> _buildListItems() {
+    final items = _feed.items!;
+    final endIndex = _itemsToShow.clamp(0, items.length);
+
+    return items.sublist(0, endIndex).map((item) {
+      return ListTile(
+        title: title(item.title ?? ''),
+        subtitle: subtitle(item.pubDate ?? DateTime.now()),
+        //leading: thumbnail(item.enclosure?.url ?? ''),
+        trailing: rightIcon(),
+        contentPadding: const EdgeInsets.all(5.0),
+        onTap: () => openFeed(Uri.parse(item.link ?? '')),
+      );
+    }).toList();
+  }
+
+  bool _hasMoreItems() {
+    return _itemsToShow < _feed.items!.length;
+  }
+
+  void _loadMoreItems() {
+    setState(() {
+      _itemsToShow += _itemsPerPage;
+    });
+  }
+
   list() {
-    return ListView.builder(
-      itemCount: _feed.items!.length,
-      itemBuilder: (BuildContext context, int index) {
-        final item = _feed.items![index];
-        return ListTile(
-          title: title(item.title ?? ''),
-          subtitle: subtitle(item.pubDate.toString()),
-          //leading: thumbnail(item.enclosure?.url ?? ''),
-          trailing: rightIcon(),
-          contentPadding: const EdgeInsets.all(5.0),
-          onTap: () => openFeed(Uri.parse(item.link ?? '')),
-        );
-      },
+    return ListView(
+      children: [
+        ..._buildListItems(),
+        if (_hasMoreItems())
+          TextButton(
+            onPressed: _loadMoreItems,
+            child: Text('Xem thêm tin tức'),
+          ),
+      ],
     );
   }
 
@@ -145,17 +174,18 @@ class RSSDemoState extends State<News> {
   }
 
   body() {
-    return 
-      isFeedEmpty()
+    return isFeedEmpty()
         ? const Center(
             child: CircularProgressIndicator(),
           )
         : RefreshIndicator(
             key: _refreshKey,
             child: list(),
-            onRefresh: () => load(),
+            onRefresh: () async {
+              _itemsToShow = _itemsPerPage;
+              await load();
+            },
           );
-  
   }
 
   @override
@@ -164,18 +194,12 @@ class RSSDemoState extends State<News> {
       appBar: AppBar(
         title: const Text(
           'Tin Tức',
-          style: TextStyle(
-            fontSize: 28, 
-            color: AppColors.primaryWhite
-          )
+          style: TextStyle(fontSize: 28, color: AppColors.primaryWhite),
         ),
         toolbarHeight: 86,
         centerTitle: true,
         backgroundColor: AppColors.red,
       ),
-      //  appBar: AppBar(
-      //   title: Text(_title),
-      // ),
       body: body(),
     );
   }
