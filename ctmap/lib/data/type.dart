@@ -22,7 +22,6 @@ class AccidentData {
     required this.link,
     required this.sophuongtienlienquan,
   });
-
 }
 
 class UserData {

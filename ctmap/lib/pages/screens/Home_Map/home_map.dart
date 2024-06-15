@@ -205,7 +205,14 @@ class HomeState extends State<Home> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return NewSheet(addPosition: position);
+        return NewSheet(
+          addPosition: position,
+          // onAddAccident: (accidentData) {
+          //   setState(() {
+          //     accidentDataList.add(accidentData);
+          //   });
+          // },
+        );
       },
     ).then((value) {
       setState(() {
@@ -299,7 +306,7 @@ class HomeState extends State<Home> {
 //SEARCH
   LatLng? _center;
   final TextEditingController _controller = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     print('Accident Data List: $accidentDataList');
@@ -316,9 +323,8 @@ class HomeState extends State<Home> {
                   maxZoom: 25,
                   initialZoom: 11,
                   interactionOptions: const InteractionOptions(
-                    //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
-                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate
-                  ),
+                      //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
+                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                   onTap: (tapPosition, latLng) {
                     if (isSelfAdd == true) {
                       tapLatlng = latLng;
@@ -330,7 +336,7 @@ class HomeState extends State<Home> {
                 children: [
                   TileLayer(
                     urlTemplate:
-                      "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
+                        "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
                     //     "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                     //userAgentPackageName: 'com.example.app',
                     additionalOptions: const {
@@ -463,12 +469,12 @@ class HomeState extends State<Home> {
                               ? AppColors.red
                               : AppColors.white,
                           onPressed: () {
-                            //_handleAdd(context, ref);
-                            setState(() {
-                            if (!isAddDialogOpened) {
-                              showAddTypeDialog();
-                            }
-                          });
+                            _handleAdd(context, ref);
+                            //   setState(() {
+                            //   if (!isAddDialogOpened) {
+                            //     showAddTypeDialog();
+                            //   }
+                            // });
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

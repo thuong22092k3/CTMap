@@ -12,18 +12,14 @@ import 'package:latlong2/latlong.dart';
 
 class NewSheet extends StatefulWidget {
   final LatLng addPosition;
-  
-  NewSheet({Key? key, required this.addPosition}): super(key: key);
-  
-  
+  // final Function onAddAccident;
 
+  NewSheet({Key? key, required this.addPosition}) : super(key: key);
   @override
   _NewSheetState createState() => _NewSheetState();
-  
 }
 
-class _NewSheetState extends State<NewSheet>
-{
+class _NewSheetState extends State<NewSheet> {
   List<String> acciType = [
     'Rượu bia/ Ma túy',
     'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
@@ -32,8 +28,6 @@ class _NewSheetState extends State<NewSheet>
     'Cơ sở hạ tầng giao thông',
     'Khác',
   ];
-
-
 
   String selectedAcciType = 'Rượu bia/ Ma túy';
 
@@ -66,27 +60,23 @@ class _NewSheetState extends State<NewSheet>
     _soNguoiBiThuongController.dispose();
     super.dispose();
   }
+
   int calculateAccidentLevel(int deaths, int injuries) {
     if (deaths == 0) {
-      if(injuries < 2) {
+      if (injuries < 2) {
         return 1;
-      }
-      else {
+      } else {
         return 2;
       }
-    }
-    else if (deaths == 1) {
+    } else if (deaths == 1) {
       return 3;
-    }
-    else if (deaths == 2) {
+    } else if (deaths == 2) {
       return 4;
-    }
-    else {
+    } else {
       return 5;
     }
   }
 
-  
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -98,82 +88,15 @@ class _NewSheetState extends State<NewSheet>
       setState(() {
         _ngayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
       });
-    } 
+    }
   }
 
   void _validateAndSubmit() async {
-  if (_ngayController.text.isEmpty ||
-      _soPhuongTienController.text.isEmpty ||
-      _soNguoiChetController.text.isEmpty ||
-      _soNguoiBiThuongController.text.isEmpty ||
-      selectedAcciType.isEmpty) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            "Lỗi",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.red,
-            ),
-          ),
-          content: Text(
-            "Vui lòng nhập đầy đủ thông tin.",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-            ),
-          ),
-          actions: [
-            Center(
-              child: CustomButton(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                btnColor: AppColors.red,
-                btnText: "Đã hiểu",
-                btnTextColor: AppColors.white,
-                btnHeight: 30,
-                borderRadius: 5,
-                btnWidth: 140,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    try {
-      // Prepare accident data
-      DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
-      int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
-      int deaths = int.parse(_soNguoiChetController.text);
-      int injuries = int.parse(_soNguoiBiThuongController.text);
-      int level = calculateAccidentLevel(deaths, injuries);
-      int cause = acciType.indexOf(selectedAcciType) + 1;
-      LatLng position = widget.addPosition;
-      String link = '';
-
-      final accidentData = {
-        'date': DateFormat('dd/MM/yyyy').format(date),
-        'deaths': deaths.toString(),
-        'injuries': injuries.toString(),
-        'level': level.toString(),
-        'cause': cause.toString(),
-        'position': position.toString(),
-        'link': link.toString(),
-        'sophuongtienlienquan': sophuongtienlienquan.toString(),
-      };
-
-      // Call addAccident function
-      await addAccident(accidentData);
-
-      // Close sheet after successful addition
-      Navigator.of(context).pop();
-    } catch (e) {
-      print('Error: $e');
+    if (_ngayController.text.isEmpty ||
+        _soPhuongTienController.text.isEmpty ||
+        _soNguoiChetController.text.isEmpty ||
+        _soNguoiBiThuongController.text.isEmpty ||
+        selectedAcciType.isEmpty) {
       showDialog(
         context: context,
         builder: (context) {
@@ -186,7 +109,7 @@ class _NewSheetState extends State<NewSheet>
               ),
             ),
             content: Text(
-              "Đã xảy ra lỗi khi thêm vụ tai nạn. Vui lòng thử lại sau.",
+              "Vui lòng nhập đầy đủ thông tin.",
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.black,
@@ -211,9 +134,74 @@ class _NewSheetState extends State<NewSheet>
           );
         },
       );
+    } else {
+      try {
+        DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
+        int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
+        int deaths = int.parse(_soNguoiChetController.text);
+        int injuries = int.parse(_soNguoiBiThuongController.text);
+        int level = calculateAccidentLevel(deaths, injuries);
+        int cause = acciType.indexOf(selectedAcciType) + 1;
+        LatLng position = widget.addPosition;
+        String positionStr = '${position.longitude} ${position.latitude}';
+        String link = '';
+
+        final accidentData = {
+          'date': DateFormat('dd/MM/yyyy').format(date),
+          'deaths': deaths.toString(),
+          'injuries': injuries.toString(),
+          'level': level.toString(),
+          'cause': cause.toString(),
+          'position': positionStr,
+          'link': link.toString(),
+          'sophuongtienlienquan': sophuongtienlienquan.toString(),
+        };
+
+        await addAccident(accidentData);
+        // widget.onAddAccident(accidentData);
+        Navigator.of(context).pop();
+      } catch (e) {
+        print('Error: $e');
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(
+                "Lỗi",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
+              ),
+              content: Text(
+                "Đã xảy ra lỗi khi thêm vụ tai nạn. Vui lòng thử lại sau.",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+              actions: [
+                Center(
+                  child: CustomButton(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    btnColor: AppColors.red,
+                    btnText: "Đã hiểu",
+                    btnTextColor: AppColors.white,
+                    btnHeight: 30,
+                    borderRadius: 5,
+                    btnWidth: 140,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -254,24 +242,28 @@ class _NewSheetState extends State<NewSheet>
                   ),
                 ],
               ),
-              _buildDayInputRow("Ngày", _ngayController, () => _selectDate(context)),
-              _buildLevelInputRow("Mức độ tai nạn", _soNguoiChetController, _soNguoiBiThuongController),
+              _buildDayInputRow(
+                  "Ngày", _ngayController, () => _selectDate(context)),
+              _buildLevelInputRow("Mức độ tai nạn", _soNguoiChetController,
+                  _soNguoiBiThuongController),
               _buildDropdownRow("Loại tai nạn", _loaiController),
-              _buildNumberInputRow("Số phương tiện liên quan", _soPhuongTienController),
+              _buildNumberInputRow(
+                  "Số phương tiện liên quan", _soPhuongTienController),
               _buildNumberInputRow("Số người chết", _soNguoiChetController),
-              _buildNumberInputRow("Số người bị thương", _soNguoiBiThuongController),
-              const SizedBox(height: 20,),
+              _buildNumberInputRow(
+                  "Số người bị thương", _soNguoiBiThuongController),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CustomButton(
                     onTap: () {
-                    
                       Navigator.of(context).pop();
                     },
                     btnColor: AppColors.dartGrey,
                     btnText: "Hủy",
-                    
                     btnTextColor: AppColors.white,
                     btnHeight: 30,
                     borderRadius: 5,
@@ -279,7 +271,7 @@ class _NewSheetState extends State<NewSheet>
                     fontSize: 14,
                   ),
                   CustomButton(
-                    onTap:  _validateAndSubmit,
+                    onTap: _validateAndSubmit,
                     btnColor: AppColors.red,
                     btnText: "Xác nhận",
                     btnTextColor: AppColors.white,
@@ -297,7 +289,8 @@ class _NewSheetState extends State<NewSheet>
     );
   }
 
-  Widget _buildDayInputRow(String label, TextEditingController controller, [VoidCallback? onTap]) {
+  Widget _buildDayInputRow(String label, TextEditingController controller,
+      [VoidCallback? onTap]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -324,15 +317,16 @@ class _NewSheetState extends State<NewSheet>
               ),
               controller: controller,
               onTap: onTap,
-              readOnly: true, 
+              readOnly: true,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: AppColors.lightGrey, 
+                fillColor: AppColors.lightGrey,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), 
-                  borderSide: BorderSide.none, 
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10), 
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 suffixIcon: InkWell(
                   onTap: onTap,
                   child: const Icon(
@@ -349,8 +343,8 @@ class _NewSheetState extends State<NewSheet>
     );
   }
 
-  
-  Widget _buildDropdownRow(String label, TextEditingController controller, [VoidCallback? onTap]) {
+  Widget _buildDropdownRow(String label, TextEditingController controller,
+      [VoidCallback? onTap]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -386,9 +380,8 @@ class _NewSheetState extends State<NewSheet>
     );
   }
 
-
-
-  Widget _buildNumberInputRow(String label, TextEditingController controller, [VoidCallback? onTap]) {
+  Widget _buildNumberInputRow(String label, TextEditingController controller,
+      [VoidCallback? onTap]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -411,17 +404,20 @@ class _NewSheetState extends State<NewSheet>
               style: const TextStyle(fontSize: 14),
               controller: controller,
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}$'))],
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d{0,2}$'))
+              ],
               //onTap: onTap,
-              readOnly: false, 
+              readOnly: false,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: AppColors.lightGrey, 
+                fillColor: AppColors.lightGrey,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), 
-                  borderSide: BorderSide.none, 
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10), 
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               ),
             ),
           ),
@@ -429,10 +425,14 @@ class _NewSheetState extends State<NewSheet>
       ),
     );
   }
-  Widget _buildLevelInputRow(String label, TextEditingController soNguoiChetController, TextEditingController soNguoiBiThuongController) {
-  int fatalities = int.tryParse(soNguoiChetController.text) ?? 0;
-  int injuries = int.tryParse(soNguoiBiThuongController.text) ?? 0;
-  int accidentLevel = calculateAccidentLevel(fatalities, injuries);
+
+  Widget _buildLevelInputRow(
+      String label,
+      TextEditingController soNguoiChetController,
+      TextEditingController soNguoiBiThuongController) {
+    int fatalities = int.tryParse(soNguoiChetController.text) ?? 0;
+    int injuries = int.tryParse(soNguoiBiThuongController.text) ?? 0;
+    int accidentLevel = calculateAccidentLevel(fatalities, injuries);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -450,11 +450,11 @@ class _NewSheetState extends State<NewSheet>
           ),
           const SizedBox(width: 10),
           for (int i = 1; i <= 5; i++)
-              NumberedLocationIcon(
-                iconData: AppIcons.location,
-                number: i,
-                isMatched: i == accidentLevel, 
-              ),
+            NumberedLocationIcon(
+              iconData: AppIcons.location,
+              number: i,
+              isMatched: i == accidentLevel,
+            ),
         ],
       ),
     );

@@ -14,14 +14,15 @@ class CustomTable extends StatelessWidget {
       future: _getCityAccidentCount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); 
+          return CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); 
+          return Text('Error: ${snapshot.error}');
         } else {
           Map<String, int> cityAccidentCount = snapshot.data!;
-        
+
           List<String> sortedCities = cityAccidentCount.keys.toList()
-            ..sort((a, b) => cityAccidentCount[b]!.compareTo(cityAccidentCount[a]!));
+            ..sort((a, b) =>
+                cityAccidentCount[b]!.compareTo(cityAccidentCount[a]!));
 
           return DataTable(
             columns: [
