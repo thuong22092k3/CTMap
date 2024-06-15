@@ -273,7 +273,7 @@ class _FilterSheetState extends State<FilterSheet> {
             ),
           ),
           const SizedBox(width: 10),
-          Flexible(
+          Expanded(
             child: SizedBox(
               height: 40,
               child: CustomDropdown(

@@ -72,101 +72,110 @@ class _LoginState extends ConsumerState<Login> {
     context.go(RoutePaths.home);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(25),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Đăng Nhập',
-              style: TextStyle(fontSize: 32, color: AppColors.red),
-            ),
-            SizedBox(height: 70),
-            CustomTextField(
-              hintText: 'Email hoặc Username',
-              icon: AppIcons.email,
-              controller: _usernameController,
-              backgroundColor: AppColors.lightGrey,
-              iconColor: AppColors.primaryGray,
-              hintTextColor: AppColors.gray,
-            ),
-            SizedBox(height: 30),
-            CustomTextField(
-              hintText: 'Mật khẩu',
-              icon: AppIcons.lock,
-              controller: _passwordController,
-              backgroundColor: AppColors.lightGrey,
-              iconColor: AppColors.primaryGray,
-              hintTextColor: AppColors.gray,
-              isPassword: true,
-            ),
-            SizedBox(height: 30),
-            Row(
-              children: [
-                CustomCheckbox(
-                  value: _isChecked,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _isChecked = newValue ?? false;
-                    });
-                  },
-                  margin: EdgeInsets.only(right: 8.0),
-                ),
-                Text(
-                  'Ghi nhớ đăng nhập',
-                  style: TextStyle(fontSize: 11, color: AppColors.black),
-                ),
-                Spacer(),
-                CustomTextButton(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ForgotPassword()),
-                    );
-                  },
-                  btnText: 'Quên mật khẩu?',
-                )
-              ],
-            ),
-            SizedBox(height: 30),
-            CustomButton(
-              onTap: _handleLogin,
-              btnText: 'Đăng nhập',
-              btnWidth: 300,
-              btnHeight: 50,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    resizeToAvoidBottomInset: true, // Ensures the Scaffold resizes when keyboard is displayed
+    body: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Chưa có tài khoản?',
-                  style: TextStyle(fontSize: 14, color: AppColors.black),
+                  'Đăng Nhập',
+                  style: TextStyle(fontSize: 32, color: AppColors.red),
                 ),
+                SizedBox(height: 70),
+                CustomTextField(
+                  hintText: 'Email hoặc Username',
+                  icon: AppIcons.email,
+                  controller: _usernameController,
+                  backgroundColor: AppColors.lightGrey,
+                  iconColor: AppColors.primaryGray,
+                  hintTextColor: AppColors.gray,
+                ),
+                SizedBox(height: 30),
+                CustomTextField(
+                  hintText: 'Mật khẩu',
+                  icon: AppIcons.lock,
+                  controller: _passwordController,
+                  backgroundColor: AppColors.lightGrey,
+                  iconColor: AppColors.primaryGray,
+                  hintTextColor: AppColors.gray,
+                  isPassword: true,
+                ),
+                SizedBox(height: 30),
+                Row(
+                  children: [
+                    CustomCheckbox(
+                      value: _isChecked,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _isChecked = newValue ?? false;
+                        });
+                      },
+                      margin: EdgeInsets.only(right: 8.0),
+                    ),
+                    Text(
+                      'Ghi nhớ đăng nhập',
+                      style: TextStyle(fontSize: 11, color: AppColors.black),
+                    ),
+                    Spacer(),
+                    CustomTextButton(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ForgotPassword()),
+                        );
+                      },
+                      btnText: 'Quên mật khẩu?',
+                    )
+                  ],
+                ),
+                SizedBox(height: 30),
+                CustomButton(
+                  onTap: _handleLogin,
+                  btnText: 'Đăng nhập',
+                  btnWidth: 300,
+                  btnHeight: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Chưa có tài khoản?',
+                      style: TextStyle(fontSize: 14, color: AppColors.black),
+                    ),
+                    CustomTextButton(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Signup()),
+                        );
+                      },
+                      btnText: 'Đăng ký',
+                      fontSize: 14,
+                    )
+                  ],
+                ),
+                SizedBox(height: 20), // Adjusted spacing for better visibility
                 CustomTextButton(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Signup()),
-                    );
-                  },
-                  btnText: 'Đăng ký',
+                  onTap: _handleLater,
+                  btnText: 'Lúc khác',
                   fontSize: 14,
+                  btnTextColor: AppColors.primaryGray,
                 )
               ],
             ),
-            Spacer(),
-            CustomTextButton(
-              onTap: _handleLater,
-              btnText: 'Lúc khác',
-              fontSize: 14,
-              btnTextColor: AppColors.primaryGray,
-            )
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

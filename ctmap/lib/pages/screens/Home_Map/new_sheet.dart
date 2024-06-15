@@ -365,7 +365,8 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             ),
           ),
           const SizedBox(width: 10),
-          SizedBox(
+          Expanded(
+            child: SizedBox(
             width: 250,
             height: 40,
             child: CustomDropdown(
@@ -378,7 +379,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
                 });
               },
             ),
-          )
+          ))
         ],
       ),
     );

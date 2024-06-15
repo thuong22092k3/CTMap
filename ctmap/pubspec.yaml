@@ -48,6 +48,7 @@ dependencies:
   mapbox_search: ^4.2.2
   geocoding: ^3.0.0
   flutter_typeahead: ^4.0.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
