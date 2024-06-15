@@ -1,4 +1,3 @@
-import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/bottom_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +12,7 @@ import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/pages/screens/Authentication/confirm.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/pages/screens/Authentication/change_password.dart';
+import 'package:ctmap/state_management/user_state.dart';
 
 class RoutePaths {
   static const String home = '/home';
@@ -81,10 +81,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.confirm,
-        builder: (context, state) => Confirm(
-          confirmText: 'Đổi mật khẩu',
-          showButton: false,
-        ),
+        builder: (context, state) {
+          final email = state.extra as String?;
+          return Confirm(
+            email: email ?? '',
+            confirmText: 'Đổi mật khẩu',
+            showButton: false,
+          );
+        },
       ),
       GoRoute(
         path: RoutePaths.forgotPassword,
@@ -95,10 +99,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.changePassword,
-        builder: (context, state) => ChangePassword(
-          changePasswordText: 'Đổi mật khẩu',
-          showButton: false,
-        ),
+        builder: (context, state) {
+          final email = state.extra as String?;
+          return ChangePassword(
+            email: email ?? '',
+            changePasswordText: 'Đổi mật khẩu',
+            showButton: false,
+          );
+        },
       ),
     ],
   );

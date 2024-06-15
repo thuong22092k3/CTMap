@@ -229,16 +229,29 @@ Future<bool> verifyCode(String email, String code) async {
   }
 }
 
-Future<void> changePassword(String email, String password) async {
-  final response = await http.post(
-    Uri.parse('$BASE_URL${PATH.User['CHANGE_PASSWORD']}'),
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode({'email': email, 'password': password}),
-  );
+Future<Map<String, dynamic>> changePassword(
+    String email, String password) async {
+  try {
+    final response = await http.post(
+      Uri.parse('$BASE_URL${PATH.User['CHANGE_PASSWORD']}'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email, 'password': password}),
+    );
 
-  if (response.statusCode == 200) {
-    print('Đổi mật khẩu thành công');
-  } else {
-    print('Đổi mật khẩu thất bại: ${response.body}');
+    if (response.statusCode == 200) {
+      return {'success': true, 'message': 'Đổi mật khẩu thành công'};
+    } else {
+      var responseData = json.decode(response.body);
+      return {
+        'success': false,
+        'message': responseData['message'] ?? 'Đổi mật khẩu thất bại'
+      };
+    }
+  } catch (e) {
+    print('Lỗi khi đổi mật khẩu: $e');
+    return {
+      'success': false,
+      'message': 'Đổi mật khẩu thất bại do lỗi kết nối'
+    };
   }
 }

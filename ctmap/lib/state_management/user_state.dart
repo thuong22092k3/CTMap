@@ -12,6 +12,7 @@ class UserState {
   final bool isLoggedIn;
   final String? resetPasswordToken;
   final DateTime? resetPasswordExpires;
+  final String? resetPasswordEmail;
 
   UserState({
     this.id = '',
@@ -21,6 +22,7 @@ class UserState {
     this.isLoggedIn = false,
     this.resetPasswordToken,
     this.resetPasswordExpires,
+    this.resetPasswordEmail,
   });
 }
 
@@ -38,9 +40,26 @@ class UserStateNotifier extends StateNotifier<UserState> {
       resetPasswordToken: resetPasswordToken,
       resetPasswordExpires: resetPasswordExpires,
     );
+    print('User logged in: $email');
   }
 
   void logOut() {
     state = UserState();
+    print('User logged out');
+  }
+
+  void setResetPasswordEmail(String email,
+      {String? resetPasswordToken, DateTime? resetPasswordExpires}) {
+    state = UserState(
+      id: state.id,
+      userName: state.userName,
+      email: state.email,
+      password: state.password,
+      isLoggedIn: state.isLoggedIn,
+      resetPasswordToken: resetPasswordToken,
+      resetPasswordExpires: resetPasswordExpires,
+      resetPasswordEmail: email,
+    );
+    print('Reset password email set in UserStateNotifier: $email');
   }
 }

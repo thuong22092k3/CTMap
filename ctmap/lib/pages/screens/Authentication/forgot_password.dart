@@ -1,4 +1,6 @@
+import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
@@ -7,7 +9,7 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/confirm.dart';
 import 'package:ctmap/services/api.dart';
 
-class ForgotPassword extends StatefulWidget {
+class ForgotPassword extends ConsumerStatefulWidget {
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
   final String forgotPasswordText;
@@ -17,21 +19,26 @@ class ForgotPassword extends StatefulWidget {
       {this.forgotPasswordText = 'Quên mật khẩu', this.showButton = true});
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> sendVerificationCode(String email) async {
-    print('Sending OTP to email: $email'); // Print the email
+    print('Sending OTP to email: $email');
     bool success = await sendVerificationCodeToEmail(email);
     if (success) {
+      print("OTP sent successfully to $email");
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Confirm()),
+        MaterialPageRoute(
+          builder: (context) => Confirm(email: email),
+        ),
       );
+      print("Navigated to Confirm page");
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
       );
+      print("Failed to send OTP");
     }
   }
 
@@ -47,6 +54,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               CustomTextButton(
                 onTap: () {
                   Navigator.pop(context);
+                  print("Navigated back from ForgotPassword page");
                 },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
@@ -80,6 +88,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             CustomButton(
               onTap: () {
                 sendVerificationCode(_controller.text);
+                print("Verification code requested for ${_controller.text}");
               },
               btnText: 'Xác nhận',
               btnWidth: 300,
@@ -90,6 +99,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               CustomTextButton(
                 onTap: () {
                   Navigator.pop(context);
+                  print(
+                      "Navigated back from ForgotPassword page (Later button)");
                 },
                 btnText: 'Lúc khác',
                 fontSize: 14,
