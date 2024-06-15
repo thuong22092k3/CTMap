@@ -158,8 +158,8 @@ class _NewSheetState extends State<NewSheet> {
         };
 
         await addAccident(accidentData);
-        // widget.onAddAccident(accidentData);
-        Navigator.of(context).pop();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Home()));
       } catch (e) {
         print('Error: $e');
         showDialog(
