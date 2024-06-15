@@ -10,32 +10,44 @@ import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/services/api.dart';
 
 class Confirm extends ConsumerStatefulWidget {
-  @override
-  _ConfirmState createState() => _ConfirmState();
+  final String? email;
   final String confirmText;
   final bool showButton;
 
-  Confirm({this.confirmText = 'Quên mật khẩu', this.showButton = true});
+  Confirm(
+      {Key? key,
+      this.email,
+      this.confirmText = 'Quên mật khẩu',
+      this.showButton = true})
+      : super(key: key);
+
+  @override
+  _ConfirmState createState() => _ConfirmState();
 }
 
 class _ConfirmState extends ConsumerState<Confirm> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> verifyOtpCode(String code) async {
-    final userState = ref.watch(userStateProvider);
-    final String email = userState.email;
-
     try {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Đang xác thực mã OTP...')),
       );
+
+      String email = widget.email ?? ref.read(userStateProvider).email;
+      if (email == null || email.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email không hợp lệ.')),
+        );
+        return;
+      }
 
       bool isValid = await verifyCode(email, code);
       if (isValid) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChangePassword(),
+            builder: (context) => ChangePassword(email: email),
           ),
         );
         print("OTP is valid: $code");
@@ -61,9 +73,6 @@ class _ConfirmState extends ConsumerState<Confirm> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userStateProvider);
-    String email = userState.email;
-
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(25),

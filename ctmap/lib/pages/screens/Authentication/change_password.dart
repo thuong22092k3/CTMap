@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -12,13 +13,19 @@ import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChangePassword extends ConsumerStatefulWidget {
-  @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  final String email;
   final String changePasswordText;
   final bool showButton;
 
   ChangePassword(
-      {this.changePasswordText = 'Quên mật khẩu', this.showButton = true});
+      {Key? key,
+      required this.email,
+      this.changePasswordText = 'Đổi mật khẩu',
+      this.showButton = true})
+      : super(key: key);
+
+  @override
+  _ChangePasswordState createState() => _ChangePasswordState();
 }
 
 class _ChangePasswordState extends ConsumerState<ChangePassword> {
@@ -27,7 +34,6 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
       TextEditingController();
 
   Future<void> _handleChangePassword() async {
-    String userId = ref.read(userStateProvider).id;
     String newPassword = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
@@ -39,20 +45,60 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
       return;
     }
 
-    Map<String, dynamic> userData = {'password': newPassword};
+    final userState = ref.watch(userStateProvider);
+    if (userState.isLoggedIn) {
+      String userId = userState.id;
+      Map<String, dynamic> userData = {'password': newPassword};
 
-    final result = await updateUser(userId, userData);
+      final result = await updateUser(userId, userData);
 
-    if (result['success']) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Profile()),
-      );
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+            'Đổi mật khẩu thành công',
+            style: TextStyle(
+              fontSize: 32,
+              color: Colors.green,
+            ),
+          )),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Profile()),
+        );
+      } else {
+        print('Đổi mật khẩu thất bại: ${result['message']}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Đổi mật khẩu thất bại: ${result['message']}')),
+        );
+      }
     } else {
-      print('Đổi mật khẩu thất bại: ${result['message']}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đổi mật khẩu thất bại: ${result['message']}')),
-      );
+      final result = await changePassword(widget.email, newPassword);
+
+      if (result['success']) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+            'Đổi mật khẩu thành công',
+            style: TextStyle(
+              // fontSize: 32,
+              color: Colors.green,
+            ),
+          )),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      } else {
+        print('Đổi mật khẩu thất bại: ${result['message']}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Đổi mật khẩu thất bại: ${result['message']}')),
+        );
+      }
     }
   }
 
@@ -67,10 +113,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ForgotPassword()),
-                  );
+                  Navigator.pop(context);
                 },
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
@@ -122,7 +165,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
             if (widget.showButton)
               CustomTextButton(
                 onTap: () {
-                  // Handle later button tap
+                  // Handle 'Lúc khác'
                 },
                 btnText: 'Lúc khác',
                 fontSize: 14,
