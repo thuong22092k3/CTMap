@@ -76,6 +76,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
           ]),
       GoRoute(
+        path: RoutePaths.login,
+        builder: (context, state) => Login(),
+      ),
+      GoRoute(
+        path: RoutePaths.signUp,
+        builder: (context, state) => Signup(),
+      ),
+      GoRoute(
         path: RoutePaths.editProfile,
         builder: (context, state) => EditProfile(),
       ),

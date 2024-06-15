@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -8,6 +9,7 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
+import 'package:go_router/go_router.dart';
 
 class EditProfile extends ConsumerStatefulWidget {
   @override
@@ -52,6 +54,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         SnackBar(content: Text('Update failed: ${result['message']}')),
       );
     }
+  }
+
+  void _handleBefore() {
+    context.go(RoutePaths.profile);
   }
 
   @override

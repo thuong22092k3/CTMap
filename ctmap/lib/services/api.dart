@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:ctmap/data/type.dart';
 import 'package:latlong2/latlong.dart';
 
-const String BASE_URL =
-    'https://ctmap-be.onrender.com'; // đổi "192.168.137.104" thành địa chỉ IPV4 của máy
+const String BASE_URL = 'https://ctmap-be.onrender.com';
 
 DateTime parseDate(String dateStr) {
   List<String> parts = dateStr.split('/');
@@ -64,7 +63,7 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: jsonEncode(accidentData), 
+      body: jsonEncode(accidentData),
     );
     if (response.statusCode == 200) {
       print('Data: ${response.body}');
@@ -79,7 +78,7 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
 Future<void> deleteAccident(LatLng position) async {
   try {
     final response = await http.delete(
-      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}'), 
+      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -91,16 +90,14 @@ Future<void> deleteAccident(LatLng position) async {
     } else {
       print('Failed to delete accident. Status code: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception('Failed to delete accident. Status code: ${response.statusCode}');
-
+      throw Exception(
+          'Failed to delete accident. Status code: ${response.statusCode}');
     }
   } catch (e) {
     print('Error deleting accident: $e');
     throw Exception('Error deleting accident: $e');
   }
 }
-
-
 
 Future<void> signUp(Map<String, dynamic> userData) async {
   try {
@@ -121,10 +118,10 @@ Future<void> signUp(Map<String, dynamic> userData) async {
   }
 }
 
-Future<Map<String, dynamic>> login(String userName, String password) async {
+Future<Map<String, dynamic>> login(String login, String password) async {
   try {
     final loginUrl =
-        '$BASE_URL${PATH.User['LOGIN']}?userName=$userName&password=$password';
+        '$BASE_URL${PATH.User['LOGIN']}?login=$login&password=$password';
     final response = await http.get(
       Uri.parse(loginUrl),
       headers: {
@@ -195,7 +192,7 @@ Future<Map<String, dynamic>> updateUser(
 }
 
 Future<bool> sendVerificationCodeToEmail(String email) async {
-  print('Sending verification code to: $email'); // Print the email
+  print('Sending verification code to: $email');
   try {
     final response = await http.post(
       Uri.parse('$BASE_URL${PATH.User['SEND']}'),
@@ -226,14 +223,12 @@ Future<bool> verifyCode(String email, String code) async {
       body: json.encode({'email': email, 'code': code}),
     );
 
-    // In ra trạng thái và phản hồi từ server
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
-      // Check the 'message' key to validate OTP
       if (responseData.containsKey('message')) {
         String message = responseData['message'];
         if (message == 'Mã xác nhận hợp lệ') {

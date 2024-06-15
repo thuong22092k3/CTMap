@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Authentication/confirm.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPassword extends ConsumerStatefulWidget {
   @override
@@ -42,6 +44,19 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
     }
   }
 
+  void _handleBefore() {
+    final userState = ref.watch(userStateProvider);
+    if (userState.isLoggedIn == false) {
+      context.go(RoutePaths.login);
+    } else {
+      context.go(RoutePaths.profile);
+    }
+  }
+
+  void _handleLater() {
+    context.go(RoutePaths.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,10 +67,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {
-                  Navigator.pop(context);
-                  print("Navigated back from ForgotPassword page");
-                },
+                onTap: _handleBefore,
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -97,11 +109,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
             Spacer(),
             if (widget.showButton)
               CustomTextButton(
-                onTap: () {
-                  Navigator.pop(context);
-                  print(
-                      "Navigated back from ForgotPassword page (Later button)");
-                },
+                onTap: _handleLater,
                 btnText: 'Lúc khác',
                 fontSize: 14,
                 btnTextColor: AppColors.primaryGray,

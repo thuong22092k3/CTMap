@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -11,6 +12,7 @@ import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
+import 'package:go_router/go_router.dart';
 
 class Login extends ConsumerStatefulWidget {
   @override
@@ -55,15 +57,19 @@ class _LoginState extends ConsumerState<Login> {
       } else {
         print('Login failed: Missing user ID or email');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login failed: Missing user ID or email')),
+          SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
         );
       }
     } else {
       print('Login failed: ${response['message']}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: ${response['message']}')),
+        SnackBar(content: Text('Đăng nhập thất bại!')),
       );
     }
+  }
+
+  void _handleLater() {
+    context.go(RoutePaths.home);
   }
 
   @override
@@ -153,12 +159,7 @@ class _LoginState extends ConsumerState<Login> {
             ),
             Spacer(),
             CustomTextButton(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Home()),
-                );
-              },
+              onTap: _handleLater,
               btnText: 'Lúc khác',
               fontSize: 14,
               btnTextColor: AppColors.primaryGray,

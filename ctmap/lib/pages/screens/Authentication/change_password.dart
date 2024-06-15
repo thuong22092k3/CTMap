@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart'; // Thêm import này
 
 class ChangePassword extends ConsumerStatefulWidget {
   final String email;
@@ -58,7 +60,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
               content: Text(
             'Đổi mật khẩu thành công',
             style: TextStyle(
-              fontSize: 32,
+              // fontSize: 32,
               color: Colors.green,
             ),
           )),
@@ -102,6 +104,14 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
     }
   }
 
+  void _handleBefore() {
+    context.go(RoutePaths.confirm);
+  }
+
+  void _handleLater() {
+    context.go(RoutePaths.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,9 +122,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: _handleBefore,
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -142,7 +150,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
-              // obscureText: true,
+              isPassword: true,
             ),
             SizedBox(height: 20),
             CustomTextField(
@@ -152,7 +160,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
               backgroundColor: AppColors.lightGrey,
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
-              // obscureText: true,
+              isPassword: true,
             ),
             SizedBox(height: 40),
             CustomButton(
@@ -164,9 +172,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
             Spacer(),
             if (widget.showButton)
               CustomTextButton(
-                onTap: () {
-                  // Handle 'Lúc khác'
-                },
+                onTap: _handleLater,
                 btnText: 'Lúc khác',
                 fontSize: 14,
                 btnTextColor: AppColors.primaryGray,

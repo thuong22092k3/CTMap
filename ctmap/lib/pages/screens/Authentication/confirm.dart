@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -8,6 +9,7 @@ import 'package:ctmap/pages/screens/Authentication/change_password.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:go_router/go_router.dart';
 
 class Confirm extends ConsumerStatefulWidget {
   final String? email;
@@ -71,6 +73,14 @@ class _ConfirmState extends ConsumerState<Confirm> {
     );
   }
 
+  void _handleBefore() {
+    context.go(RoutePaths.forgotPassword);
+  }
+
+  void _handleLater() {
+    context.go(RoutePaths.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,12 +91,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ForgotPassword()),
-                  );
-                },
+                onTap: _handleBefore,
                 icon: AppIcons.left_arrow,
                 iconSize: 30,
               ),
@@ -149,9 +154,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
             Spacer(),
             if (widget.showButton)
               CustomTextButton(
-                onTap: () {
-                  // Handle 'Lúc khác'
-                },
+                onTap: _handleLater,
                 btnText: 'Lúc khác',
                 fontSize: 14,
                 btnTextColor: AppColors.primaryGray,
