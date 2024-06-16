@@ -94,6 +94,49 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
   }
 }
 
+Future<Map<String, dynamic>> updateAccident(
+    String id, Map<String, dynamic> accidentData) async {
+  final String updateUrl = '$BASE_URL${PATH.Accident['UPDATE_ACCIDENT']}';
+
+  print('Updating accident with ID: $id');
+  print('Update URL: $updateUrl');
+  print('accident Data: $accidentData');
+
+  try {
+    final response = await http.put(
+      Uri.parse(updateUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'id': id,
+        ...accidentData,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      print('Update response data: $responseData');
+      return {
+        'success': true,
+        'data': responseData,
+      };
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+      return {
+        'success': false,
+        'message': 'Request failed with status: ${response.statusCode}',
+      };
+    }
+  } catch (e) {
+    print('Error: $e');
+    return {
+      'success': false,
+      'message': 'Error: $e',
+    };
+  }
+}
+
 Future<void> deleteAccident(String id) async {
   try {
     final response = await http.delete(

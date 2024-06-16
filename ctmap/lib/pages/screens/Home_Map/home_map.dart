@@ -43,17 +43,20 @@ class HomeState extends State<Home> {
     List<AccidentData> accidents = await getAllAccidents();
     if (accidents.isNotEmpty) {
       print('Dữ liệu đã được lấy thành công.');
-      for (var accident in accidents) {
-        print('Date: ${accident.date}');
-        print('Deaths: ${accident.deaths}');
-        print('Injuries: ${accident.injuries}');
-        print('Level: ${accident.level}');
-        print('Cause: ${accident.cause}');
-        print('Position: ${accident.position}');
-        print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
-        print('Link: ${accident.link}');
-        print('-----------------------');
-      }
+      // for (var accident in accidents) {
+      //   print('Date: ${accident.date}');
+      //   print('Deaths: ${accident.deaths}');
+      //   print('Injuries: ${accident.injuries}');
+      //   print('Level: ${accident.level}');
+      //   print('Cause: ${accident.cause}');
+      //   print('Position: ${accident.position}');
+      //   print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
+      //   print('Link: ${accident.link}');
+      //   print('-----------------------');
+      //   print('so luong ${accidents.length}');
+
+      // }
+      print('so luong ${accidents.length}');
     } else {
       print('Không có dữ liệu.');
     }

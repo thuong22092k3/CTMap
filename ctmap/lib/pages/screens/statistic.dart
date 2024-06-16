@@ -16,8 +16,8 @@ class Statistic extends StatefulWidget {
 }
 
 class _StatisticState extends State<Statistic> {
-  List<String> cities = ['TP Hồ Chí Minh', 'Gia Lai', 'Bình Dương'];
-  String selectedCity = 'TP Hồ Chí Minh';
+  List<String> cities = ['Tất cả', 'TP Hồ Chí Minh', 'Gia Lai', 'Bình Dương'];
+  String selectedCity = 'Tất cả';
   List<String> options = ['Ngày', 'Tuần', 'Tháng'];
   String selectedOption = 'Ngày';
   bool showChart = true;

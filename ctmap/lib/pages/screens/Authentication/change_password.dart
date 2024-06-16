@@ -115,71 +115,78 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(25),
+      resizeToAvoidBottomInset: true, 
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              CustomTextButton(
-                onTap: _handleBefore,
-                icon: AppIcons.left_arrow,
-                iconSize: 30,
-              ),
-              Text(
-                widget.changePasswordText,
-                style: TextStyle(
-                  fontSize: 32,
-                  color: AppColors.red,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [ Padding(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                  CustomTextButton(
+                    onTap: _handleBefore,
+                    icon: AppIcons.left_arrow,
+                    iconSize: 30,
+                  ),
+                  Text(
+                    widget.changePasswordText,
+                    style: TextStyle(
+                      fontSize: 32,
+                      color: AppColors.red,
+                    ),
+                  ),
+                ]),
+                SizedBox(height: 20),
+                Text(
+                  'Vui lòng nhập mật khẩu mới!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primaryGray,
+                  ),
                 ),
-              ),
-            ]),
-            SizedBox(height: 20),
-            Text(
-              'Vui lòng nhập mật khẩu mới!',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.primaryGray,
-              ),
+                SizedBox(height: 20),
+                CustomTextField(
+                  hintText: 'Mật khẩu',
+                  icon: AppIcons.lock,
+                  controller: _passwordController,
+                  backgroundColor: AppColors.lightGrey,
+                  iconColor: AppColors.primaryGray,
+                  hintTextColor: AppColors.gray,
+                  isPassword: true,
+                ),
+                SizedBox(height: 20),
+                CustomTextField(
+                  hintText: 'Nhập lại mật khẩu',
+                  icon: AppIcons.lock,
+                  controller: _confirmPasswordController,
+                  backgroundColor: AppColors.lightGrey,
+                  iconColor: AppColors.primaryGray,
+                  hintTextColor: AppColors.gray,
+                  isPassword: true,
+                ),
+                SizedBox(height: 40),
+                CustomButton(
+                  onTap: _handleChangePassword,
+                  btnText: 'Đổi mật khẩu',
+                  btnWidth: 300,
+                  btnHeight: 50,
+                ),
+                Spacer(),
+                if (widget.showButton)
+                  CustomTextButton(
+                    onTap: _handleLater,
+                    btnText: 'Lúc khác',
+                    fontSize: 14,
+                    btnTextColor: AppColors.primaryGray,
+                  ),
+              ],
             ),
-            SizedBox(height: 20),
-            CustomTextField(
-              hintText: 'Mật khẩu',
-              icon: AppIcons.lock,
-              controller: _passwordController,
-              backgroundColor: AppColors.lightGrey,
-              iconColor: AppColors.primaryGray,
-              hintTextColor: AppColors.gray,
-              isPassword: true,
-            ),
-            SizedBox(height: 20),
-            CustomTextField(
-              hintText: 'Nhập lại mật khẩu',
-              icon: AppIcons.lock,
-              controller: _confirmPasswordController,
-              backgroundColor: AppColors.lightGrey,
-              iconColor: AppColors.primaryGray,
-              hintTextColor: AppColors.gray,
-              isPassword: true,
-            ),
-            SizedBox(height: 40),
-            CustomButton(
-              onTap: _handleChangePassword,
-              btnText: 'Đổi mật khẩu',
-              btnWidth: 300,
-              btnHeight: 50,
-            ),
-            Spacer(),
-            if (widget.showButton)
-              CustomTextButton(
-                onTap: _handleLater,
-                btnText: 'Lúc khác',
-                fontSize: 14,
-                btnTextColor: AppColors.primaryGray,
-              ),
-          ],
-        ),
-      ),
+          ),
+          ]
+        )
+      )
     );
   }
 }

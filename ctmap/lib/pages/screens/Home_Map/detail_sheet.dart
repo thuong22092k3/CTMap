@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/screens/Home_Map/edit_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,7 +88,16 @@ class DetailSheet extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(AppIcons.edit, color: AppColors.blue),
                         onPressed: () {
-                          // Handle edit button press
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return EditSheet(
+                                accidentData: accidentData
+                              );
+                                
+    
+                            },
+                          );
                         },
                       ),
                       IconButton(
@@ -136,6 +146,7 @@ class DetailSheet extends ConsumerWidget {
                     context,
                     MaterialPageRoute(builder: (context) => Home()),
                   );
+                  //Navigator.of(context).pop();
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

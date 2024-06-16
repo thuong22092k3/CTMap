@@ -13,16 +13,16 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewSheet extends ConsumerStatefulWidget {
-  final LatLng addPosition;
+class EditSheet extends ConsumerStatefulWidget {
+  final AccidentData accidentData;
 
-  NewSheet({Key? key, required this.addPosition}) : super(key: key);
+  EditSheet({Key? key, required this.accidentData}) : super(key: key);
 
   @override
-  _NewSheetState createState() => _NewSheetState();
+  _EditSheetState createState() => _EditSheetState();
 }
 
-class _NewSheetState extends ConsumerState<NewSheet> {
+class _EditSheetState extends ConsumerState<EditSheet> {
   List<String> acciType = [
     'Rượu bia/ Ma túy',
     'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
@@ -43,12 +43,14 @@ class _NewSheetState extends ConsumerState<NewSheet> {
   @override
   void initState() {
     super.initState();
-    _ngayController = TextEditingController();
-    _ngayController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    _loaiController = TextEditingController();
-    _soPhuongTienController = TextEditingController();
-    _soNguoiChetController = TextEditingController();
-    _soNguoiBiThuongController = TextEditingController();
+    _ngayController = TextEditingController(text: DateFormat('dd/MM/yyyy').format(widget.accidentData.date).toString());
+    _loaiController = TextEditingController(text: widget.accidentData.cause.toString());
+    _soPhuongTienController = TextEditingController(text: widget.accidentData.sophuongtienlienquan.toString());
+    _soNguoiChetController = TextEditingController(text: widget.accidentData.deaths.toString());
+    _soNguoiBiThuongController = TextEditingController(text: widget.accidentData.injuries.toString());
+
+    // Set selected accident type based on cause index
+    selectedAcciType = acciType[widget.accidentData.cause - 1];
   }
 
   @override
@@ -60,6 +62,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
     _soNguoiBiThuongController.dispose();
     super.dispose();
   }
+
 
   int calculateAccidentLevel(int deaths, int injuries) {
     if (deaths == 0) {
@@ -92,120 +95,182 @@ class _NewSheetState extends ConsumerState<NewSheet> {
   }
 
   void _validateAndSubmit() async {
-    if (_ngayController.text.isEmpty ||
-        _soPhuongTienController.text.isEmpty ||
-        _soNguoiChetController.text.isEmpty ||
-        _soNguoiBiThuongController.text.isEmpty ||
-        selectedAcciType.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              "Lỗi",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red,
+  if (_ngayController.text.isEmpty ||
+      _soPhuongTienController.text.isEmpty ||
+      _soNguoiChetController.text.isEmpty ||
+      _soNguoiBiThuongController.text.isEmpty ||
+      selectedAcciType.isEmpty) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Lỗi",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          ),
+          content: const Text(
+            "Vui lòng nhập đầy đủ thông tin.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Đã hiểu"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.red,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
               ),
             ),
-            content: Text(
-              "Vui lòng nhập đầy đủ thông tin.",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-              ),
-            ),
-            actions: [
-              Center(
-                child: CustomButton(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  btnColor: AppColors.red,
-                  btnText: "Đã hiểu",
-                  btnTextColor: AppColors.white,
-                  btnHeight: 30,
-                  borderRadius: 5,
-                  btnWidth: 140,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      try {
-        final userState = ref.read(userStateProvider);
-
-        DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
-        int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
-        int deaths = int.parse(_soNguoiChetController.text);
-        int injuries = int.parse(_soNguoiBiThuongController.text);
-        int level = calculateAccidentLevel(deaths, injuries);
-        int cause = acciType.indexOf(selectedAcciType) + 1;
-        LatLng position = widget.addPosition;
-        String positionStr = '${position.longitude} ${position.latitude}';
-        String link = '';
-        String userName = userState.userName;
-
-        final accidentData = {
-          'date': DateFormat('dd/MM/yyyy').format(date),
-          'deaths': deaths.toString(),
-          'injuries': injuries.toString(),
-          'level': level.toString(),
-          'cause': cause.toString(),
-          'position': positionStr,
-          'link': link.toString(),
-          'userName': userName,
-          'sophuongtienlienquan': sophuongtienlienquan.toString(),
-        };
-
-        await addAccident(accidentData);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
-      } catch (e) {
-        print('Error: $e');
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(
-                "Lỗi",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.red,
-                ),
-              ),
-              content: Text(
-                "Đã xảy ra lỗi khi thêm vụ tai nạn. Vui lòng thử lại sau.",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-              ),
-              actions: [
-                Center(
-                  child: CustomButton(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    btnColor: AppColors.red,
-                    btnText: "Đã hiểu",
-                    btnTextColor: AppColors.white,
-                    btnHeight: 30,
-                    borderRadius: 5,
-                    btnWidth: 140,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            );
-          },
+          ],
         );
-      }
-    }
+      },
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Xác nhận",
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.red,
+            ),
+          ),
+          content: const Text(
+            "Bạn có chắc chắn muốn cập nhật thông tin vụ tai nạn này không?",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Hủy"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.grey,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _submitAccidentData();
+              },
+              child: const Text(
+                "Xác nhận",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: AppColors.red,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
+}
+
+void _submitAccidentData() async {
+  try {
+    final userState = ref.read(userStateProvider);
+
+    DateTime date = DateFormat('dd/MM/yyyy').parse(_ngayController.text);
+    int sophuongtienlienquan = int.parse(_soPhuongTienController.text);
+    int deaths = int.parse(_soNguoiChetController.text);
+    int injuries = int.parse(_soNguoiBiThuongController.text);
+    int level = calculateAccidentLevel(deaths, injuries);
+    int cause = acciType.indexOf(selectedAcciType) + 1;
+    LatLng position = widget.accidentData.position;
+    String positionStr = '${position.longitude} ${position.latitude}';
+    String link = '';
+    String userName = userState.userName;
+
+    String id = widget.accidentData.id.toString();
+
+    final accidentData = {
+      'date': DateFormat('dd/MM/yyyy').format(date),
+      'deaths': deaths.toString(),
+      'injuries': injuries.toString(),
+      'level': level.toString(),
+      'cause': cause.toString(),
+      'position': positionStr,
+      'link': link.toString(),
+      'userName': userName,
+      'sophuongtienlienquan': sophuongtienlienquan.toString(),
+    };
+
+    await updateAccident(id, accidentData);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Home()));
+  } catch (e) {
+    print('Error: $e');
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text(
+            "Lỗi",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.red,
+            ),
+          ),
+          content: const Text(
+            "Đã xảy ra lỗi khi sửa vụ tai nạn. Vui lòng thử lại sau.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Đã hiểu"),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, 
+                backgroundColor: Colors.red,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: TextStyle(fontSize: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +296,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Thêm vụ tai nạn',
+                    'Cập nhật thông tin vụ tai nạn',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
