@@ -75,7 +75,7 @@ class _LoginState extends ConsumerState<Login> {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    resizeToAvoidBottomInset: true, // Ensures the Scaffold resizes when keyboard is displayed
+    resizeToAvoidBottomInset: true, 
     body: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
