@@ -75,6 +75,10 @@ class DetailSheet extends ConsumerWidget {
                   _buildInfoRow(
                       'Số người bị thương', '${accidentData.injuries}'),
                   SizedBox(height: 50),
+                  _buildInfoRow('Địa điểm', '${accidentData.location}'),
+                  SizedBox(height: 50),
+                  _buildInfoRow('Thành phố', '${accidentData.city}'),
+                  SizedBox(height: 50),
                 ],
               ),
               if ((username != null && username.isNotEmpty) &&
@@ -91,11 +95,7 @@ class DetailSheet extends ConsumerWidget {
                           showModalBottomSheet(
                             context: context,
                             builder: (context) {
-                              return EditSheet(
-                                accidentData: accidentData
-                              );
-                                
-    
+                              return EditSheet(accidentData: accidentData);
                             },
                           );
                         },

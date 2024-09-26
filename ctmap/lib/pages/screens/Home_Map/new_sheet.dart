@@ -145,7 +145,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
         int level = calculateAccidentLevel(deaths, injuries);
         int cause = acciType.indexOf(selectedAcciType) + 1;
         LatLng position = widget.addPosition;
-        String positionStr = '${position.longitude} ${position.latitude}';
+        String positionStr = '${position.latitude}, ${position.longitude}';
         String link = '';
         String userName = userState.userName;
 
@@ -366,7 +366,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: SizedBox(
+              child: SizedBox(
             width: 250,
             height: 40,
             child: CustomDropdown(

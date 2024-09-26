@@ -14,6 +14,68 @@ DateTime parseDate(String dateStr) {
   return DateTime(year, month, day);
 }
 
+// Future<List<AccidentData>> getAllAccidents() async {
+//   List<AccidentData> accidents = [];
+//   try {
+//     final response =
+//         await http.get(Uri.parse('$BASE_URL${PATH.Accident['GET_ACCIDENT']}'));
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> responseData = json.decode(response.body);
+//       if (responseData['success'] == true) {
+//         final List<dynamic> accidentList = responseData['data'];
+//         print('Total accidents from API: ${accidentList.length}');
+
+//         for (var accident in accidentList) {
+//           try {
+//             print('Processing accident: $accident');
+//             String positionStr = accident['position']?.toString().trim() ?? '';
+//             List<String> positions = positionStr.split(',');
+
+//             if (positions.length == 2) {
+//               try {
+//                 double lng = double.parse(positions[0].trim());
+//                 double lat = double.parse(positions[1].trim());
+//                 AccidentData accidentData = AccidentData(
+//                   id: accident['_id'] ?? '',
+//                   date: parseDate(
+//                       accident['date'] ?? '01/01/1970'), // Default date
+//                   deaths: int.parse(accident['deaths'].toString() ?? '0'),
+//                   injuries: int.parse(accident['injuries'].toString() ?? '0'),
+//                   level: int.parse(accident['level'].toString() ?? '0'),
+//                   cause: int.parse(accident['cause'].toString() ?? '0'),
+//                   position: LatLng(lat, lng),
+//                   link: accident['link'] ?? '',
+//                   sophuongtienlienquan: int.parse(
+//                       accident['sophuongtienlienquan'].toString() ?? '0'),
+//                   userName: accident['userName'] ?? '',
+//                   location: accident['location'] ?? '',
+//                   city: accident['city'] ?? '',
+//                 );
+//                 accidents.add(accidentData);
+//               } catch (e) {
+//                 print(
+//                     'Error parsing position for accident: $accident. Error: $e');
+//               }
+//             } else {
+//               print('Warning: Invalid position format for accident: $accident');
+//             }
+//           } catch (e) {
+//             print('Error processing accident: $accident. Error: $e');
+//           }
+//         }
+//         print('Accidents with valid position: ${accidents.length}');
+//         print('Success');
+//       } else {
+//         print('Request failed with message: ${responseData['message']}');
+//       }
+//     } else {
+//       print('Request failed with status: ${response.statusCode}');
+//     }
+//   } catch (e) {
+//     print('Error: $e');
+//   }
+//   return accidents;
+// }
 Future<List<AccidentData>> getAllAccidents() async {
   List<AccidentData> accidents = [];
   try {
@@ -29,33 +91,42 @@ Future<List<AccidentData>> getAllAccidents() async {
           try {
             print('Processing accident: $accident');
             String positionStr = accident['position']?.toString().trim() ?? '';
-            List<String> positions = positionStr.split(' ');
 
-            if (positions.length == 2) {
-              try {
-                double lng = double.parse(positions[0]);
-                double lat = double.parse(positions[1]);
-                AccidentData accidentData = AccidentData(
-                  id: accident['_id'] ?? '',
-                  date: parseDate(
-                      accident['date'] ?? '01/01/1970'), // Default date
-                  deaths: int.parse(accident['deaths'].toString() ?? '0'),
-                  injuries: int.parse(accident['injuries'].toString() ?? '0'),
-                  level: int.parse(accident['level'].toString() ?? '0'),
-                  cause: int.parse(accident['cause'].toString() ?? '0'),
-                  position: LatLng(lat, lng),
-                  link: accident['link'] ?? '',
-                  sophuongtienlienquan: int.parse(
-                      accident['sophuongtienlienquan'].toString() ?? '0'),
-                  userName: accident['userName'] ?? '',
-                );
-                accidents.add(accidentData);
-              } catch (e) {
+            if (positionStr.isNotEmpty) {
+              positionStr = positionStr.replaceAll(',', ' ');
+              List<String> positions = positionStr.split(RegExp(r'\s+'));
+
+              if (positions.length == 2) {
+                try {
+                  double lng = double.parse(positions[1].trim());
+                  double lat = double.parse(positions[0].trim());
+
+                  AccidentData accidentData = AccidentData(
+                    id: accident['_id'] ?? '',
+                    date: parseDate(accident['date'] ?? '01/01/1970'),
+                    deaths: int.parse(accident['deaths'].toString() ?? '0'),
+                    injuries: int.parse(accident['injuries'].toString() ?? '0'),
+                    level: int.parse(accident['level'].toString() ?? '0'),
+                    cause: int.parse(accident['cause'].toString() ?? '0'),
+                    position: LatLng(lat, lng),
+                    link: accident['link'] ?? '',
+                    sophuongtienlienquan: int.parse(
+                        accident['sophuongtienlienquan'].toString() ?? '0'),
+                    userName: accident['userName'] ?? '',
+                    location: accident['location'] ?? '',
+                    city: accident['city'] ?? '',
+                  );
+                  accidents.add(accidentData);
+                } catch (e) {
+                  print(
+                      'Error parsing position for accident: $accident. Error: $e');
+                }
+              } else {
                 print(
-                    'Error parsing position for accident: $accident. Error: $e');
+                    'Warning: Invalid position format for accident: $accident');
               }
             } else {
-              print('Warning: Invalid position format for accident: $accident');
+              print('Warning: Empty position for accident: $accident');
             }
           } catch (e) {
             print('Error processing accident: $accident. Error: $e');
