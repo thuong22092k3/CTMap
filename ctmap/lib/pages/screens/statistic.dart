@@ -7,6 +7,7 @@ import '../../widgets/components/Button/Button.dart';
 import '../../widgets/components/Dropdown/Dropdown.dart';
 import '../../widgets/components/Chart/BarChart.dart';
 import '../../widgets/components/Table/Table.dart';
+import '../../widgets/components/Calendar/Calendar.dart';
 
 class Statistic extends StatefulWidget {
   const Statistic({super.key});
@@ -18,14 +19,16 @@ class Statistic extends StatefulWidget {
 class _StatisticState extends State<Statistic> {
   List<String> cities = ['Tất cả'];
   String selectedCity = 'Tất cả';
-  List<String> options = ['Ngày', 'Tuần', 'Tháng'];
   String selectedOption = 'Ngày';
+  DateTime selectedDate = DateTime.now();
+  List<String> options = ['Ngày', 'Tuần', 'Tháng', 'Quý', 'Năm'];
   bool showChart = true;
   bool isListButtonSelected = false;
   bool isChartButtonSelected = true;
   List<AccidentData> accidentDataList = [];
   List<AccidentData> filteredAccidentDataList = [];
   Map<String, int> accidentCountByCity = {};
+  List<AccidentData> accidentDataListTable = [];
 
   @override
   void initState() {
@@ -61,16 +64,66 @@ class _StatisticState extends State<Statistic> {
     return cityAccidentCount;
   }
 
+  DateTimeRange getDateRange(String selectedOption, DateTime selectedDate) {
+    DateTime startDate;
+    DateTime endDate;
+
+    switch (selectedOption) {
+      case 'Ngày':
+        startDate = selectedDate;
+        endDate = selectedDate;
+        break;
+      case 'Tuần':
+        startDate =
+            selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+        endDate = startDate.add(Duration(days: 6));
+        break;
+      case 'Tháng':
+        startDate = DateTime(selectedDate.year, selectedDate.month, 1);
+        endDate = DateTime(selectedDate.year, selectedDate.month + 1, 0);
+        break;
+      case 'Quý':
+        int quarter = ((selectedDate.month - 1) ~/ 3) + 1;
+        startDate = DateTime(selectedDate.year, (quarter - 1) * 3 + 1, 1);
+        endDate = DateTime(selectedDate.year, quarter * 3 + 1, 0);
+        break;
+      case 'Năm':
+        startDate = DateTime(selectedDate.year, 1, 1);
+        endDate = DateTime(selectedDate.year, 12, 31);
+        break;
+      default:
+        startDate = selectedDate;
+        endDate = selectedDate;
+        break;
+    }
+
+    return DateTimeRange(start: startDate, end: endDate);
+  }
+
   void filterAccidents() {
+    DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
+
     setState(() {
       if (selectedCity == 'Tất cả') {
-        filteredAccidentDataList = accidentDataList;
+        filteredAccidentDataList = accidentDataList.where((accident) {
+          return accident.date.isAfter(dateRange.start) &&
+              accident.date.isBefore(dateRange.end);
+        }).toList();
       } else {
         filteredAccidentDataList = accidentDataList
-            .where((accident) => accident.city == selectedCity)
+            .where((accident) =>
+                accident.city == selectedCity &&
+                accident.date.isAfter(dateRange.start) &&
+                accident.date.isBefore(dateRange.end))
             .toList();
       }
     });
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   @override
@@ -187,31 +240,84 @@ class _StatisticState extends State<Statistic> {
                           Row(
                             children: [
                               Expanded(
-                                flex: 1,
-                                child: CustomDropdown(
-                                  items: options,
-                                  selectedItem: selectedOption,
-                                  dropdownHeight: 30,
-                                  borderRadius: 0,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedOption =
-                                          newValue ?? selectedOption;
-                                    });
-                                  },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: SizedBox(
+                                          child: CustomDropdown(
+                                            items: options,
+                                            selectedItem: selectedOption,
+                                            dropdownHeight: 30,
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                selectedOption =
+                                                    newValue ?? selectedOption;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        child: VerticalDivider(
+                                          color: AppColors.gray,
+                                          thickness: 1,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 3,
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            DateTime? pickedDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: selectedDate,
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(2025),
+                                              helpText: 'Chọn ngày',
+                                            );
+                                            if (pickedDate != null) {
+                                              setState(() {
+                                                selectedDate = pickedDate;
+                                              });
+                                            }
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                selectedOption == 'Ngày'
+                                                    ? "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}"
+                                                    : selectedOption == 'Tuần'
+                                                        ? "${getDateRange(selectedOption, selectedDate).start.day}/${getDateRange(selectedOption, selectedDate).start.month}/${getDateRange(selectedOption, selectedDate).start.year} - ${getDateRange(selectedOption, selectedDate).end.day}/${getDateRange(selectedOption, selectedDate).end.month}/${getDateRange(selectedOption, selectedDate).end.year}" // Week format, showing start and end of the week
+                                                        : selectedOption ==
+                                                                'Tháng'
+                                                            ? "Tháng ${selectedDate.month}/${selectedDate.year}"
+                                                            : selectedOption ==
+                                                                    'Quý'
+                                                                ? "Quý ${((selectedDate.month - 1) ~/ 3) + 1}/${selectedDate.year}"
+                                                                : "${selectedDate.year}",
+                                              ),
+                                              Icon(
+                                                AppIcons.calendar,
+                                                color: AppColors.red,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              VerticalDivider(color: AppColors.black),
-                              Expanded(
-                                flex: 1,
-                                child: CustomButton(
-                                  onTap: () {},
-                                  icon: AppIcons.calendar,
-                                  iconColor: AppColors.red,
-                                  btnHeight: 35,
-                                  btnColor: AppColors.lightGrey,
-                                ),
-                              )
                             ],
                           ),
                           SizedBox(height: 10),
