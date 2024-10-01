@@ -24,6 +24,7 @@ class AppIcons {
   static const IconData delete = Icons.delete_outlined;
   static const IconData back = Icons.arrow_back_ios;
   static const IconData close = Icons.close;
+  static const IconData menu = Icons.menu;
   static const double defaultSize = 24.0;
 
   static Icon getIcon(IconData iconData,

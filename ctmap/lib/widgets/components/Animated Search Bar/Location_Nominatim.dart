@@ -1,15 +1,27 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-Future<List<Location>> searchLocation(String query) async {
-  //final url = 'https://nominatim.openstreetmap.org/search?q=$query&countryCodes=VN&format=json&addressdetails=1';
-  final url = 'https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&viewbox=102.14441,23.3925,109.46464,8.17966&bounded=1';
-  final response = await http.get(Uri.parse(url));
 
+Future<List<Location>> searchLocation(String query) async {
+  // giới hạn 3000 request 1 ngày
+  final url =
+      'https://api.geoapify.com/v1/geocode/autocomplete?text=$query&filter=countrycode:vn&lang=vi&apiKey=0f7058e62bce4594b2f4acdca2b518b5';
+  
+  final response = await http.get(Uri.parse(url));
+  
   if (response.statusCode == 200) {
-    final List data = json.decode(response.body);
-    return data.map((json) => Location.fromJson(json)).toList();
+    final Map<String, dynamic> data = json.decode(response.body);
+
+    if (data['features'] != null && data['features'] is List) {
+      final List features = data['features'];
+
+      return features.map((feature) {
+        return Location.fromJson(feature);
+      }).toList();
+    } else {
+      throw Exception('No location features found');
+    }
   } else {
-    throw Exception('Failed to load location');
+    throw Exception('Failed to load locations with status code: ${response.statusCode}');
   }
 }
 
@@ -18,13 +30,19 @@ class Location {
   final double lon;
   final String displayName;
 
-  Location({required this.lat, required this.lon, required this.displayName});
+  Location({
+    required this.lat,
+    required this.lon,
+    required this.displayName,
+  });
 
   factory Location.fromJson(Map<String, dynamic> json) {
+    final geometry = json['geometry']['coordinates'];
     return Location(
-      lat: double.parse(json['lat']),
-      lon: double.parse(json['lon']),
-      displayName: json['display_name'],
+      lat: geometry[1],  
+      lon: geometry[0],
+      displayName: json['properties']['formatted'],
     );
   }
 }
+

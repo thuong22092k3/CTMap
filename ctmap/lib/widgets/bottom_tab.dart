@@ -24,7 +24,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(AppIcons.newspaper, size: 30.0),
-            label: 'Tin tức',
+            label: 'An toàn giao thông',
           ),
           BottomNavigationBarItem(
             icon: Icon(AppIcons.barChart, size: 30.0),

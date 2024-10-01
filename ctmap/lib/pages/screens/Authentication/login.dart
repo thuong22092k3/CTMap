@@ -86,11 +86,11 @@ Widget build(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Đăng Nhập',
                   style: TextStyle(fontSize: 32, color: AppColors.red),
                 ),
-                SizedBox(height: 70),
+                const SizedBox(height: 70),
                 CustomTextField(
                   hintText: 'Email hoặc Username',
                   icon: AppIcons.email,
@@ -99,7 +99,7 @@ Widget build(BuildContext context) {
                   iconColor: AppColors.primaryGray,
                   hintTextColor: AppColors.gray,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 CustomTextField(
                   hintText: 'Mật khẩu',
                   icon: AppIcons.lock,
@@ -109,7 +109,7 @@ Widget build(BuildContext context) {
                   hintTextColor: AppColors.gray,
                   isPassword: true,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Row(
                   children: [
                     CustomCheckbox(
@@ -121,11 +121,11 @@ Widget build(BuildContext context) {
                       },
                       margin: EdgeInsets.only(right: 8.0),
                     ),
-                    Text(
+                    const Text(
                       'Ghi nhớ đăng nhập',
                       style: TextStyle(fontSize: 11, color: AppColors.black),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     CustomTextButton(
                       onTap: () {
                         Navigator.push(
@@ -137,7 +137,7 @@ Widget build(BuildContext context) {
                     )
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 CustomButton(
                   onTap: _handleLogin,
                   btnText: 'Đăng nhập',
@@ -147,7 +147,7 @@ Widget build(BuildContext context) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Chưa có tài khoản?',
                       style: TextStyle(fontSize: 14, color: AppColors.black),
                     ),
@@ -163,7 +163,7 @@ Widget build(BuildContext context) {
                     )
                   ],
                 ),
-                SizedBox(height: 20), // Adjusted spacing for better visibility
+                const SizedBox(height: 20), // Adjusted spacing for better visibility
                 CustomTextButton(
                   onTap: _handleLater,
                   btnText: 'Lúc khác',

@@ -1,6 +1,5 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/data/type.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
@@ -8,7 +7,6 @@ import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,14 +99,14 @@ class _NewSheetState extends ConsumerState<NewSheet> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
+            title: const Text(
               "Lỗi",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.red,
               ),
             ),
-            content: Text(
+            content: const Text(
               "Vui lòng nhập đầy đủ thông tin.",
               style: TextStyle(
                 fontSize: 14,
@@ -170,14 +168,14 @@ class _NewSheetState extends ConsumerState<NewSheet> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text(
+              title: const Text(
                 "Lỗi",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.red,
                 ),
               ),
-              content: Text(
+              content: const Text(
                 "Đã xảy ra lỗi khi thêm vụ tai nạn. Vui lòng thử lại sau.",
                 style: TextStyle(
                   fontSize: 14,

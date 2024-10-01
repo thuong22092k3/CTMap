@@ -1,9 +1,8 @@
+import 'package:ctmap/assets/colors/colors.dart';
+import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:math';
 import 'package:latlong2/latlong.dart';
 import 'Location_Nominatim.dart';
 class AnimSearchBar extends StatefulWidget {
@@ -97,7 +96,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
       child: AnimatedContainer(
         duration: Duration(milliseconds: widget.animationDurationInMilli),
         height: widget.height,
-        width: (toggle == 0) ? 50.0 : widget.width,
+        width: (toggle == 0) ? 50 : widget.width,
         curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: toggle == 1 ? widget.textFieldColor : widget.initialBackgroundColor,
@@ -179,7 +178,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 child: Container(
                   padding: const EdgeInsets.only(left: 10),
                   alignment: Alignment.topCenter,
-                  width: widget.width / 1.7,
+                  width: widget.width - 45*2,  //hiển thị chữ
                   child: TypeAheadField<Location>(
                     textFieldConfiguration: TextFieldConfiguration(
                       enableSuggestions: false,
@@ -238,12 +237,36 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                     },
                     itemBuilder: (context, suggestion) {
                       return ListTile(
-                        title: Text(suggestion.displayName),
+                        leading: const Icon(
+                          AppIcons.location, 
+                          color: AppColors.red
+                        ),
+                        title: Text(
+                          suggestion.displayName,
+                          style: const TextStyle(
+                            color: AppColors.black,
+                            fontSize: 12.0, 
+                          ),
+                        ),
+                        textColor: AppColors.black,
                       );
                     },
                     onSuggestionSelected: (suggestion) {
                       widget.textController.text = suggestion.displayName;
                       widget.onSubmitted(suggestion.displayName);
+                    },
+                    noItemsFoundBuilder: (context) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'Không tìm thấy',
+                          style: TextStyle(
+                            color: AppColors.black, 
+                            fontSize: 12.0
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -257,8 +280,9 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                 setState(() {
                   if (toggle == 0) {
                     toggle = 1;
-                    if (widget.autoFocus)
+                    if (widget.autoFocus) {
                       FocusScope.of(context).requestFocus(focusNode);
+                    }
                     _con.forward();
                   } else {
                     toggle = 0;
@@ -290,8 +314,9 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       if (toggle == 0) {
                         toggle = 1;
                         setState(() {
-                          if (widget.autoFocus)
+                          if (widget.autoFocus) {
                             FocusScope.of(context).requestFocus(focusNode);
+                          }
                         });
                         _con.forward();
                       } else {

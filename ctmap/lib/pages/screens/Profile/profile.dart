@@ -19,8 +19,8 @@ class Profile extends ConsumerWidget {
           Container(
             color: AppColors.red,
             height: 86,
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: Column(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
@@ -31,18 +31,18 @@ class Profile extends ConsumerWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
                   // You can add image or avatar here
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   ref.watch(userStateProvider).userName,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: AppColors.red,
@@ -50,7 +50,7 @@ class Profile extends ConsumerWidget {
                 ),
                 Text(
                   ref.watch(userStateProvider).email,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.black,
                   ),
@@ -118,12 +118,12 @@ class Profile extends ConsumerWidget {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Trợ giúp',
+                                  title: const Text('Trợ giúp',
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.red)),
-                                  content: Column(
+                                  content: const Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
@@ -137,7 +137,7 @@ class Profile extends ConsumerWidget {
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text(
+                                      child: const Text(
                                         'Đóng',
                                         style: TextStyle(color: AppColors.red),
                                       ),
@@ -158,7 +158,7 @@ class Profile extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,

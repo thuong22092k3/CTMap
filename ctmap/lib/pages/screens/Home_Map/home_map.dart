@@ -238,21 +238,21 @@ class HomeState extends State<Home> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      return Future.error('Truy cập vị trí đang tắt.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return Future.error('Quyền truy cập vị trí bị từ chối');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Quyền truy cập vị trí bị từ chối vĩnh viễn, không thể gửi yêu cầu quyền truy cập.');
     }
 
     var position = await Geolocator.getCurrentPosition();
