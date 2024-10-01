@@ -106,15 +106,19 @@ class _StatisticState extends State<Statistic> {
     setState(() {
       if (selectedCity == 'Tất cả') {
         filteredAccidentDataList = accidentDataList.where((accident) {
-          return accident.date.isAfter(dateRange.start) &&
-              accident.date.isBefore(dateRange.end);
+          return accident.date
+                  .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+              accident.date
+                  .isBefore(dateRange.end.add(const Duration(days: 1)));
         }).toList();
       } else {
         filteredAccidentDataList = accidentDataList
             .where((accident) =>
                 accident.city == selectedCity &&
-                accident.date.isAfter(dateRange.start) &&
-                accident.date.isBefore(dateRange.end))
+                accident.date.isAfter(
+                    dateRange.start.subtract(const Duration(days: 1))) &&
+                accident.date
+                    .isBefore(dateRange.end.add(const Duration(days: 1))))
             .toList();
       }
     });
