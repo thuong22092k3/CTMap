@@ -78,7 +78,8 @@ class DetailSheet extends ConsumerWidget {
                   _buildInfoRow('Địa điểm', '${accidentData.location}'),
                   SizedBox(height: 10),
                   _buildInfoRow('Thành phố', '${accidentData.city}'),
-                  if (accidentData.userName != null &&
+                  if (accidentData.showUserName &&
+                      accidentData.userName != null &&
                       accidentData.userName.isNotEmpty) ...[
                     SizedBox(height: 10),
                     _buildInfoRow('Tên người dùng', accidentData.userName),

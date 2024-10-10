@@ -115,6 +115,7 @@ Future<List<AccidentData>> getAllAccidents() async {
                     userName: accident['userName'] ?? '',
                     location: accident['location'] ?? '',
                     city: accident['city'] ?? '',
+                    showUserName: accident['showUserName'] ?? false,
                   );
                   accidents.add(accidentData);
                 } catch (e) {

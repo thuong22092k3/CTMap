@@ -27,7 +27,6 @@ class _FilterSheetState extends State<FilterSheet> {
   late TextEditingController _denNgayController;
   late TextEditingController _mucDoController;
   late TextEditingController _loaiController;
-  
 
   @override
   void initState() {
@@ -46,27 +45,23 @@ class _FilterSheetState extends State<FilterSheet> {
     _loaiController.dispose();
     super.dispose();
   }
+
   int calculateAccidentLevel(int deaths, int injuries) {
     if (deaths == 0) {
-      if(injuries < 2) {
+      if (injuries < 2) {
         return 1;
-      }
-      else {
+      } else {
         return 2;
       }
-    }
-    else if (deaths == 1) {
+    } else if (deaths == 1) {
       return 3;
-    }
-    else if (deaths == 2) {
+    } else if (deaths == 2) {
       return 4;
-    }
-    else {
+    } else {
       return 5;
     }
   }
 
-  
   Future<void> _selectFromDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -80,6 +75,7 @@ class _FilterSheetState extends State<FilterSheet> {
       });
     }
   }
+
   Future<void> _selectToDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -133,11 +129,15 @@ class _FilterSheetState extends State<FilterSheet> {
                   ),
                 ],
               ),
-              _buildDayInputRow("Từ ngày", _tuNgayController, () => _selectFromDate(context)),
-              _buildDayInputRow("Đến ngày", _denNgayController, () => _selectToDate(context)),
+              _buildDayInputRow(
+                  "Từ ngày", _tuNgayController, () => _selectFromDate(context)),
+              _buildDayInputRow(
+                  "Đến ngày", _denNgayController, () => _selectToDate(context)),
               _buildLevelInputRow("Mức độ tai nạn", _mucDoController),
               _buildDropdownRow("Loại tai nạn", _loaiController),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -147,7 +147,6 @@ class _FilterSheetState extends State<FilterSheet> {
                     },
                     btnColor: AppColors.dartGrey,
                     btnText: "Hủy",
-                    
                     btnTextColor: AppColors.white,
                     btnHeight: 30,
                     borderRadius: 5,
@@ -160,7 +159,6 @@ class _FilterSheetState extends State<FilterSheet> {
                     },
                     btnColor: AppColors.red,
                     btnText: "Xác nhận",
-                    
                     btnTextColor: AppColors.white,
                     btnHeight: 30,
                     borderRadius: 5,
@@ -176,7 +174,8 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildDayInputRow(String label, TextEditingController controller, [VoidCallback? onTap]) {
+  Widget _buildDayInputRow(String label, TextEditingController controller,
+      [VoidCallback? onTap]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -203,15 +202,16 @@ class _FilterSheetState extends State<FilterSheet> {
               ),
               controller: controller,
               onTap: onTap,
-              readOnly: true, 
+              readOnly: true,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: AppColors.lightGrey, 
+                fillColor: AppColors.lightGrey,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), 
-                  borderSide: BorderSide.none, 
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10), 
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 suffixIcon: InkWell(
                   onTap: onTap,
                   child: const Icon(
@@ -228,7 +228,8 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildLevelInputRow(String label, TextEditingController _mucDoController) {
+  Widget _buildLevelInputRow(
+      String label, TextEditingController _mucDoController) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -246,17 +247,18 @@ class _FilterSheetState extends State<FilterSheet> {
           ),
           const SizedBox(width: 10),
           for (int i = 1; i <= 5; i++)
-              NumberedLocationIcon(
-                iconData: AppIcons.location,
-                number: i,
-                //isMatched: i == accidentLevel, 
-              ),
+            NumberedLocationIcon(
+              iconData: AppIcons.location,
+              number: i,
+              //isMatched: i == accidentLevel,
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildDropdownRow(String label, TextEditingController controller, [VoidCallback? onTap]) {
+  Widget _buildDropdownRow(String label, TextEditingController controller,
+      [VoidCallback? onTap]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -292,9 +294,4 @@ class _FilterSheetState extends State<FilterSheet> {
       ),
     );
   }
-
-
-
-
-  
 }

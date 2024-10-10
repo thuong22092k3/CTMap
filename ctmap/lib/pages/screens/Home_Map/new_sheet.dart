@@ -21,7 +21,7 @@ class NewSheet extends ConsumerStatefulWidget {
 }
 
 class _NewSheetState extends ConsumerState<NewSheet> {
-  bool _showUserName = false;
+  bool showUserName = false;
   List<String> acciType = [
     'Rượu bia/ Ma túy',
     'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
@@ -157,6 +157,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
           'position': positionStr,
           'link': link.toString(),
           'userName': userName,
+          'showUserName': showUserName,
           'sophuongtienlienquan': sophuongtienlienquan.toString(),
         };
 
@@ -260,10 +261,10 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               ),
               CheckboxListTile(
                 title: Text("Hiển thị tên của bạn?"),
-                value: _showUserName,
+                value: showUserName,
                 onChanged: (bool? value) {
                   setState(() {
-                    _showUserName = value ?? false;
+                    showUserName = value ?? false;
                   });
                 },
               ),

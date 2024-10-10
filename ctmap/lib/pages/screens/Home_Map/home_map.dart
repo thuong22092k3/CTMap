@@ -54,6 +54,9 @@ class HomeState extends State<Home> {
         print('Link: ${accident.link}');
         print('Địa điểm: ${accident.location}');
         print('Thành phố: ${accident.city}');
+        print('Tên: ${accident.userName}');
+        print('Hiển thị: ${accident.showUserName}');
+
         print('-----------------------');
         print('so luong ${accidents.length}');
       }

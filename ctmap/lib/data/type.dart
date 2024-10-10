@@ -13,6 +13,7 @@ class AccidentData {
   final String userName;
   final String location;
   final String city;
+  final bool showUserName;
 
   AccidentData({
     required this.id,
@@ -27,6 +28,7 @@ class AccidentData {
     required this.userName,
     required this.location,
     required this.city,
+    required this.showUserName,
   });
 }
 
