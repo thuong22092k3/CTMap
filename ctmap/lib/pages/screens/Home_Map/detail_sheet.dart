@@ -113,15 +113,30 @@ class DetailSheet extends ConsumerWidget {
                           _handleDelete(context);
                         },
                       ),
-                      IconButton(
-                        icon: const Icon(AppIcons.share, color: AppColors.blue),
-                        onPressed: () {
-                          _shareAccidentDetails();
-                        },
-                      ),
+                      // IconButton(
+                      //   icon: const Icon(AppIcons.share, color: AppColors.blue),
+                      //   onPressed: () {
+                      //     _shareAccidentDetails();
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: Row(
+                  children: [
+                    Spacer(),
+                    IconButton(
+                      icon: const Icon(AppIcons.share, color: AppColors.blue),
+                      onPressed: () {
+                        _shareAccidentDetails();
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
