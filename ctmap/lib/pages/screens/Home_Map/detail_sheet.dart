@@ -8,6 +8,7 @@ import 'package:ctmap/services/api.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DetailSheet extends ConsumerWidget {
   final AccidentData accidentData;
@@ -112,6 +113,12 @@ class DetailSheet extends ConsumerWidget {
                           _handleDelete(context);
                         },
                       ),
+                      IconButton(
+                        icon: const Icon(AppIcons.share, color: AppColors.blue),
+                        onPressed: () {
+                          _shareAccidentDetails();
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -165,6 +172,25 @@ class DetailSheet extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _shareAccidentDetails() {
+    String mapUrl =
+        "//www.google.com/maps/search/?api=1&query=${accidentData.position.latitude},${accidentData.position.longitude}";
+
+    String accidentDetails = '''
+    ‼️  Vụ tai nạn tại ${accidentData.location} ‼️ 
+      - Ngày: ${accidentData.date.day}/${accidentData.date.month}/${accidentData.date.year}
+      - Nguyên nhân: ${_displayCause(accidentData.level)}
+      - Số phương tiện liên quan: ${accidentData.sophuongtienlienquan}
+      - Số người chết: ${accidentData.deaths}
+      - Số người bị thương: ${accidentData.injuries}
+      ➖➖➖➖➖➖➖➖➖
+      📍Địa điểm: ${accidentData.location}
+      📌Maps: "$mapUrl"
+    ''';
+    print(accidentDetails);
+    Share.share(accidentDetails, subject: 'Thông tin vụ tai nạn giao thông');
   }
 
   Widget _buildInfoRow(String title, String value) {
