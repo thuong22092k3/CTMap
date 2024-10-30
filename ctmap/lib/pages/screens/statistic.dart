@@ -1,22 +1,26 @@
 import 'package:ctmap/data/type.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/components/Button/Button.dart';
 import '../../widgets/components/Dropdown/Dropdown.dart';
 import '../../widgets/components/Chart/BarChart.dart';
 import '../../widgets/components/Table/Table.dart';
 import '../../widgets/components/Calendar/Calendar.dart';
 
-class Statistic extends StatefulWidget {
+// sửa ở statefulwidget -> ConsumerStatefulWidget
+class Statistic extends ConsumerStatefulWidget {
   const Statistic({super.key});
 
   @override
   _StatisticState createState() => _StatisticState();
 }
 
-class _StatisticState extends State<Statistic> {
+// sửa ở state -> ConsumerState
+class _StatisticState extends ConsumerState<Statistic> {
   List<String> cities = ['Tất cả'];
   String selectedCity = 'Tất cả';
   String selectedOption = 'Ngày';
@@ -27,41 +31,149 @@ class _StatisticState extends State<Statistic> {
   bool isChartButtonSelected = true;
   List<AccidentData> accidentDataList = [];
   List<AccidentData> filteredAccidentDataList = [];
-  Map<String, int> accidentCountByCity = {};
+  List<AccidentData> accidentCountByCity = [];
   List<AccidentData> accidentDataListTable = [];
 
   @override
   void initState() {
     super.initState();
-    getAccidents();
+    // getAccidents();
+
+    fetchAccidents();
   }
 
-  Future<void> getAccidents() async {
-    List<AccidentData> accidents = await getAllAccidents();
-    if (accidents.isNotEmpty) {
-      print('Dữ liệu đã được lấy thành công.');
+  // Future<void> getAccidents() async {
+  //   List<AccidentData> accidents = await getAllAccidents();
+  //   if (accidents.isNotEmpty) {
+  //     print('Dữ liệu đã được lấy thành công.');
 
-      Set<String> uniqueCities =
-          accidents.map((accident) => accident.city).toSet();
+  //     Set<String> uniqueCities =
+  //         accidents.map((accident) => accident.city).toSet();
 
-      setState(() {
-        accidentDataList = accidents;
-        filteredAccidentDataList = accidents;
-        cities = ['Tất cả', ...uniqueCities];
-        accidentCountByCity = _countAccidentsByCity(accidents);
-      });
-    } else {
-      print('Không có dữ liệu.');
-    }
-  }
+  //     setState(() {
+  //       accidentDataList = accidents;
+  //       filteredAccidentDataList = accidents;
+  //       cities = ['Tất cả', ...uniqueCities];
+  //       accidentCountByCity = _countAccidentsByCity(accidents);
+  //     });
+  //   } else {
+  //     print('Không có dữ liệu.');
+  //   }
+  // }
 
-  Map<String, int> _countAccidentsByCity(List<AccidentData> accidents) {
+  // void countAccidentsByCity(List<AccidentData> accidents) {
+  //   Map<String, int> cityAccidentCount = {};
+  //   setState(() {
+  //     for (var accident in accidents) {
+  //       cityAccidentCount[accident.city] =
+  //           (cityAccidentCount[accident.city] ?? 0) + 1;
+  //     }
+  //   });
+
+  //   // return cityAccidentCount;
+  // }
+
+  // DateTimeRange getDateRange(String selectedOption, DateTime selectedDate) {
+  //   DateTime startDate;
+  //   DateTime endDate;
+
+  //   switch (selectedOption) {
+  //     case 'Ngày':
+  //       startDate = selectedDate;
+  //       endDate = selectedDate;
+  //       break;
+  //     case 'Tuần':
+  //       startDate =
+  //           selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+  //       endDate = startDate.add(Duration(days: 6));
+  //       break;
+  //     case 'Tháng':
+  //       startDate = DateTime(selectedDate.year, selectedDate.month, 1);
+  //       endDate = DateTime(selectedDate.year, selectedDate.month + 1, 0);
+  //       break;
+  //     case 'Quý':
+  //       int quarter = ((selectedDate.month - 1) ~/ 3) + 1;
+  //       startDate = DateTime(selectedDate.year, (quarter - 1) * 3 + 1, 1);
+  //       endDate = DateTime(selectedDate.year, quarter * 3 + 1, 0);
+  //       break;
+  //     case 'Năm':
+  //       startDate = DateTime(selectedDate.year, 1, 1);
+  //       endDate = DateTime(selectedDate.year, 12, 31);
+  //       break;
+  //     default:
+  //       startDate = selectedDate;
+  //       endDate = selectedDate;
+  //       break;
+  //   }
+
+  //   return DateTimeRange(start: startDate, end: endDate);
+  // }
+
+  void countAccidentsByCity(List<AccidentData> accidents) {
     Map<String, int> cityAccidentCount = {};
-    for (var accident in accidents) {
-      cityAccidentCount[accident.city] =
-          (cityAccidentCount[accident.city] ?? 0) + 1;
-    }
-    return cityAccidentCount;
+    setState(() {
+      for (var accident in accidents) {
+        cityAccidentCount[accident.city] =
+            (cityAccidentCount[accident.city] ?? 0) + 1;
+      }
+    });
+    // return cityAccidentCount;
+  }
+
+  void filterAccidents() {
+    DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
+
+    setState(() {
+      if (selectedCity == 'Tất cả') {
+        filteredAccidentDataList = accidentDataList.where((accident) {
+          return accident.date
+                  .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+              accident.date
+                  .isBefore(dateRange.end.add(const Duration(days: 1)));
+        }).toList();
+      } else {
+        filteredAccidentDataList = accidentDataList
+            .where((accident) =>
+                accident.city == selectedCity &&
+                accident.date.isAfter(
+                    dateRange.start.subtract(const Duration(days: 1))) &&
+                accident.date
+                    .isBefore(dateRange.end.add(const Duration(days: 1))))
+            .toList();
+      }
+    });
+  }
+
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  Future<void> fetchAccidents() async {
+    await ref.read(accidentProvider.notifier).getAccidents();
+    final accidentProviderData = ref.watch(accidentProvider);
+    Set<String> uniqueCities =
+        accidentProviderData.map((accident) => accident.city).toSet();
+
+    setState(() {
+      accidentDataList = accidentProviderData;
+      filteredAccidentDataList = accidentProviderData;
+      accidentCountByCity = accidentProviderData;
+      cities = ['Tất cả', ...uniqueCities];
+    });
+  }
+
+  List<AccidentData> getFilteredAccidents(List<AccidentData> accidentDataList) {
+    DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
+
+    return accidentDataList.where((accident) {
+      bool isInDateRange =
+          accident.date.isAfter(dateRange.start.subtract(Duration(days: 1))) &&
+              accident.date.isBefore(dateRange.end.add(Duration(days: 1)));
+      bool isInCity = selectedCity == 'Tất cả' || accident.city == selectedCity;
+      return isInDateRange && isInCity;
+    }).toList();
   }
 
   DateTimeRange getDateRange(String selectedOption, DateTime selectedDate) {
@@ -100,38 +212,16 @@ class _StatisticState extends State<Statistic> {
     return DateTimeRange(start: startDate, end: endDate);
   }
 
-  void filterAccidents() {
-    DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
-
-    setState(() {
-      if (selectedCity == 'Tất cả') {
-        filteredAccidentDataList = accidentDataList.where((accident) {
-          return accident.date
-                  .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
-              accident.date
-                  .isBefore(dateRange.end.add(const Duration(days: 1)));
-        }).toList();
-      } else {
-        filteredAccidentDataList = accidentDataList
-            .where((accident) =>
-                accident.city == selectedCity &&
-                accident.date.isAfter(
-                    dateRange.start.subtract(const Duration(days: 1))) &&
-                accident.date
-                    .isBefore(dateRange.end.add(const Duration(days: 1))))
-            .toList();
-      }
-    });
-  }
-
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year &&
-        date1.month == date2.month &&
-        date1.day == date2.day;
-  }
+  bool isSearchButtonPressed = false;
 
   @override
   Widget build(BuildContext context) {
+    final accidentDataList = ref.watch(accidentProvider);
+    Set<String> uniqueCities =
+        accidentDataList.map((accident) => accident.city).toSet();
+    List<String> cities = ['Tất cả', ...uniqueCities];
+    accidentCountByCity = accidentDataList;
+    countAccidentsByCity(accidentCountByCity);
     print(
         'Filtered Accident Data List in Statistic: $filteredAccidentDataList');
 
@@ -207,7 +297,7 @@ class _StatisticState extends State<Statistic> {
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'Tổng số vụ tai nạn: ${filteredAccidentDataList.length}',
+                    'Tổng số vụ tai nạn: ${showChart ? (isSearchButtonPressed ? getFilteredAccidents(accidentDataList).length : accidentDataList.length) : accidentDataList.length}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 20),
@@ -327,7 +417,11 @@ class _StatisticState extends State<Statistic> {
                           SizedBox(height: 10),
                           CustomButton(
                             onTap: () {
-                              filterAccidents();
+                              setState(() {
+                                filteredAccidentDataList =
+                                    getFilteredAccidents(accidentDataList);
+                                isSearchButtonPressed = true;
+                              });
                             },
                             btnText: "Tìm kiếm",
                             btnHeight: 30,
@@ -344,19 +438,39 @@ class _StatisticState extends State<Statistic> {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
+                          Text(
+                            'Biểu đồ thể hiện số vụ tai nạn theo mức độ tai nạn',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.red),
+                          ),
+                          SizedBox(height: 20),
                           SizedBox(
                             height: 300,
                             child: CustomBarChart(
                               dataMode: DataMode.level,
-                              accidentDataList: filteredAccidentDataList,
+                              accidentDataList: isSearchButtonPressed
+                                  ? getFilteredAccidents(accidentDataList)
+                                  : accidentDataList,
                             ),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Biểu đồ thể hiện số vụ tai nạn theo loại tai nạn',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.red),
                           ),
                           SizedBox(height: 20),
                           SizedBox(
                             height: 300,
                             child: CustomBarChart(
                               dataMode: DataMode.cause,
-                              accidentDataList: filteredAccidentDataList,
+                              accidentDataList: isSearchButtonPressed
+                                  ? getFilteredAccidents(accidentDataList)
+                                  : accidentDataList,
                             ),
                           ),
                         ],
@@ -364,8 +478,7 @@ class _StatisticState extends State<Statistic> {
                     ),
                   if (!showChart)
                     SizedBox(
-                      child: CustomTable(
-                          accidentDataList: filteredAccidentDataList),
+                      child: CustomTable(accidentDataList: accidentCountByCity),
                     ),
                 ],
               ),

@@ -118,7 +118,7 @@ class DetailSheet extends ConsumerWidget {
                 ),
               Positioned(
                 bottom: 10,
-                right: 10,
+                left: 50,
                 child: IconButton(
                   icon: const Icon(AppIcons.share, color: AppColors.blue),
                   onPressed: () {

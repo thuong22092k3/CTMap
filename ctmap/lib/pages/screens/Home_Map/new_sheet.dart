@@ -1,7 +1,9 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/data/type.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
@@ -162,6 +164,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
         };
 
         await addAccident(accidentData);
+        ref.read(accidentProvider.notifier).addAccident(accidentData);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home()));
       } catch (e) {

@@ -1,3 +1,4 @@
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/pages/routes/routes.dart';
@@ -23,7 +24,6 @@ class MyApp extends ConsumerWidget {
           bodyLarge: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText1
           bodyMedium: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText2
           displayLarge: TextStyle(fontFamily: 'Mulish'), // Font cho headline1
-          // Thêm các phong cách font khác tùy theo nhu cầu
         ),
       ),
     );

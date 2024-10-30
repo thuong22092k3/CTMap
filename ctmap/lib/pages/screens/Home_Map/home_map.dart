@@ -5,6 +5,7 @@ import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart' as userState;
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/Location_Nominatim.dart';
 import 'package:ctmap/widgets/components/Animated%20Search%20Bar/anim_search_bar.dart';
@@ -21,14 +22,16 @@ const mapboxToken =
 
 var myPosition = LatLng(10.870137995752456, 106.8038409948349);
 
-class Home extends StatefulWidget {
+// sửa ở statefulwidget -> ConsumerStatefulWidget
+class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
   @override
   HomeState createState() => HomeState();
 }
 
-class HomeState extends State<Home> {
+// sửa ở state -> ConsumerState
+class HomeState extends ConsumerState<Home> {
   final MapController _mapController = MapController();
 
   List<AccidentData> accidentDataList = [];
@@ -64,6 +67,7 @@ class HomeState extends State<Home> {
     } else {
       print('Không có dữ liệu.');
     }
+    ref.read(accidentProvider.notifier).setAccidents(accidents);
     setState(() {
       accidentDataList = accidents;
     });
@@ -319,6 +323,7 @@ class HomeState extends State<Home> {
     print('Accident Data List: $accidentDataList');
     return Consumer(
       builder: (context, ref, _) {
+        // final accidentDataListProvider = ref.watch(accidentProvider);
         return Scaffold(
           body: Stack(
             children: <Widget>[
