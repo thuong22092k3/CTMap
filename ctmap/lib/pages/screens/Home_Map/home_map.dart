@@ -35,6 +35,7 @@ class HomeState extends ConsumerState<Home> {
   final MapController _mapController = MapController();
 
   List<AccidentData> accidentDataList = [];
+  bool isFirstLoad = true;
 
   @override
   void initState() {
@@ -42,35 +43,46 @@ class HomeState extends ConsumerState<Home> {
     getAccidents();
   }
 
-  Future<void> getAccidents() async {
-    List<AccidentData> accidents = await getAllAccidents();
-    if (accidents.isNotEmpty) {
-      print('Dữ liệu đã được lấy thành công.');
-      for (var accident in accidents) {
-        print('Date: ${accident.date}');
-        print('Deaths: ${accident.deaths}');
-        print('Injuries: ${accident.injuries}');
-        print('Level: ${accident.level}');
-        print('Cause: ${accident.cause}');
-        print('Position: ${accident.position}');
-        print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
-        print('Link: ${accident.link}');
-        print('Địa điểm: ${accident.location}');
-        print('Thành phố: ${accident.city}');
-        print('Tên: ${accident.userName}');
-        print('Hiển thị: ${accident.showUserName}');
+  // Future<void> getAccidents() async {
+  //   List<AccidentData> accidents = await getAllAccidents();
+  //   if (accidents.isNotEmpty) {
+  //     print('Dữ liệu đã được lấy thành công.');
+  //     for (var accident in accidents) {
+  //       print('Date: ${accident.date}');
+  //       print('Deaths: ${accident.deaths}');
+  //       print('Injuries: ${accident.injuries}');
+  //       print('Level: ${accident.level}');
+  //       print('Cause: ${accident.cause}');
+  //       print('Position: ${accident.position}');
+  //       print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
+  //       print('Link: ${accident.link}');
+  //       print('Địa điểm: ${accident.location}');
+  //       print('Thành phố: ${accident.city}');
+  //       print('Tên: ${accident.userName}');
+  //       print('Hiển thị: ${accident.showUserName}');
 
-        print('-----------------------');
-        print('so luong ${accidents.length}');
-      }
-      print('so luong ${accidents.length}');
-    } else {
-      print('Không có dữ liệu.');
+  //       print('-----------------------');
+  //       print('so luong ${accidents.length}');
+  //     }
+  //     print('so luong ${accidents.length}');
+  //   } else {
+  //     print('Không có dữ liệu.');
+  //   }
+  //   ref.read(accidentProvider.notifier).setAccidents(accidents);
+  //   setState(() {
+  //     accidentDataList = accidents;
+  //   });
+  // }
+  Future<void> getAccidents() async {
+    if (isFirstLoad) {
+      // Lấy dữ liệu từ database chỉ lần đầu
+      List<AccidentData> accidents = await getAllAccidents();
+      ref.read(accidentProvider.notifier).setAccidents(accidents);
+      setState(() {
+        accidentDataList = accidents;
+        isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
+      });
     }
-    ref.read(accidentProvider.notifier).setAccidents(accidents);
-    setState(() {
-      accidentDataList = accidents;
-    });
   }
 
 //Thêm zoom
@@ -320,6 +332,7 @@ class HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
+    accidentDataList = ref.watch(accidentProvider);
     print('Accident Data List: $accidentDataList');
     return Consumer(
       builder: (context, ref, _) {

@@ -1,5 +1,6 @@
 import 'package:ctmap/pages/screens/Home_Map/edit_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/data/type.dart';
@@ -10,13 +11,24 @@ import 'package:ctmap/assets/colors/colors.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
-class DetailSheet extends ConsumerWidget {
+class DetailSheet extends ConsumerStatefulWidget {
   final AccidentData accidentData;
 
   const DetailSheet({Key? key, required this.accidentData}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _DetailSheetState createState() => _DetailSheetState();
+}
+
+class _DetailSheetState extends ConsumerState<DetailSheet> {
+  late final AccidentData accidentData;
+  void initState() {
+    super.initState();
+    accidentData = widget.accidentData;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userState = ref.watch(userStateProvider);
     final username = userState.userName;
 
@@ -153,17 +165,18 @@ class DetailSheet extends ConsumerWidget {
                 style: TextStyle(color: AppColors.red),
               ),
               onPressed: () async {
+                Navigator.of(context).pop();
                 try {
                   await deleteAccident(accidentData.id);
+                  ref
+                      .read(accidentProvider.notifier)
+                      .removeAccident(accidentData);
+                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                         content: Text('Vụ tai nạn đã được xóa thành công')),
                   );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home()),
-                  );
-                  //Navigator.of(context).pop();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
