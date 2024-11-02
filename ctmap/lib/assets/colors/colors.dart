@@ -6,6 +6,7 @@ class AppColors {
   static const Color primaryBlack = Color(0xff000000);
   static const Color black = Color(0xff252525);
   static const Color red = Color(0xffFF3951);
+  static const Color redBlur = Color.fromARGB(255, 250, 107, 124);
   static const Color primaryGray = Color(0xffA9A9A9);
   static const Color gray = Color(0xffC4C4C4);
   static const Color dartGrey = Color(0xffD9D9D9);

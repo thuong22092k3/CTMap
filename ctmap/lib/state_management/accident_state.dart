@@ -48,6 +48,22 @@ class AccidentStateNotifier extends StateNotifier<List<AccidentData>> {
     }).toList();
   }
 
+  List<AccidentData> filterAccidents({
+    DateTime? startDate,
+    DateTime? endDate,
+    int? level,
+    int? cause,
+  }) {
+    return state.where((accident) {
+      final matchesDate = (startDate == null || accident.date.isAfter(startDate)) &&
+                          (endDate == null || accident.date.isBefore(endDate));
+      final matchesLevel = level == null || accident.level == level;
+      final matchesType = cause == null || accident.cause == cause;
+
+      return matchesDate && matchesLevel && matchesType;
+    }).toList();
+  }
+
   List<AccidentData> getAccidents() => state;
 }
 

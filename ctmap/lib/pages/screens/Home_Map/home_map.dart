@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ctmap/data/type.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 const mapboxToken =
     'pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw';
@@ -338,6 +339,7 @@ class HomeState extends ConsumerState<Home> {
       builder: (context, ref, _) {
         // final accidentDataListProvider = ref.watch(accidentProvider);
         return Scaffold(
+          //drawer: buildDrawer(context, ClusteringManyMarkersPage.route),
           body: Stack(
             children: <Widget>[
               FlutterMap(
@@ -346,7 +348,7 @@ class HomeState extends ConsumerState<Home> {
                   initialCenter: myPosition,
                   minZoom: 5,
                   maxZoom: 25,
-                  initialZoom: 11,
+                  initialZoom: 10,
                   interactionOptions: const InteractionOptions(
                       //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
                       flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
@@ -369,23 +371,74 @@ class HomeState extends ConsumerState<Home> {
                       'id': 'mapbox.mapbox-streets-v8',
                     },
                   ),
-                  MarkerLayer(
-                    markers: [
-                      for (var accidentData in accidentDataList)
-                        Marker(
-                          point: accidentData.position,
-                          child: GestureDetector(
-                            onTap: () {
-                              _onMarkerTapped(accidentData, context);
-                            },
-                            child: NumberedLocationIcon(
-                              iconData: AppIcons.location,
-                              number: accidentData.level,
+                  // MarkerLayer(
+                  //   markers: [
+                  //     for (var accidentData in accidentDataList)
+                  //       Marker(
+                  //         point: accidentData.position,
+                  //         child: GestureDetector(
+                  //           onTap: () {
+                  //             _onMarkerTapped(accidentData, context);
+                  //           },
+                  //           child: NumberedLocationIcon(
+                  //             iconData: AppIcons.location,
+                  //             number: accidentData.level,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //   ],
+                  //   //markers: markers,
+                  // ),
+                  MarkerClusterLayerWidget(
+                    options: MarkerClusterLayerOptions(
+                      maxClusterRadius: 45,
+                      size: const Size(40, 40),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(50),
+                      maxZoom: 12,        
+                      markers: [
+                        for (var accidentData in accidentDataList)
+                          Marker(
+                            point: accidentData.position,
+                            child: GestureDetector(
+                              onTap: () {
+                                _onMarkerTapped(accidentData, context);
+                              },
+                              child: NumberedLocationIcon(
+                                iconData: AppIcons.location,
+                                number: accidentData.level,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                    //markers: markers,
+                      ],
+                      builder: (context, markers) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.red,
+                              // border: Border.all(
+                              //   //color: AppColors.white,
+                              // ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: AppColors.redBlur,
+                                  spreadRadius: 5,
+
+                                  blurRadius: 7,
+
+                                  offset: Offset(0, 0), 
+                                )
+                              ]
+                            ),
+                          child: Center(
+                            child: Text(
+                              markers.length.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

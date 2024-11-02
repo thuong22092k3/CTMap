@@ -1,8 +1,11 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class FilterSheet extends StatefulWidget {
   const FilterSheet({super.key});
@@ -22,44 +25,25 @@ class _FilterSheetState extends State<FilterSheet> {
   ];
 
   String selectedAcciType = 'Rượu bia/ Ma túy';
+  DateTime? selectedFromDate;
+  DateTime? selectedToDate;
+  int selectedLevel = 1;
 
   late TextEditingController _tuNgayController;
   late TextEditingController _denNgayController;
-  late TextEditingController _mucDoController;
-  late TextEditingController _loaiController;
 
   @override
   void initState() {
     super.initState();
     _tuNgayController = TextEditingController();
     _denNgayController = TextEditingController();
-    _mucDoController = TextEditingController();
-    _loaiController = TextEditingController();
   }
 
   @override
   void dispose() {
     _tuNgayController.dispose();
     _denNgayController.dispose();
-    _mucDoController.dispose();
-    _loaiController.dispose();
     super.dispose();
-  }
-
-  int calculateAccidentLevel(int deaths, int injuries) {
-    if (deaths == 0) {
-      if (injuries < 2) {
-        return 1;
-      } else {
-        return 2;
-      }
-    } else if (deaths == 1) {
-      return 3;
-    } else if (deaths == 2) {
-      return 4;
-    } else {
-      return 5;
-    }
   }
 
   Future<void> _selectFromDate(BuildContext context) async {
@@ -71,7 +55,8 @@ class _FilterSheetState extends State<FilterSheet> {
     );
     if (pickedDate != null) {
       setState(() {
-        _tuNgayController.text = pickedDate.toString().split(" ")[0];
+        selectedFromDate = pickedDate;
+        _tuNgayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
       });
     }
   }
@@ -85,7 +70,8 @@ class _FilterSheetState extends State<FilterSheet> {
     );
     if (pickedDate != null) {
       setState(() {
-        _denNgayController.text = pickedDate.toString().split(" ")[0];
+        selectedToDate = pickedDate;
+        _denNgayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
       });
     }
   }
@@ -98,7 +84,6 @@ class _FilterSheetState extends State<FilterSheet> {
           padding: const EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.zero,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
@@ -133,8 +118,8 @@ class _FilterSheetState extends State<FilterSheet> {
                   "Từ ngày", _tuNgayController, () => _selectFromDate(context)),
               _buildDayInputRow(
                   "Đến ngày", _denNgayController, () => _selectToDate(context)),
-              _buildLevelInputRow("Mức độ tai nạn", _mucDoController),
-              _buildDropdownRow("Loại tai nạn", _loaiController),
+              _buildLevelInputRow("Mức độ tai nạn"),
+              _buildDropdownRow("Loại tai nạn"),
               const SizedBox(
                 height: 20,
               ),
@@ -155,6 +140,19 @@ class _FilterSheetState extends State<FilterSheet> {
                   ),
                   CustomButton(
                     onTap: () {
+                      final container = ProviderScope.containerOf(context);
+                      final accidentNotifier =
+                          container.read(accidentProvider.notifier);
+                      accidentNotifier.filterAccidents(
+                        startDate: selectedFromDate,
+                        endDate: selectedToDate,
+                        level: selectedLevel,
+                        cause: acciType.indexOf(selectedAcciType) + 1,
+                      );
+                  print('start: ${selectedFromDate}');
+                  print('end: ${selectedToDate}');
+                  print('Level: ${selectedLevel}');
+                  print('Cause: ${acciType}');
                       Navigator.of(context).pop();
                     },
                     btnColor: AppColors.red,
@@ -211,7 +209,7 @@ class _FilterSheetState extends State<FilterSheet> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 suffixIcon: InkWell(
                   onTap: onTap,
                   child: const Icon(
@@ -228,8 +226,7 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildLevelInputRow(
-      String label, TextEditingController _mucDoController) {
+  Widget _buildLevelInputRow(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -247,18 +244,24 @@ class _FilterSheetState extends State<FilterSheet> {
           ),
           const SizedBox(width: 10),
           for (int i = 1; i <= 5; i++)
-            NumberedLocationIcon(
-              iconData: AppIcons.location,
-              number: i,
-              //isMatched: i == accidentLevel,
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedLevel = i;
+                });
+              },
+              child: NumberedLocationIcon(
+                iconData: AppIcons.location,
+                number: i,
+                isMatched: i == selectedLevel,
+              ),
             ),
         ],
       ),
     );
   }
 
-  Widget _buildDropdownRow(String label, TextEditingController controller,
-      [VoidCallback? onTap]) {
+  Widget _buildDropdownRow(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -289,7 +292,7 @@ class _FilterSheetState extends State<FilterSheet> {
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

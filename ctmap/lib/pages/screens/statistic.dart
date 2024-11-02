@@ -432,20 +432,20 @@ class _StatisticState extends ConsumerState<Statistic> {
                         ],
                       ),
                     ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   if (showChart)
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          Text(
+                          const Text(
                             'Biểu đồ thể hiện số vụ tai nạn theo mức độ tai nạn',
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.red),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           SizedBox(
                             height: 300,
                             child: CustomBarChart(
@@ -455,15 +455,15 @@ class _StatisticState extends ConsumerState<Statistic> {
                                   : accidentDataList,
                             ),
                           ),
-                          SizedBox(height: 20),
-                          Text(
+                          const SizedBox(height: 20),
+                          const Text(
                             'Biểu đồ thể hiện số vụ tai nạn theo loại tai nạn',
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.red),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           SizedBox(
                             height: 300,
                             child: CustomBarChart(
