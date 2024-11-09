@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+//import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';  // Import the intl package
 
 class NewsSheet extends StatefulWidget {
@@ -104,19 +104,19 @@ class NewsSheetState extends State<NewsSheet> {
     );
   }
 
-  thumbnail(imageUrl) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 15.0),
-      child: CachedNetworkImage(
-        placeholder: (context, url) => Image.asset(placeholderImg),
-        imageUrl: imageUrl,
-        height: 50,
-        width: 70,
-        alignment: Alignment.center,
-        fit: BoxFit.fill,
-      ),
-    );
-  }
+  // thumbnail(imageUrl) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 15.0),
+  //     child: CachedNetworkImage(
+  //       placeholder: (context, url) => Image.asset(placeholderImg),
+  //       imageUrl: imageUrl,
+  //       height: 50,
+  //       width: 70,
+  //       alignment: Alignment.center,
+  //       fit: BoxFit.fill,
+  //     ),
+  //   );
+  // }
 
   rightIcon() {
     return const Icon(
@@ -156,13 +156,13 @@ class NewsSheetState extends State<NewsSheet> {
     return ListView(
       padding: EdgeInsets.zero, 
       shrinkWrap: true, // Tránh tình trạng scroll mặc định chiếm không gian
-      physics: const ClampingScrollPhysics(), // Sử dụng ClampingScrollPhysics để loại bỏ hiệu ứng scroll dư thừa
+      physics: const ClampingScrollPhysics(), 
       children: [
         ..._buildListItems(),
         if (_hasMoreItems())
           TextButton(
             onPressed: _loadMoreItems,
-            child: Text('Xem thêm tin tức'),
+            child: const Text('Xem thêm tin tức'),
           ),
       ],
     );

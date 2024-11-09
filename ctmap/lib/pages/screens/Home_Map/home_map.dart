@@ -21,7 +21,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 const mapboxToken =
     'pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw';
 
-var myPosition = LatLng(10.870137995752456, 106.8038409948349);
+var myPosition = const LatLng(10.870137995752456, 106.8038409948349);
 
 // sửa ở statefulwidget -> ConsumerStatefulWidget
 class Home extends ConsumerStatefulWidget {
@@ -42,6 +42,7 @@ class HomeState extends ConsumerState<Home> {
   void initState() {
     super.initState();
     getAccidents();
+    //updateMarkers(accidentDataList);
   }
 
   // Future<void> getAccidents() async {
@@ -83,6 +84,7 @@ class HomeState extends ConsumerState<Home> {
         accidentDataList = accidents;
         isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
       });
+      updateMarkers(accidentDataList); 
     }
   }
 
@@ -104,34 +106,9 @@ class HomeState extends ConsumerState<Home> {
     );
   }
 
-  bool isSearchPressed = false;
-  // bool isFilterPressed = false;
-  // bool isAddPressed = false;
-
-  List<Marker> markers = [];
-  void addMarker(LatLng tapLatLng) {
-    Marker marker = Marker(
-      width: 50,
-      height: 50,
-      point: tapLatlng,
-      child: IconButton(
-        icon: const Icon(
-          AppIcons.add_location,
-          size: 40,
-          color: Colors.red,
-        ),
-        onPressed: () {},
-      ),
-    );
-    markers.add(marker);
-
-    openNewSheet(tapLatLng);
-
-    setState(() {});
-  }
-
+  
   //DETAIL SHEET
-  bool isOpened = false;
+  bool isDetailOpened = false;
 
   void openDetailSheet(AccidentData data, BuildContext context) {
     showModalBottomSheet<dynamic>(
@@ -140,7 +117,7 @@ class HomeState extends ConsumerState<Home> {
           return DetailSheet(accidentData: data);
         });
     setState(() {
-      isOpened = !isOpened;
+      isDetailOpened = !isDetailOpened;
     });
   }
 
@@ -176,6 +153,7 @@ class HomeState extends ConsumerState<Home> {
                   CustomButton(
                     onTap: () {
                       getCurrentLocation();
+                      
                       setState(() {
                         isCurLocation = true;
                         Navigator.of(context).pop();
@@ -204,38 +182,91 @@ class HomeState extends ConsumerState<Home> {
 
   //SEARCH
   TextEditingController textController = TextEditingController();
+  bool isSearchPressed = false;
+
+
+
+  // List Accidents
+  List<AccidentData> filteredAccidents = []; 
+  List<Marker> markers = [];
+  bool isFilteredMode = false;
+
+  void onFilterApplied(List<AccidentData> filteredList) {
+    setState(() {
+      filteredAccidents = filteredList;
+      updateMarkers(filteredAccidents);
+    });
+  }
+
+  void onFilterStatusChanged(bool isFilteredStatus) {
+    setState(() {
+      isFilteredMode = isFilteredStatus;
+    });
+  }
+
+  void updateMarkers(List<AccidentData> accidentList) {
+    setState(() {
+      markers = accidentList.map((accident)  {
+      return Marker(
+        point: accident.position,
+          child: GestureDetector(
+            onTap: () {
+              _onMarkerTapped(accident, context);
+            },
+            child: NumberedLocationIcon(
+              iconData: AppIcons.location,
+              number: accident.level,
+            ),
+          ),
+      );
+    }).toList();
+  });
+  }
+
+  void onResetFilter() {
+    setState(() {
+      isFilteredMode = false;
+      filteredAccidents = accidentDataList;
+      updateMarkers(accidentDataList); 
+    });
+  }
+
+
 
   //FILTER SHEET
   bool isFilterOpened = false;
-  void openFilterSheet() {
-    showModalBottomSheet<dynamic>(
+  void openFilterSheet() async {
+    setState(() {
+      isFilterOpened = true; 
+    });
+
+    await showModalBottomSheet<dynamic>(
       context: context,
       builder: (context) {
-        return const FilterSheet();
+        return FilterSheet(
+          onFilterApplied: onFilterApplied,
+          onFilterStatusChanged: onFilterStatusChanged
+        );
       },
-    ).then((value) {
+    )
+    .then((value) {
       setState(() {
         isFilterOpened = false;
       });
     });
-    setState(() {
-      isFilterOpened = true;
-    });
+    // setState(() {
+    //   isFilterOpened = true;
+    // });
   }
 
   //ADD SHEET
   bool isNewOpened = false;
   void openNewSheet(LatLng position) {
-    showModalBottomSheet(
+    showModalBottomSheet<dynamic>(
       context: context,
       builder: (context) {
         return NewSheet(
           addPosition: position,
-          // onAddAccident: (accidentData) {
-          //   setState(() {
-          //     accidentDataList.add(accidentData);
-          //   });
-          // },
         );
       },
     ).then((value) {
@@ -284,28 +315,7 @@ class HomeState extends ConsumerState<Home> {
 
     _mapController.move(myPosition, 15.0);
 
-    Marker marker = Marker(
-      width: 50,
-      height: 50,
-      point: curLocation,
-      child: IconButton(
-        icon: const Icon(
-          AppIcons.add_location,
-          size: 40,
-          color: Colors.red,
-        ),
-        onPressed: () {},
-      ),
-    );
-    markers.add(marker);
-
     openNewSheet(curLocation);
-
-    //addMarker(curLocation);
-
-    print(position.latitude);
-    print(position);
-    print(curLocation);
 
     return (curLocation);
   }
@@ -327,9 +337,30 @@ class HomeState extends ConsumerState<Home> {
     }
   }
 
-//SEARCH
-  LatLng? _center;
-  final TextEditingController _controller = TextEditingController();
+  //SEARCH
+  LatLng? searchCenter;
+  final TextEditingController searchController = TextEditingController();
+
+
+  List<Marker> getMarkers(List<AccidentData> accidentDataList) {
+    return [
+      for (var accidentData in accidentDataList)
+        Marker(
+          point: accidentData.position,
+          child: GestureDetector(
+            onTap: () {
+              _onMarkerTapped(accidentData, context);
+            },
+            child: NumberedLocationIcon(
+              iconData: AppIcons.location,
+              number: accidentData.level,
+            ),
+          ),
+        ),
+    ];
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -350,13 +381,13 @@ class HomeState extends ConsumerState<Home> {
                   maxZoom: 25,
                   initialZoom: 10,
                   interactionOptions: const InteractionOptions(
-                      //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
-                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
+                    //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
+                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate
+                  ),
                   onTap: (tapPosition, latLng) {
                     if (isSelfAdd == true) {
                       tapLatlng = latLng;
-                      addMarker(tapLatlng);
-                      print(tapLatlng);
+                      openNewSheet(latLng);
                     }
                   },
                 ),
@@ -364,68 +395,30 @@ class HomeState extends ConsumerState<Home> {
                   TileLayer(
                     urlTemplate:
                         "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
-                    //     "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    //userAgentPackageName: 'com.example.app',
                     additionalOptions: const {
                       'accessToken': mapboxToken,
                       'id': 'mapbox.mapbox-streets-v8',
                     },
                   ),
-                  // MarkerLayer(
-                  //   markers: [
-                  //     for (var accidentData in accidentDataList)
-                  //       Marker(
-                  //         point: accidentData.position,
-                  //         child: GestureDetector(
-                  //           onTap: () {
-                  //             _onMarkerTapped(accidentData, context);
-                  //           },
-                  //           child: NumberedLocationIcon(
-                  //             iconData: AppIcons.location,
-                  //             number: accidentData.level,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //   ],
-                  //   //markers: markers,
-                  // ),
                   MarkerClusterLayerWidget(
                     options: MarkerClusterLayerOptions(
                       maxClusterRadius: 45,
                       size: const Size(40, 40),
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(50),
-                      maxZoom: 12,        
-                      markers: [
-                        for (var accidentData in accidentDataList)
-                          Marker(
-                            point: accidentData.position,
-                            child: GestureDetector(
-                              onTap: () {
-                                _onMarkerTapped(accidentData, context);
-                              },
-                              child: NumberedLocationIcon(
-                                iconData: AppIcons.location,
-                                number: accidentData.level,
-                              ),
-                            ),
-                          ),
-                      ],
+                      maxZoom: 18,        
+                      //markers: getMarkers(accidentDataList),
+                      markers: markers,
                       builder: (context, markers) {
                         return Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: Colors.red,
-                              // border: Border.all(
-                              //   //color: AppColors.white,
-                              // ),
                               boxShadow: const [
                                 BoxShadow(
                                   color: AppColors.redBlur,
                                   spreadRadius: 5,
-
                                   blurRadius: 7,
-
                                   offset: Offset(0, 0), 
                                 )
                               ]
@@ -451,17 +444,17 @@ class HomeState extends ConsumerState<Home> {
                     AnimSearchBar(
                       width: MediaQuery.of(context).size.width - 20,
                       height: 50,
-                      textController: _controller,
+                      textController: searchController,
                       helpText: "Tìm kiếm",
-                      suffixIcon: Icon(AppIcons.close, color: AppColors.white),
-                      prefixIcon: Icon(AppIcons.search, color: AppColors.red),
+                      suffixIcon: const Icon(AppIcons.close, color: AppColors.white),
+                      prefixIcon: const Icon(AppIcons.search, color: AppColors.red),
                       textFieldColor: Colors.red,
                       initialBackgroundColor: Colors.white,
                       initialIconColor: Colors.blue,
                       onSuffixTap: () {
                         setState(() {
-                          _controller.clear();
-                          _center = myPosition;
+                          searchController.clear();
+                          searchCenter = myPosition;
                         });
                         _mapController.move(myPosition, 11.0);
                       },
@@ -471,16 +464,16 @@ class HomeState extends ConsumerState<Home> {
                           if (locations.isNotEmpty) {
                             final location = locations.first;
                             setState(() {
-                              _center = LatLng(location.lat, location.lon);
+                              searchCenter = LatLng(location.lat, location.lon);
                             });
-                            _mapController.move(_center!, 14.0);
+                            _mapController.move(searchCenter!, 14.0);
                           }
                         }
                       },
                       searchBarOpen: (toggle) {
                         if (toggle == 0) {
                           setState(() {
-                            _controller.clear();
+                            searchController.clear();
                           });
                         }
                       },
@@ -504,7 +497,9 @@ class HomeState extends ConsumerState<Home> {
                         ),
                         child: FloatingActionButton(
                           backgroundColor:
-                              isFilterOpened ? AppColors.red : AppColors.white,
+                              isFilteredMode || isFilterOpened 
+                              ? AppColors.red 
+                              : AppColors.white,
                           onPressed: () {
                             setState(() {
                               if (!isFilterOpened) {
@@ -518,7 +513,7 @@ class HomeState extends ConsumerState<Home> {
                           child: Icon(
                             AppIcons.filter,
                             size: 30,
-                            color: isFilterOpened
+                            color: isFilteredMode || isFilterOpened 
                                 ? AppColors.white
                                 : AppColors.red,
                           ),
@@ -548,11 +543,6 @@ class HomeState extends ConsumerState<Home> {
                               : AppColors.white,
                           onPressed: () {
                             _handleAdd(context, ref);
-                            //   setState(() {
-                            //   if (!isAddDialogOpened) {
-                            //     showAddTypeDialog();
-                            //   }
-                            // });
                           },
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

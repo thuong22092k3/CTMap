@@ -26,6 +26,7 @@ class AppIcons {
   static const IconData close = Icons.close;
   static const IconData menu = Icons.menu;
   static const IconData share = Icons.emergency_share_outlined;
+  static const IconData info = Icons.info_outline;
   static const double defaultSize = 24.0;
 
   static Icon getIcon(IconData iconData,

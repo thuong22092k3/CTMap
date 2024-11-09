@@ -15,6 +15,8 @@ import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:go_router/go_router.dart';
 
 class Login extends ConsumerStatefulWidget {
+  const Login({super.key});
+
   @override
   _LoginState createState() => _LoginState();
 }

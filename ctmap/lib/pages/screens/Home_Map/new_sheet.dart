@@ -1,7 +1,7 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/data/type.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
+import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart';
@@ -233,13 +233,30 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Thêm vụ tai nạn',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
+                 Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Chi tiết vụ tai nạn',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.red,
+                        ),
+                      ),
+                      const SizedBox(width: 8,),
+                      IconButton(
+                        icon: const Icon(
+                          AppIcons.info,
+                          color: AppColors.blue,
+                        ),
+                        onPressed: () {
+                          showInfoModal(context);
+                        },
+                        padding: EdgeInsets.zero
+                      ),
+                    ],
+                    
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
@@ -259,18 +276,26 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               _buildNumberInputRow("Số người chết", _soNguoiChetController),
               _buildNumberInputRow(
                   "Số người bị thương", _soNguoiBiThuongController),
-              const SizedBox(
-                height: 20,
-              ),
-              CheckboxListTile(
-                title: Text("Hiển thị tên của bạn?"),
-                value: showUserName,
-                onChanged: (bool? value) {
-                  setState(() {
-                    showUserName = value ?? false;
-                  });
-                },
-              ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+             CheckboxListTile(
+                  title: const Text(
+                    "Hiển thị tên của bạn",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Mulish',
+                    ),
+                  ),
+                  value: showUserName,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      showUserName = value ?? false;
+                    });
+                  },
+                ),
+
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -305,6 +330,19 @@ class _NewSheetState extends ConsumerState<NewSheet> {
     );
   }
 
+  void showInfoModal(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, 
+      builder: (BuildContext context) {
+        return const Dialog(
+          child: InfoSheet(),
+        );
+
+      },
+    );
+  }
+
   Widget _buildDayInputRow(String label, TextEditingController controller,
       [VoidCallback? onTap]) {
     return Padding(
@@ -317,7 +355,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               label,
               style: const TextStyle(
                 fontFamily: 'Mulish',
-                fontSize: 14,
+                fontSize: 12,
               ),
               textAlign: TextAlign.right,
             ),
@@ -328,7 +366,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             height: 40,
             child: TextFormField(
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'Mulish',
               ),
               controller: controller,
@@ -370,7 +408,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             child: Text(
               label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'Mulish',
               ),
               textAlign: TextAlign.right,
@@ -408,7 +446,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             child: Text(
               label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
               ),
               textAlign: TextAlign.right,
             ),
@@ -418,7 +456,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             width: 200,
             height: 40,
             child: TextFormField(
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 12),
               controller: controller,
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -459,7 +497,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
             child: Text(
               label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'Mulish',
               ),
               textAlign: TextAlign.right,

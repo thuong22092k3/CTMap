@@ -1,5 +1,6 @@
 import 'package:ctmap/pages/screens/Home_Map/edit_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
+import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,13 +56,30 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Chi tiết vụ tai nạn',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.red,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Chi tiết vụ tai nạn',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.red,
+                            ),
+                          ),
+                          const SizedBox(width: 8,),
+                          IconButton(
+                            icon: const Icon(
+                              AppIcons.info,
+                              color: AppColors.blue,
+                            ),
+                            onPressed: () {
+                              showInfoModal(context);
+                            },
+                            padding: EdgeInsets.zero
+                          ),
+                        ],
+                        
                       ),
                       IconButton(
                         icon: const Icon(AppIcons.close),
@@ -71,80 +89,83 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow('Ngày',
                       '${accidentData.date.day}/${accidentData.date.month}/${accidentData.date.year}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildSeverityRow(accidentData.level),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow(
                       'Loại tai nạn', '${_displayCause(accidentData.cause)}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow('Số phương tiện liên quan',
                       '${accidentData.sophuongtienlienquan}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow('Số người chết', '${accidentData.deaths}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow(
                       'Số người bị thương', '${accidentData.injuries}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow('Địa điểm', '${accidentData.location}'),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildInfoRow('Thành phố', '${accidentData.city}'),
                   if (accidentData.showUserName &&
                       accidentData.userName != null &&
                       accidentData.userName.isNotEmpty) ...[
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     _buildInfoRow('Tên người dùng', accidentData.userName),
                   ],
                   SizedBox(height: 10),
-                ],
-              ),
-              if ((username != null && username.isNotEmpty) &&
-                  (username == accidentData.userName ||
-                      userState.email == accidentData.userName))
-                Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: Row(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: const Icon(AppIcons.edit, color: AppColors.blue),
+                        icon: const Icon(
+                          AppIcons.share, 
+                          color: AppColors.blue
+                        ),
                         onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return EditSheet(accidentData: accidentData);
-                            },
-                          );
+                          _shareAccidentDetails();
                         },
                       ),
-                      IconButton(
-                        icon: const Icon(AppIcons.delete, color: AppColors.red),
-                        onPressed: () {
-                          _handleDelete(context);
-                        },
-                      ),
+                      if ((username != null && username.isNotEmpty) &&
+                          (username == accidentData.userName ||
+                              userState.email == accidentData.userName))
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(AppIcons.delete, color: AppColors.red),
+                              onPressed: () {
+                                _handleDelete(context);
+                              },
+                            ),
+                            const SizedBox(width: 10,),
+                            IconButton(
+                              icon: const Icon(AppIcons.edit, color: AppColors.blue),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return EditSheet(accidentData: accidentData);
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                     ],
-                  ),
-                ),
-              Positioned(
-                bottom: 10,
-                left: 50,
-                child: IconButton(
-                  icon: const Icon(AppIcons.share, color: AppColors.blue),
-                  onPressed: () {
-                    _shareAccidentDetails();
-                  },
-                ),
+                  )
+                ],
               ),
+              
             ],
           ),
         ),
       ),
     );
   }
-
+  
   void _handleDelete(BuildContext context) {
     showDialog(
       context: context,
@@ -210,6 +231,19 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
     Share.share(accidentDetails, subject: 'Thông tin vụ tai nạn giao thông');
   }
 
+  void showInfoModal(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, 
+      builder: (BuildContext context) {
+        return const Dialog(
+          child: InfoSheet(),
+        );
+
+      },
+    );
+  }
+
   Widget _buildInfoRow(String title, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -256,15 +290,9 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
         const SizedBox(width: 20),
         Expanded(
           flex: 2,
-          child: Row(
-            children: [
-              for (int i = 1; i <= 5; i++)
-                NumberedLocationIcon(
-                  iconData: AppIcons.location,
-                  number: i,
-                  isMatched: i == level,
-                ),
-            ],
+          child: NumberedLocationIcon(
+            iconData: AppIcons.location,
+            number: level,
           ),
         ),
       ],

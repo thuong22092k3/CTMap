@@ -120,29 +120,29 @@ class _StatisticState extends ConsumerState<Statistic> {
     // return cityAccidentCount;
   }
 
-  void filterAccidents() {
-    DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
+  // void filterAccidents() {
+  //   DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
 
-    setState(() {
-      if (selectedCity == 'Tất cả') {
-        filteredAccidentDataList = accidentDataList.where((accident) {
-          return accident.date
-                  .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
-              accident.date
-                  .isBefore(dateRange.end.add(const Duration(days: 1)));
-        }).toList();
-      } else {
-        filteredAccidentDataList = accidentDataList
-            .where((accident) =>
-                accident.city == selectedCity &&
-                accident.date.isAfter(
-                    dateRange.start.subtract(const Duration(days: 1))) &&
-                accident.date
-                    .isBefore(dateRange.end.add(const Duration(days: 1))))
-            .toList();
-      }
-    });
-  }
+  //   setState(() {
+  //     if (selectedCity == 'Tất cả') {
+  //       filteredAccidentDataList = accidentDataList.where((accident) {
+  //         return accident.date
+  //                 .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+  //             accident.date
+  //                 .isBefore(dateRange.end.add(const Duration(days: 1)));
+  //       }).toList();
+  //     } else {
+  //       filteredAccidentDataList = accidentDataList
+  //           .where((accident) =>
+  //               accident.city == selectedCity &&
+  //               accident.date.isAfter(
+  //                   dateRange.start.subtract(const Duration(days: 1))) &&
+  //               accident.date
+  //                   .isBefore(dateRange.end.add(const Duration(days: 1))))
+  //           .toList();
+  //     }
+  //   });
+  // }
 
   bool isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&

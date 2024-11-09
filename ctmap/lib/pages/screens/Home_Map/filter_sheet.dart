@@ -1,96 +1,126 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/data/type.dart';
 import 'package:ctmap/state_management/accident_state.dart';
+import 'package:ctmap/state_management/filter_state.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FilterSheet extends StatefulWidget {
-  const FilterSheet({super.key});
+class FilterSheet extends ConsumerStatefulWidget {
+  final Function(List<AccidentData>) onFilterApplied;
+  final Function(bool) onFilterStatusChanged; 
+  //final bool isFiltered;
+
+  const FilterSheet({
+    super.key, 
+    required this.onFilterApplied, 
+    required this.onFilterStatusChanged
+  });
 
   @override
-  State<FilterSheet> createState() => _FilterSheetState();
+  FilterSheetState createState() => FilterSheetState();
 }
 
-class _FilterSheetState extends State<FilterSheet> {
-  List<String> acciType = [
-    'Rượu bia/ Ma túy',
-    'Vi phạm tốc độ, mất lái ...',
-    'Phương tiện không đảm bảo an toàn',
-    'Thời tiết',
-    'Cơ sở hạ tầng giao thông',
-    'Khác',
-  ];
+class FilterSheetState extends ConsumerState<FilterSheet> {
+  late TextEditingController fromDateController;
+  late TextEditingController toDateController;
+  final Map<String, int> acciTypeMap = {
+    'Tất cả': 0,
+    'Rượu bia/ Ma túy': 1,
+    'Vi phạm tốc độ, mất lái ...': 2,
+    'Phương tiện không đảm bảo an toàn': 3,
+    'Thời tiết': 4,
+    'Cơ sở hạ tầng giao thông': 5,
+    'Khác': 6,
+  };
 
-  String selectedAcciType = 'Rượu bia/ Ma túy';
-  DateTime? selectedFromDate;
-  DateTime? selectedToDate;
-  int selectedLevel = 1;
+  DateTime selectedFromDate = DateTime.now();
+  DateTime selectedToDate = DateTime.now();
+  //int selectedLevel = 1;
+  List<int> selectedLevels = [1, 2, 3, 4, 5];
+  int selectedAcciType = 0; 
 
-  late TextEditingController _tuNgayController;
-  late TextEditingController _denNgayController;
+  List<AccidentData> accidentDataList = [];
+  List<AccidentData> filteredAccidentDataList = [];
+  bool isFilterPressed = false;
+
+  Future<void> fetchAccidents() async {
+    await ref.read(accidentProvider.notifier).getAccidents();
+    final accidentProviderData = ref.watch(accidentProvider);
+
+    setState(() {
+      accidentDataList = accidentProviderData;
+      filteredAccidentDataList = accidentProviderData;
+    });
+  }
+
+  List<AccidentData> getFilteredAccidents(
+    List<AccidentData> accidentDataList, 
+    DateTime fromDate, 
+    DateTime toDate, 
+    //int level, 
+    List<int> levels,
+    int cause
+    ) {
+
+    if (cause == 0) {
+      return accidentDataList.where((accident) {
+        bool isInDateRange =
+          accident.date.isAfter(fromDate.subtract(const Duration(days: 1))) && 
+          accident.date.isBefore(toDate.add(const Duration(days: 1)));    
+        bool isLevel = levels.contains(accident.level);
+
+        return isInDateRange && isLevel;
+      }).toList();
+    }   
+    else {
+      return accidentDataList.where((accident) {
+        bool isInDateRange =
+            accident.date.isAfter(fromDate) && 
+            accident.date.isBefore(toDate);
+        //bool isLevel = accident.level == level;
+        bool isLevel = levels.contains(accident.level);
+        bool isCause = accident.cause == cause;
+
+        return isInDateRange && isLevel && isCause;
+      }).toList();
+    }
+    
+  }
 
   @override
   void initState() {
     super.initState();
-    _tuNgayController = TextEditingController();
-    _denNgayController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _tuNgayController.dispose();
-    _denNgayController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _selectFromDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime(2050),
+    fetchAccidents();
+    final filterState = ref.read(filterProvider); 
+    fromDateController = TextEditingController(
+      text: DateFormat('dd/MM/yyyy').format(filterState.selectedFromDate),
     );
-    if (pickedDate != null) {
-      setState(() {
-        selectedFromDate = pickedDate;
-        _tuNgayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
-      });
-    }
-  }
-
-  Future<void> _selectToDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2019),
-      lastDate: DateTime(2050),
+    toDateController = TextEditingController(
+      text: DateFormat('dd/MM/yyyy').format(filterState.selectedToDate),
     );
-    if (pickedDate != null) {
-      setState(() {
-        selectedToDate = pickedDate;
-        _denNgayController.text = DateFormat('dd/MM/yyyy').format(pickedDate);
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final filterState = ref.watch(filterProvider); 
+    
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.3),
+            //     blurRadius: 10,
+            //     offset: const Offset(0, 5),
+            //   ),
+            // ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,12 +144,18 @@ class _FilterSheetState extends State<FilterSheet> {
                   ),
                 ],
               ),
-              _buildDayInputRow(
-                  "Từ ngày", _tuNgayController, () => _selectFromDate(context)),
-              _buildDayInputRow(
-                  "Đến ngày", _denNgayController, () => _selectToDate(context)),
-              _buildLevelInputRow("Mức độ tai nạn"),
-              _buildDropdownRow("Loại tai nạn"),
+              buildDayInputRow(
+                "Từ ngày",
+                fromDateController,
+                () => selectFromDate(context),
+              ),
+              buildDayInputRow(
+                "Đến ngày",
+                toDateController,
+                () => selectToDate(context),
+              ),
+              buildLevelInputRow("Mức độ tai nạn", filterState.selectedLevels),
+              buildDropdownRow("Loại tai nạn", filterState.selectedAcciType),
               const SizedBox(
                 height: 20,
               ),
@@ -128,10 +164,19 @@ class _FilterSheetState extends State<FilterSheet> {
                 children: [
                   CustomButton(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      ref.read(filterProvider.notifier).resetFilters(); 
+
+                      fromDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+                      toDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+                      // selectedLevels = [1, 2, 3, 4, 5]; 
+                      // selectedAcciType = 0;
+
+                      widget.onFilterApplied(accidentDataList);  
+                      widget.onFilterStatusChanged(false);
+                      //widget.isFiltered = false;
                     },
                     btnColor: AppColors.dartGrey,
-                    btnText: "Hủy",
+                    btnText: "Xóa lọc",
                     btnTextColor: AppColors.white,
                     btnHeight: 30,
                     borderRadius: 5,
@@ -140,19 +185,25 @@ class _FilterSheetState extends State<FilterSheet> {
                   ),
                   CustomButton(
                     onTap: () {
-                      final container = ProviderScope.containerOf(context);
-                      final accidentNotifier =
-                          container.read(accidentProvider.notifier);
-                      accidentNotifier.filterAccidents(
-                        startDate: selectedFromDate,
-                        endDate: selectedToDate,
-                        level: selectedLevel,
-                        cause: acciType.indexOf(selectedAcciType) + 1,
+                      if (filterState.selectedFromDate.isAfter(filterState.selectedToDate)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.')),
+                        );
+                        return;
+                      }
+
+                      // Apply the filter with current selected conditions
+                      widget.onFilterApplied(
+                        getFilteredAccidents(
+                          accidentDataList,
+                          filterState.selectedFromDate,
+                          filterState.selectedToDate,
+                          filterState.selectedLevels,
+                          filterState.selectedAcciType,
+                        ),
                       );
-                  print('start: ${selectedFromDate}');
-                  print('end: ${selectedToDate}');
-                  print('Level: ${selectedLevel}');
-                  print('Cause: ${acciType}');
+                      widget.onFilterStatusChanged(true);
+
                       Navigator.of(context).pop();
                     },
                     btnColor: AppColors.red,
@@ -172,8 +223,11 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildDayInputRow(String label, TextEditingController controller,
-      [VoidCallback? onTap]) {
+    Widget buildDayInputRow(
+    String label,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -226,7 +280,7 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildLevelInputRow(String label) {
+  Widget buildLevelInputRow(String label, List<int> selectedLevels) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -235,10 +289,7 @@ class _FilterSheetState extends State<FilterSheet> {
             width: 100,
             child: Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontFamily: 'Mulish',
-              ),
+              style: const TextStyle(fontSize: 14, fontFamily: 'Mulish'),
               textAlign: TextAlign.right,
             ),
           ),
@@ -246,14 +297,16 @@ class _FilterSheetState extends State<FilterSheet> {
           for (int i = 1; i <= 5; i++)
             GestureDetector(
               onTap: () {
-                setState(() {
-                  selectedLevel = i;
-                });
+                ref.read(filterProvider.notifier).updateFilters(
+                  levels: selectedLevels.contains(i)
+                      ? selectedLevels.where((level) => level != i).toList()
+                      : [...selectedLevels, i],
+                );
               },
               child: NumberedLocationIcon(
                 iconData: AppIcons.location,
                 number: i,
-                isMatched: i == selectedLevel,
+                isMatched: selectedLevels.contains(i),
               ),
             ),
         ],
@@ -261,7 +314,7 @@ class _FilterSheetState extends State<FilterSheet> {
     );
   }
 
-  Widget _buildDropdownRow(String label) {
+  Widget buildDropdownRow(String label, int selectedAcciType) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -270,10 +323,7 @@ class _FilterSheetState extends State<FilterSheet> {
             width: 100,
             child: Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontFamily: 'Mulish',
-              ),
+              style: const TextStyle(fontSize: 14, fontFamily: 'Mulish'),
               textAlign: TextAlign.right,
             ),
           ),
@@ -282,13 +332,19 @@ class _FilterSheetState extends State<FilterSheet> {
             child: SizedBox(
               height: 40,
               child: CustomDropdown(
-                items: acciType,
-                selectedItem: selectedAcciType,
+                items: acciTypeMap.keys.toList(),
+                selectedItem: acciTypeMap.keys.firstWhere(
+                  (key) => acciTypeMap[key] == selectedAcciType,
+                  orElse: () => 'Tất cả',
+                ),
                 dropdownHeight: 40,
                 onChanged: (newValue) {
-                  setState(() {
-                    selectedAcciType = newValue ?? selectedAcciType;
-                  });
+                  final newType = acciTypeMap[newValue];
+                  if (newType != null) {
+                    ref.read(filterProvider.notifier).updateFilters(
+                      acciType: newType,
+                    );
+                  }
                 },
               ),
             ),
@@ -297,4 +353,31 @@ class _FilterSheetState extends State<FilterSheet> {
       ),
     );
   }
+
+  Future<void> selectFromDate(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (selectedDate != null) {
+      fromDateController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
+      ref.read(filterProvider.notifier).updateFilters(fromDate: selectedDate);
+    }
+  }
+
+  Future<void> selectToDate(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (selectedDate != null) {
+      toDateController.text = DateFormat('dd/MM/yyyy').format(selectedDate);
+      ref.read(filterProvider.notifier).updateFilters(toDate: selectedDate);
+    }
+  }
+
 }
