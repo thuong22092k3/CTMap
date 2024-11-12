@@ -28,7 +28,7 @@ class _SignupState extends State<Signup> {
   }
 
   void _handleBefore() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+    context.go(RoutePaths.login);
   }
 
   void _handleLater() {
@@ -149,10 +149,8 @@ class _SignupState extends State<Signup> {
     try {
       await signUp(userData);
       print("User is successfully created");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Login()),
-      );
+      //Sửa ở đây
+      context.go(RoutePaths.login);
     } catch (error) {
       print("Error occurred during sign up: $error");
     }

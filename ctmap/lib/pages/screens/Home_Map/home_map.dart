@@ -1,5 +1,6 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ctmap/data/type.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
@@ -84,7 +86,7 @@ class HomeState extends ConsumerState<Home> {
         accidentDataList = accidents;
         isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
       });
-      updateMarkers(accidentDataList); 
+      updateMarkers(accidentDataList);
     }
   }
 
@@ -106,7 +108,6 @@ class HomeState extends ConsumerState<Home> {
     );
   }
 
-  
   //DETAIL SHEET
   bool isDetailOpened = false;
 
@@ -153,7 +154,7 @@ class HomeState extends ConsumerState<Home> {
                   CustomButton(
                     onTap: () {
                       getCurrentLocation();
-                      
+
                       setState(() {
                         isCurLocation = true;
                         Navigator.of(context).pop();
@@ -184,10 +185,8 @@ class HomeState extends ConsumerState<Home> {
   TextEditingController textController = TextEditingController();
   bool isSearchPressed = false;
 
-
-
   // List Accidents
-  List<AccidentData> filteredAccidents = []; 
+  List<AccidentData> filteredAccidents = [];
   List<Marker> markers = [];
   bool isFilteredMode = false;
 
@@ -206,9 +205,9 @@ class HomeState extends ConsumerState<Home> {
 
   void updateMarkers(List<AccidentData> accidentList) {
     setState(() {
-      markers = accidentList.map((accident)  {
-      return Marker(
-        point: accident.position,
+      markers = accidentList.map((accident) {
+        return Marker(
+          point: accident.position,
           child: GestureDetector(
             onTap: () {
               _onMarkerTapped(accident, context);
@@ -218,38 +217,34 @@ class HomeState extends ConsumerState<Home> {
               number: accident.level,
             ),
           ),
-      );
-    }).toList();
-  });
+        );
+      }).toList();
+    });
   }
 
   void onResetFilter() {
     setState(() {
       isFilteredMode = false;
       filteredAccidents = accidentDataList;
-      updateMarkers(accidentDataList); 
+      updateMarkers(accidentDataList);
     });
   }
-
-
 
   //FILTER SHEET
   bool isFilterOpened = false;
   void openFilterSheet() async {
     setState(() {
-      isFilterOpened = true; 
+      isFilterOpened = true;
     });
 
     await showModalBottomSheet<dynamic>(
       context: context,
       builder: (context) {
         return FilterSheet(
-          onFilterApplied: onFilterApplied,
-          onFilterStatusChanged: onFilterStatusChanged
-        );
+            onFilterApplied: onFilterApplied,
+            onFilterStatusChanged: onFilterStatusChanged);
       },
-    )
-    .then((value) {
+    ).then((value) {
       setState(() {
         isFilterOpened = false;
       });
@@ -325,11 +320,8 @@ class HomeState extends ConsumerState<Home> {
     if (userStateRef.isLoggedIn) {
       showAddTypeDialog();
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Login()),
-      ).then((_) {
-        // After login, check if the user is logged in, then show add dialog
+      //Sửa ở đây
+      context.push(RoutePaths.login).then((_) {
         if (ref.read(userState.userStateProvider).isLoggedIn) {
           showAddTypeDialog();
         }
@@ -340,7 +332,6 @@ class HomeState extends ConsumerState<Home> {
   //SEARCH
   LatLng? searchCenter;
   final TextEditingController searchController = TextEditingController();
-
 
   List<Marker> getMarkers(List<AccidentData> accidentDataList) {
     return [
@@ -359,8 +350,6 @@ class HomeState extends ConsumerState<Home> {
         ),
     ];
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -381,9 +370,8 @@ class HomeState extends ConsumerState<Home> {
                   maxZoom: 25,
                   initialZoom: 10,
                   interactionOptions: const InteractionOptions(
-                    //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
-                    flags: InteractiveFlag.all & ~InteractiveFlag.rotate
-                  ),
+                      //cursorKeyboardRotationOptions: CursorKeyboardRotationOptions.disabled(),
+                      flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
                   onTap: (tapPosition, latLng) {
                     if (isSelfAdd == true) {
                       tapLatlng = latLng;
@@ -406,7 +394,7 @@ class HomeState extends ConsumerState<Home> {
                       size: const Size(40, 40),
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(50),
-                      maxZoom: 18,        
+                      maxZoom: 18,
                       //markers: getMarkers(accidentDataList),
                       markers: markers,
                       builder: (context, markers) {
@@ -419,10 +407,9 @@ class HomeState extends ConsumerState<Home> {
                                   color: AppColors.redBlur,
                                   spreadRadius: 5,
                                   blurRadius: 7,
-                                  offset: Offset(0, 0), 
+                                  offset: Offset(0, 0),
                                 )
-                              ]
-                            ),
+                              ]),
                           child: Center(
                             child: Text(
                               markers.length.toString(),
@@ -446,8 +433,10 @@ class HomeState extends ConsumerState<Home> {
                       height: 50,
                       textController: searchController,
                       helpText: "Tìm kiếm",
-                      suffixIcon: const Icon(AppIcons.close, color: AppColors.white),
-                      prefixIcon: const Icon(AppIcons.search, color: AppColors.red),
+                      suffixIcon:
+                          const Icon(AppIcons.close, color: AppColors.white),
+                      prefixIcon:
+                          const Icon(AppIcons.search, color: AppColors.red),
                       textFieldColor: Colors.red,
                       initialBackgroundColor: Colors.white,
                       initialIconColor: Colors.blue,
@@ -496,9 +485,8 @@ class HomeState extends ConsumerState<Home> {
                           ],
                         ),
                         child: FloatingActionButton(
-                          backgroundColor:
-                              isFilteredMode || isFilterOpened 
-                              ? AppColors.red 
+                          backgroundColor: isFilteredMode || isFilterOpened
+                              ? AppColors.red
                               : AppColors.white,
                           onPressed: () {
                             setState(() {
@@ -513,7 +501,7 @@ class HomeState extends ConsumerState<Home> {
                           child: Icon(
                             AppIcons.filter,
                             size: 30,
-                            color: isFilteredMode || isFilterOpened 
+                            color: isFilteredMode || isFilterOpened
                                 ? AppColors.white
                                 : AppColors.red,
                           ),

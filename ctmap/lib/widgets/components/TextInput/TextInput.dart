@@ -7,13 +7,14 @@ class CustomTextField extends StatefulWidget {
   final String? hintText;
   final IconData? icon;
   final TextEditingController controller;
-  final bool isLeftIcon; // thuộc tính trái hay phải của icon
-  final Color iconColor; // màu của icon
-  final Color backgroundColor; // màu của background
-  final Color hintTextColor; // màu của hint text
-  final bool isPassword; // thuộc tính xác định input là password
+  final bool isLeftIcon;
+  final Color iconColor;
+  final Color backgroundColor;
+  final Color hintTextColor;
+  final bool isPassword;
   final double textFieldWidth;
   final double textFieldHeight;
+  final List<String>? autofillHints;
 
   const CustomTextField({
     Key? key,
@@ -24,9 +25,10 @@ class CustomTextField extends StatefulWidget {
     this.iconColor = AppColors.primaryGray,
     this.backgroundColor = AppColors.lightGrey,
     this.hintTextColor = AppColors.lightGrey,
-    this.isPassword = false, // Mặc định không phải là input password
+    this.isPassword = false,
     this.textFieldWidth = double.infinity,
     this.textFieldHeight = 50,
+    this.autofillHints,
   }) : super(key: key);
 
   @override
@@ -82,6 +84,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         },
                       )
                     : null,
+
                 // enabledBorder: OutlineInputBorder(
                 //   borderRadius: BorderRadius.circular(100),
                 //   borderSide: BorderSide.none,
@@ -91,6 +94,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 //   borderSide: BorderSide.none,
                 // ),
               ),
+              autofillHints: widget.autofillHints,
             ),
           ),
           if (!widget.isLeftIcon) Icon(widget.icon, color: widget.iconColor),
