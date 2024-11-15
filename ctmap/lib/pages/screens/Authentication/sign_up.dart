@@ -18,11 +18,14 @@ class _SignupState extends State<Signup> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _passwordConfirmController = TextEditingController();
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    //Sửa ở đây
+    _passwordConfirmController.dispose();
     _emailController.dispose();
     super.dispose();
   }
@@ -94,7 +97,7 @@ class _SignupState extends State<Signup> {
               CustomTextField(
                 hintText: 'Nhập lại mật khẩu',
                 icon: AppIcons.lock,
-                controller: _passwordController,
+                controller: _passwordConfirmController,
                 backgroundColor: AppColors.lightGrey,
                 iconColor: AppColors.primaryGray,
                 hintTextColor: AppColors.gray,
@@ -139,20 +142,37 @@ class _SignupState extends State<Signup> {
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
+    String passwordConfirm = _passwordConfirmController
+        .text; // Get the text from the confirm password field
 
     var userData = {
       'userName': username,
       'email': email,
       'password': password,
     };
+
     print('User data: $userData');
-    try {
-      await signUp(userData);
-      print("User is successfully created");
-      //Sửa ở đây
-      context.go(RoutePaths.login);
-    } catch (error) {
-      print("Error occurred during sign up: $error");
+
+    if (password != passwordConfirm) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Mật khẩu và nhập lại mật khẩu không giống nhau')),
+      );
+
+      _passwordConfirmController.clear();
+
+      return;
+    } else {
+      try {
+        await signUp(userData);
+        print("User is successfully created");
+        context.go(RoutePaths.login);
+      } catch (error) {
+        print("Error occurred during sign up: $error");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đã có lỗi xảy ra. Vui lòng thử lại.')),
+        );
+      }
     }
   }
 }

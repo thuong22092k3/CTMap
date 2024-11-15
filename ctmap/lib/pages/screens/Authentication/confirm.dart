@@ -46,12 +46,15 @@ class _ConfirmState extends ConsumerState<Confirm> {
 
       bool isValid = await verifyCode(email, code);
       if (isValid) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChangePassword(email: email),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => ChangePassword(email: email),
+        //   ),
+        // );
+
+        //Chưa sửa
+        context.go(RoutePaths.changePassword, extra: email);
         print("OTP is valid: $code");
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -151,7 +154,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
               'Yêu cầu gửi lại mã trong 00:30s',
               style: TextStyle(fontSize: 13, color: AppColors.gray),
             ),
-            Spacer(),
+            SizedBox(height: 20),
             if (widget.showButton)
               CustomTextButton(
                 onTap: _handleLater,

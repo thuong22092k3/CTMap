@@ -29,13 +29,16 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
     bool success = await sendVerificationCodeToEmail(email);
     if (success) {
       print("OTP sent successfully to $email");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Confirm(email: email),
-        ),
-      );
+      //Chưa sửa
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => Confirm(email: email),
+      //   ),
+      // );
+
       print("Navigated to Confirm page");
+      context.go(RoutePaths.confirm, extra: email);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),

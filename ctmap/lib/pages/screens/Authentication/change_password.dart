@@ -39,7 +39,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
     String newPassword = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    if (newPassword != confirmPassword) {
+    if (newPassword == confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Mật khẩu và nhập lại mật khẩu không giống nhau')),
@@ -174,7 +174,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                       btnWidth: 300,
                       btnHeight: 50,
                     ),
-                    Spacer(),
+                    SizedBox(height: 20),
                     if (widget.showButton)
                       CustomTextButton(
                         onTap: _handleLater,

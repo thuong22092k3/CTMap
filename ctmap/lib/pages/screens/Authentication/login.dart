@@ -150,7 +150,7 @@ class _LoginState extends ConsumerState<Login> {
                       const Spacer(),
                       CustomTextButton(
                         onTap: () {
-                          context.go(RoutePaths.forgotPassword);
+                          context.go(RoutePaths.forgotPassword, extra: true);
                         },
                         btnText: 'Quên mật khẩu?',
                       )

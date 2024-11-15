@@ -90,9 +90,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.confirm,
         builder: (context, state) {
-          final email = state.extra as String?;
+          final email = state.extra as String? ?? '';
           return Confirm(
-            email: email ?? '',
+            email: email,
             confirmText: 'Đổi mật khẩu',
             showButton: false,
           );
@@ -100,17 +100,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.forgotPassword,
-        builder: (context, state) => ForgotPassword(
-          forgotPasswordText: 'Đổi mật khẩu',
-          showButton: false,
-        ),
+        builder: (context, state) {
+          final showButton = state.extra as bool? ?? true;
+          return ForgotPassword(
+            forgotPasswordText: 'Đổi mật khẩu',
+            showButton: showButton,
+          );
+        },
       ),
       GoRoute(
         path: RoutePaths.changePassword,
         builder: (context, state) {
-          final email = state.extra as String?;
+          final email = state.extra as String? ?? '';
           return ChangePassword(
-            email: email ?? '',
+            email: email,
             changePasswordText: 'Đổi mật khẩu',
             showButton: false,
           );

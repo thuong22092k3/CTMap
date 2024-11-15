@@ -1,3 +1,4 @@
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
@@ -7,6 +8,7 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/screens/Profile/edit_profile.dart';
 import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/state_management/user_state.dart';
+import 'package:go_router/go_router.dart';
 
 class Profile extends ConsumerWidget {
   @override
@@ -82,11 +84,12 @@ class Profile extends ConsumerWidget {
                       children: [
                         CustomButton(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditProfile()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => EditProfile()),
+                            // );
+                            context.go(RoutePaths.editProfile);
                           },
                           btnText: 'Chỉnh sửa thông tin',
                           icon: AppIcons.edit,
@@ -98,11 +101,7 @@ class Profile extends ConsumerWidget {
                         ),
                         CustomButton(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPassword()),
-                            );
+                            context.go(RoutePaths.forgotPassword);
                           },
                           btnText: 'Đổi mật khẩu',
                           icon: AppIcons.lock,
