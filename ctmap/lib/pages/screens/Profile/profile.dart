@@ -89,7 +89,7 @@ class Profile extends ConsumerWidget {
                             //   MaterialPageRoute(
                             //       builder: (context) => EditProfile()),
                             // );
-                            context.go(RoutePaths.editProfile);
+                            context.go('${RoutePaths.profile}/edit');
                           },
                           btnText: 'Chỉnh sửa thông tin',
                           icon: AppIcons.edit,
@@ -101,7 +101,8 @@ class Profile extends ConsumerWidget {
                         ),
                         CustomButton(
                           onTap: () {
-                            context.go(RoutePaths.forgotPassword);
+                            context.go('${RoutePaths.profile}/forgotPassword',
+                                extra: false);
                           },
                           btnText: 'Đổi mật khẩu',
                           icon: AppIcons.lock,

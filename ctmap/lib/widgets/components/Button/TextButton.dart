@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 
 class CustomTextButton extends StatelessWidget {
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String? btnText;
   final Color? btnTextColor;
   final double? fontSize;
@@ -16,7 +16,7 @@ class CustomTextButton extends StatelessWidget {
     this.btnTextColor = AppColors.red,
     this.fontSize = 11,
     this.icon,
-    this.iconSize, // Kích thước của icon
+    this.iconSize,
   }) : super(key: key);
 
   @override

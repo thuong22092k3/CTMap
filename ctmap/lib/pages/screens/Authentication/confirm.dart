@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,34 @@ class Confirm extends ConsumerStatefulWidget {
 
 class _ConfirmState extends ConsumerState<Confirm> {
   final TextEditingController _controller = TextEditingController();
+  int _remainingTime = 60;
+  Timer? _timer;
+  void initState() {
+    super.initState();
+    startCountdown();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void startCountdown() {
+    setState(() {
+      _remainingTime = 60;
+    });
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_remainingTime > 0) {
+        setState(() {
+          _remainingTime--;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
   Future<void> verifyOtpCode(String code) async {
     try {
@@ -54,7 +83,22 @@ class _ConfirmState extends ConsumerState<Confirm> {
         // );
 
         //Chưa sửa
-        context.go(RoutePaths.changePassword, extra: email);
+        // context.go(RoutePaths.changePassword, extra: email);
+        final userState = ref.watch(userStateProvider);
+        if (userState.isLoggedIn == false) {
+          context.go(
+            RoutePaths.changePassword,
+            extra: {
+              'email': email,
+              'showButton': true,
+            },
+          );
+        } else {
+          context.go(
+            '${RoutePaths.profile}/forgotPassword/confirm/changePassword',
+            extra: email,
+          );
+        }
         print("OTP is valid: $code");
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -70,14 +114,47 @@ class _ConfirmState extends ConsumerState<Confirm> {
     }
   }
 
-  void resendCode() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Mã OTP đã được gửi lại!')),
-    );
+  Future<void> resendCode() async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đang gửi lại mã OTP...')),
+      );
+      String email = widget.email ?? ref.read(userStateProvider).email;
+      if (email == null || email.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email không hợp lệ.')),
+        );
+        return;
+      }
+      bool success = await sendVerificationCodeToEmail(email);
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Mã OTP đã được gửi lại!')),
+        );
+        startCountdown();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
+      );
+      print("Error resending OTP: $error");
+    }
   }
 
   void _handleBefore() {
-    context.go(RoutePaths.forgotPassword);
+    // context.go(RoutePaths.forgotPassword);
+    final userState = ref.watch(userStateProvider);
+    if (userState.isLoggedIn == false) {
+      context.go(
+        RoutePaths.forgotPassword,
+      );
+    } else {
+      context.go('${RoutePaths.profile}/forgotPassword', extra: false);
+    }
   }
 
   void _handleLater() {
@@ -144,15 +221,20 @@ class _ConfirmState extends ConsumerState<Confirm> {
                   style: TextStyle(fontSize: 14, color: AppColors.black),
                 ),
                 CustomTextButton(
-                  onTap: resendCode,
+                  onTap: _remainingTime == 0 ? resendCode : null,
                   btnText: 'Gửi lại mã',
                   fontSize: 14,
+                  btnTextColor:
+                      _remainingTime > 0 ? AppColors.gray : AppColors.red,
                 )
               ],
             ),
             Text(
-              'Yêu cầu gửi lại mã trong 00:30s',
-              style: TextStyle(fontSize: 13, color: AppColors.gray),
+              'Gửi lại mã trong 00:${_remainingTime.toString().padLeft(2, '0')}s',
+              style: TextStyle(
+                fontSize: 14,
+                color: _remainingTime > 0 ? AppColors.red : AppColors.gray,
+              ),
             ),
             SizedBox(height: 20),
             if (widget.showButton)

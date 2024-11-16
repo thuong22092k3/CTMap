@@ -25,56 +25,106 @@ class RoutePaths {
   static const String confirm = '/confirm';
   static const String forgotPassword = '/forgot_password';
   static const String changePassword = '/change_password';
+  //Logged in user
+  static const String confirmLogged = '/confirm';
+  static const String forgotPasswordLogged = '/forgot_password';
+  static const String changePasswordLogged = '/change_password';
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final rootNavKey = GlobalKey<NavigatorState>(debugLabel: 'rootNav');
+
   return GoRouter(
     initialLocation: RoutePaths.home,
     navigatorKey: rootNavKey,
     routes: [
       StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) =>
-              ScaffoldWithNavBar(navigationShell: navigationShell),
-          branches: [
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: RoutePaths.home,
-                  builder: (context, state) => Home(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: RoutePaths.news,
-                  builder: (context, state) => News(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: RoutePaths.statistic,
-                  builder: (context, state) => Statistic(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: RoutePaths.profile,
-                  builder: (context, state) {
-                    final userState = ref.watch(userStateProvider);
-                    print(
-                        'Checking if user is logged in: ${userState.isLoggedIn}');
-                    return userState.isLoggedIn ? Profile() : Login();
-                  },
-                ),
-              ],
-            ),
-          ]),
+        builder: (context, state, navigationShell) =>
+            ScaffoldWithNavBar(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.home,
+                builder: (context, state) => Home(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.news,
+                builder: (context, state) => News(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.statistic,
+                builder: (context, state) => Statistic(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.profile,
+                builder: (context, state) {
+                  final userState = ref.watch(userStateProvider);
+                  print(
+                      'Checking if user is logged in: ${userState.isLoggedIn}');
+                  return userState.isLoggedIn ? Profile() : Login();
+                },
+                routes: [
+                  // Đặt EditProfile là route con của Profile
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => EditProfile(),
+                  ),
+                  GoRoute(
+                    path: 'forgotPassword',
+                    builder: (context, state) {
+                      final extraValue = state.extra;
+                      final showButton =
+                          (extraValue is bool) ? extraValue : true;
+                      return ForgotPassword(
+                        forgotPasswordText: 'Đổi mật khẩu',
+                        showButton: showButton,
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                          path: 'confirm',
+                          builder: (context, state) {
+                            final email = state.extra as String? ?? '';
+                            return Confirm(
+                              email: email,
+                              confirmText: 'Đổi mật khẩu',
+                              showButton: false,
+                            );
+                          },
+                          routes: [
+                            GoRoute(
+                              path: 'changePassword',
+                              builder: (context, state) {
+                                final email = state.extra as String? ?? '';
+                                return ChangePassword(
+                                  email: email,
+                                  changePasswordText: 'Đổi mật khẩu',
+                                  showButton: false,
+                                );
+                              },
+                            ),
+                          ]),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
         path: RoutePaths.login,
         builder: (context, state) => Login(),
@@ -84,26 +134,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => Signup(),
       ),
       GoRoute(
-        path: RoutePaths.editProfile,
-        builder: (context, state) => EditProfile(),
-      ),
-      GoRoute(
         path: RoutePaths.confirm,
         builder: (context, state) {
-          final email = state.extra as String? ?? '';
+          final extraData = state.extra as Map<String, dynamic>? ?? {};
+          final email = extraData['email'] as String? ?? '';
+          final showButton = extraData['showButton'] as bool? ?? true;
           return Confirm(
             email: email,
-            confirmText: 'Đổi mật khẩu',
-            showButton: false,
+            confirmText: 'Quên mật khẩu',
+            showButton: showButton,
           );
         },
       ),
       GoRoute(
         path: RoutePaths.forgotPassword,
         builder: (context, state) {
-          final showButton = state.extra as bool? ?? true;
+          final extraValue = state.extra;
+          final showButton = extraValue is bool ? extraValue : true;
           return ForgotPassword(
-            forgotPasswordText: 'Đổi mật khẩu',
+            forgotPasswordText: 'Quên mật khẩu',
             showButton: showButton,
           );
         },
@@ -111,11 +160,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.changePassword,
         builder: (context, state) {
-          final email = state.extra as String? ?? '';
+          final extraData = state.extra as Map<String, dynamic>? ?? {};
+          final email = extraData['email'] as String? ?? '';
+          final showButton = extraData['showButton'] as bool? ?? true;
           return ChangePassword(
             email: email,
-            changePasswordText: 'Đổi mật khẩu',
-            showButton: false,
+            changePasswordText: 'Quên mật khẩu',
+            showButton: showButton,
           );
         },
       ),

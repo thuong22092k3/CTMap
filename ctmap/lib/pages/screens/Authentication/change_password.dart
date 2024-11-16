@@ -39,7 +39,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
     String newPassword = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
-    if (newPassword == confirmPassword) {
+    if (newPassword != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Mật khẩu và nhập lại mật khẩu không giống nhau')),
@@ -105,7 +105,17 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
   }
 
   void _handleBefore() {
-    context.go(RoutePaths.confirm);
+    // context.go(RoutePaths.confirm);
+    final userState = ref.watch(userStateProvider);
+    if (userState.isLoggedIn == false) {
+      context.go(
+        RoutePaths.confirm,
+      );
+    } else {
+      context.go(
+        '${RoutePaths.profile}/forgotPassword/confirm',
+      );
+    }
   }
 
   void _handleLater() {

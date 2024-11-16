@@ -38,7 +38,19 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
       // );
 
       print("Navigated to Confirm page");
-      context.go(RoutePaths.confirm, extra: email);
+      final userState = ref.watch(userStateProvider);
+      if (userState.isLoggedIn == false) {
+        context.go(
+          RoutePaths.confirm,
+          extra: {
+            'email': email,
+            'showButton': true,
+          },
+        );
+      } else {
+        context.go('${RoutePaths.profile}/forgotPassword/confirm',
+            extra: email);
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
