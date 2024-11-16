@@ -174,7 +174,8 @@ class Profile extends ConsumerWidget {
                     child: CustomButton(
                       onTap: () {
                         ref.read(userStateProvider.notifier).logOut();
-                        Navigator.pushReplacementNamed(context, '/login');
+                        // Navigator.pushReplacementNamed(context, '/login');
+                        context.go(RoutePaths.login);
                       },
                       btnText: 'Đăng xuất',
                       icon: AppIcons.logout,

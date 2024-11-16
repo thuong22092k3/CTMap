@@ -44,10 +44,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
             _emailController.text,
             ref.read(userStateProvider).password,
           );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Profile()),
-      );
+      context.go(RoutePaths.profile);
     } else {
       print('Update failed: ${result['message']}');
       ScaffoldMessenger.of(context).showSnackBar(

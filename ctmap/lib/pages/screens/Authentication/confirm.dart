@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -230,7 +231,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
               ],
             ),
             Text(
-              'Gửi lại mã trong 00:${_remainingTime.toString().padLeft(2, '0')}s',
+              'Yêu cầu gửi lại mã trong 00:${_remainingTime.toString().padLeft(2, '0')}s',
               style: TextStyle(
                 fontSize: 14,
                 color: _remainingTime > 0 ? AppColors.red : AppColors.gray,

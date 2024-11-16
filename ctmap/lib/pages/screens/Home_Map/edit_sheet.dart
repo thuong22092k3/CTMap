@@ -1,6 +1,7 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/data/type.dart';
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
@@ -9,6 +10,7 @@ import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -235,7 +237,8 @@ class _EditSheetState extends ConsumerState<EditSheet> {
       };
 
       await updateAccident(id, accidentData);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      context.push(RoutePaths.home);
     } catch (e) {
       print('Error: $e');
       showDialog(

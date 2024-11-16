@@ -1,5 +1,6 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
+import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/services/api.dart';
@@ -9,6 +10,7 @@ import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -165,8 +167,9 @@ class _NewSheetState extends ConsumerState<NewSheet> {
 
         await addAccident(accidentData);
         ref.read(accidentProvider.notifier).addAccident(accidentData);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => Home()));
+        context.push(RoutePaths.home);
       } catch (e) {
         print('Error: $e');
         showDialog(
@@ -233,7 +236,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                 Row(
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
@@ -244,19 +247,19 @@ class _NewSheetState extends ConsumerState<NewSheet> {
                           color: AppColors.red,
                         ),
                       ),
-                      const SizedBox(width: 8,),
-                      IconButton(
-                        icon: const Icon(
-                          AppIcons.info,
-                          color: AppColors.blue,
-                        ),
-                        onPressed: () {
-                          showInfoModal(context);
-                        },
-                        padding: EdgeInsets.zero
+                      const SizedBox(
+                        width: 8,
                       ),
+                      IconButton(
+                          icon: const Icon(
+                            AppIcons.info,
+                            color: AppColors.blue,
+                          ),
+                          onPressed: () {
+                            showInfoModal(context);
+                          },
+                          padding: EdgeInsets.zero),
                     ],
-                    
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
@@ -279,23 +282,22 @@ class _NewSheetState extends ConsumerState<NewSheet> {
               // const SizedBox(
               //   height: 20,
               // ),
-             CheckboxListTile(
-                  title: const Text(
-                    "Hiển thị tên của bạn",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'Mulish',
-                    ),
+              CheckboxListTile(
+                title: const Text(
+                  "Hiển thị tên của bạn",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Mulish',
                   ),
-                  value: showUserName,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      showUserName = value ?? false;
-                    });
-                  },
                 ),
+                value: showUserName,
+                onChanged: (bool? value) {
+                  setState(() {
+                    showUserName = value ?? false;
+                  });
+                },
+              ),
 
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -333,12 +335,11 @@ class _NewSheetState extends ConsumerState<NewSheet> {
   void showInfoModal(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: true, 
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return const Dialog(
           child: InfoSheet(),
         );
-
       },
     );
   }
