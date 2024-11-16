@@ -92,108 +92,238 @@ class _LoginState extends ConsumerState<Login> {
     context.go(RoutePaths.home);
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     resizeToAvoidBottomInset: true,
+  //     body: SingleChildScrollView(
+  //       child: ConstrainedBox(
+  //         constraints: BoxConstraints(
+  //           minHeight: MediaQuery.of(context).size.height,
+  //         ),
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(30),
+  //           child: AutofillGroup(
+  //             child: Center(
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 children: [
+  //                   const SizedBox(height: 30),
+  //                   const Text(
+  //                     'Đăng Nhập',
+  //                     style: TextStyle(fontSize: 32, color: AppColors.red),
+  //                   ),
+  //                   const SizedBox(height: 30),
+  //                   CustomTextField(
+  //                     hintText: 'Email hoặc Username',
+  //                     icon: AppIcons.email,
+  //                     controller: _usernameController,
+  //                     backgroundColor: AppColors.lightGrey,
+  //                     iconColor: AppColors.primaryGray,
+  //                     hintTextColor: AppColors.gray,
+  //                     autofillHints: [AutofillHints.username],
+  //                   ),
+  //                   const SizedBox(height: 10),
+  //                   CustomTextField(
+  //                     hintText: 'Mật khẩu',
+  //                     icon: AppIcons.lock,
+  //                     controller: _passwordController,
+  //                     backgroundColor: AppColors.lightGrey,
+  //                     iconColor: AppColors.primaryGray,
+  //                     hintTextColor: AppColors.gray,
+  //                     isPassword: true,
+  //                     autofillHints: [AutofillHints.password],
+  //                   ),
+  //                   const SizedBox(height: 30),
+  //                   Row(
+  //                     children: [
+  //                       CustomCheckbox(
+  //                         value: _isChecked,
+  //                         onChanged: (newValue) {
+  //                           setState(() {
+  //                             _isChecked = newValue ?? false;
+  //                           });
+  //                         },
+  //                         margin: EdgeInsets.only(right: 8.0),
+  //                       ),
+  //                       const Text(
+  //                         'Ghi nhớ đăng nhập',
+  //                         style:
+  //                             TextStyle(fontSize: 11, color: AppColors.black),
+  //                       ),
+  //                       const Spacer(),
+  //                       CustomTextButton(
+  //                         onTap: () {
+  //                           context.go(RoutePaths.forgotPassword, extra: true);
+  //                         },
+  //                         btnText: 'Quên mật khẩu?',
+  //                       )
+  //                     ],
+  //                   ),
+  //                   const SizedBox(height: 30),
+  //                   CustomButton(
+  //                     onTap: () {
+  //                       _handleLogin();
+  //                       TextInput.finishAutofillContext();
+  //                     },
+  //                     btnText: 'Đăng nhập',
+  //                     btnWidth: 300,
+  //                     btnHeight: 50,
+  //                   ),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       const Text(
+  //                         'Chưa có tài khoản?',
+  //                         style:
+  //                             TextStyle(fontSize: 14, color: AppColors.black),
+  //                       ),
+  //                       CustomTextButton(
+  //                         onTap: () {
+  //                           context.go(RoutePaths.signUp);
+  //                         },
+  //                         btnText: 'Đăng ký',
+  //                         fontSize: 14,
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   const SizedBox(height: 20),
+  //                   //const Spacer(),
+  //                   CustomTextButton(
+  //                     onTap: _handleLater,
+  //                     btnText: 'Lúc khác',
+  //                     fontSize: 14,
+  //                     btnTextColor: AppColors.primaryGray,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: AutofillGroup(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 30),
-                  const Text(
-                    'Đăng Nhập',
-                    style: TextStyle(fontSize: 32, color: AppColors.red),
-                  ),
-                  const SizedBox(height: 30),
-                  CustomTextField(
-                    hintText: 'Email hoặc Username',
-                    icon: AppIcons.email,
-                    controller: _usernameController,
-                    backgroundColor: AppColors.lightGrey,
-                    iconColor: AppColors.primaryGray,
-                    hintTextColor: AppColors.gray,
-                    autofillHints: [AutofillHints.username],
-                  ),
-                  const SizedBox(height: 10),
-                  CustomTextField(
-                    hintText: 'Mật khẩu',
-                    icon: AppIcons.lock,
-                    controller: _passwordController,
-                    backgroundColor: AppColors.lightGrey,
-                    iconColor: AppColors.primaryGray,
-                    hintTextColor: AppColors.gray,
-                    isPassword: true,
-                    autofillHints: [AutofillHints.password],
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      CustomCheckbox(
-                        value: _isChecked,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _isChecked = newValue ?? false;
-                          });
-                        },
-                        margin: EdgeInsets.only(right: 8.0),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+              ),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: AutofillGroup(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 30),
+                          const Text(
+                            'Đăng Nhập',
+                            style:
+                                TextStyle(fontSize: 32, color: AppColors.red),
+                          ),
+                          const SizedBox(height: 30),
+                          CustomTextField(
+                            hintText: 'Email hoặc Username',
+                            icon: AppIcons.email,
+                            controller: _usernameController,
+                            backgroundColor: AppColors.lightGrey,
+                            iconColor: AppColors.primaryGray,
+                            hintTextColor: AppColors.gray,
+                            autofillHints: [AutofillHints.username],
+                          ),
+                          const SizedBox(height: 10),
+                          CustomTextField(
+                            hintText: 'Mật khẩu',
+                            icon: AppIcons.lock,
+                            controller: _passwordController,
+                            backgroundColor: AppColors.lightGrey,
+                            iconColor: AppColors.primaryGray,
+                            hintTextColor: AppColors.gray,
+                            isPassword: true,
+                            autofillHints: [AutofillHints.password],
+                          ),
+                          const SizedBox(height: 30),
+                          Row(
+                            children: [
+                              CustomCheckbox(
+                                value: _isChecked,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _isChecked = newValue ?? false;
+                                  });
+                                },
+                                margin: EdgeInsets.only(right: 8.0),
+                              ),
+                              const Text(
+                                'Ghi nhớ đăng nhập',
+                                style: TextStyle(
+                                    fontSize: 11, color: AppColors.black),
+                              ),
+                              const Spacer(),
+                              CustomTextButton(
+                                onTap: () {
+                                  context.go(RoutePaths.forgotPassword,
+                                      extra: true);
+                                },
+                                btnText: 'Quên mật khẩu?',
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+                          CustomButton(
+                            onTap: () {
+                              _handleLogin();
+                              TextInput.finishAutofillContext();
+                            },
+                            btnText: 'Đăng nhập',
+                            btnWidth: 300,
+                            btnHeight: 50,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Chưa có tài khoản?',
+                                style: TextStyle(
+                                    fontSize: 14, color: AppColors.black),
+                              ),
+                              CustomTextButton(
+                                onTap: () {
+                                  context.go(RoutePaths.signUp);
+                                },
+                                btnText: 'Đăng ký',
+                                fontSize: 14,
+                              ),
+                            ],
+                          ),
+                          // const SizedBox(height: 20),
+                          const Spacer(),
+                          CustomTextButton(
+                            onTap: _handleLater,
+                            btnText: 'Lúc khác',
+                            fontSize: 14,
+                            btnTextColor: AppColors.primaryGray,
+                          ),
+                        ],
                       ),
-                      const Text(
-                        'Ghi nhớ đăng nhập',
-                        style: TextStyle(fontSize: 11, color: AppColors.black),
-                      ),
-                      const Spacer(),
-                      CustomTextButton(
-                        onTap: () {
-                          context.go(RoutePaths.forgotPassword, extra: true);
-                        },
-                        btnText: 'Quên mật khẩu?',
-                      )
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 30),
-                  CustomButton(
-                    onTap: () {
-                      _handleLogin();
-                      TextInput.finishAutofillContext();
-                    },
-                    btnText: 'Đăng nhập',
-                    btnWidth: 300,
-                    btnHeight: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Chưa có tài khoản?',
-                        style: TextStyle(fontSize: 14, color: AppColors.black),
-                      ),
-                      CustomTextButton(
-                        onTap: () {
-                          context.go(RoutePaths.signUp);
-                        },
-                        btnText: 'Đăng ký',
-                        fontSize: 14,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  CustomTextButton(
-                    onTap: _handleLater,
-                    btnText: 'Lúc khác',
-                    fontSize: 14,
-                    btnTextColor: AppColors.primaryGray,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

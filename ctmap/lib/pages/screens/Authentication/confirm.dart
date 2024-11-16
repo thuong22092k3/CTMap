@@ -237,7 +237,8 @@ class _ConfirmState extends ConsumerState<Confirm> {
                 color: _remainingTime > 0 ? AppColors.red : AppColors.gray,
               ),
             ),
-            SizedBox(height: 20),
+            // SizedBox(height: 20),
+            const Spacer(),
             if (widget.showButton)
               CustomTextButton(
                 onTap: _handleLater,
