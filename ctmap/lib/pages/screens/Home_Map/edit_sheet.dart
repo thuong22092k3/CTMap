@@ -216,7 +216,7 @@ class _EditSheetState extends ConsumerState<EditSheet> {
       int level = calculateAccidentLevel(deaths, injuries);
       int cause = acciType.indexOf(selectedAcciType) + 1;
       LatLng position = widget.accidentData.position;
-      String positionStr = '${position.longitude} ${position.latitude}';
+      String positionStr = '${position.latitude}, ${position.longitude}';
       String link = '';
       String userName = userState.userName;
 
