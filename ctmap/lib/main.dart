@@ -1,3 +1,4 @@
+import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +26,10 @@ class MyApp extends ConsumerWidget {
           bodyMedium: TextStyle(fontFamily: 'Mulish'), // Font cho bodyText2
           displayLarge: TextStyle(fontFamily: 'Mulish'), // Font cho headline1
         ),
+        // colorScheme: ColorScheme.fromSeed(
+        //   primary: AppColors.white,
+        //   seedColor: AppColors.red
+        // ),
       ),
     );
   }

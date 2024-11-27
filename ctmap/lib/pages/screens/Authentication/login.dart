@@ -8,11 +8,8 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/Checkbox/Checkbox.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
-import 'package:ctmap/pages/screens/Authentication/sign_up.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
-import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -263,7 +260,7 @@ class _LoginState extends ConsumerState<Login> {
                                     _isChecked = newValue ?? false;
                                   });
                                 },
-                                margin: EdgeInsets.only(right: 8.0),
+                                margin: const EdgeInsets.only(right: 8.0),
                               ),
                               const Text(
                                 'Ghi nhớ đăng nhập',

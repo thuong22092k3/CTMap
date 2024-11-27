@@ -1,5 +1,4 @@
 import 'package:ctmap/pages/screens/Home_Map/edit_sheet.dart';
-import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +8,15 @@ import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/assets/colors/colors.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DetailSheet extends ConsumerStatefulWidget {
   final AccidentData accidentData;
 
-  const DetailSheet({Key? key, required this.accidentData}) : super(key: key);
+  const DetailSheet({
+    super.key, 
+    required this.accidentData,
+  });
 
   @override
   _DetailSheetState createState() => _DetailSheetState();
@@ -23,6 +24,8 @@ class DetailSheet extends ConsumerStatefulWidget {
 
 class _DetailSheetState extends ConsumerState<DetailSheet> {
   late final AccidentData accidentData;
+
+
   void initState() {
     super.initState();
     accidentData = widget.accidentData;
@@ -167,6 +170,7 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
   }
   
   void _handleDelete(BuildContext context) {
+    final parentContext = context;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -192,12 +196,14 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                   ref
                       .read(accidentProvider.notifier)
                       .removeAccident(accidentData);
-                  Navigator.pop(context);
+                  
+                  //widget.isMarkerDeleted(true);
+                  Navigator.of(parentContext).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                         content: Text('Vụ tai nạn đã được xóa thành công')),
                   );
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  // Navigator.of(context).popUntil((route) => route.isFirst);
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

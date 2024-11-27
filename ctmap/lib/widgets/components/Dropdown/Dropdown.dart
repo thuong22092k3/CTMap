@@ -29,7 +29,7 @@ class CustomDropdown extends StatelessWidget {
         color: AppColors.lightGrey,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
         value: selectedItem,
         onChanged: onChanged,

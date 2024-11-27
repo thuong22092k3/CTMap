@@ -1,7 +1,6 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/routes/routes.dart';
-import 'package:ctmap/pages/screens/Home_Map/home_map.dart';
 import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/accident_state.dart';

@@ -39,7 +39,8 @@ class AccidentStateNotifier extends StateNotifier<List<AccidentData>> {
   }
 
   void removeAccident(AccidentData accident) {
-    state = state.where((a) => a != accident).toList();
+    //state = state.where((a) => a != accident).toList();
+    state = state.where((acc) => acc.id != accident.id).toList();
   }
 
   void updateAccident(AccidentData updatedAccident) {

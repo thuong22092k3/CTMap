@@ -1,5 +1,4 @@
 import 'package:ctmap/data/type.dart';
-import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/assets/colors/colors.dart';
@@ -9,7 +8,6 @@ import '../../widgets/components/Button/Button.dart';
 import '../../widgets/components/Dropdown/Dropdown.dart';
 import '../../widgets/components/Chart/BarChart.dart';
 import '../../widgets/components/Table/Table.dart';
-import '../../widgets/components/Calendar/Calendar.dart';
 
 // sửa ở statefulwidget -> ConsumerStatefulWidget
 class Statistic extends ConsumerStatefulWidget {
@@ -169,8 +167,8 @@ class _StatisticState extends ConsumerState<Statistic> {
 
     return accidentDataList.where((accident) {
       bool isInDateRange =
-          accident.date.isAfter(dateRange.start.subtract(Duration(days: 1))) &&
-              accident.date.isBefore(dateRange.end.add(Duration(days: 1)));
+          accident.date.isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+              accident.date.isBefore(dateRange.end.add(const Duration(days: 1)));
       bool isInCity = selectedCity == 'Tất cả' || accident.city == selectedCity;
       return isInDateRange && isInCity;
     }).toList();
@@ -188,7 +186,7 @@ class _StatisticState extends ConsumerState<Statistic> {
       case 'Tuần':
         startDate =
             selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
-        endDate = startDate.add(Duration(days: 6));
+        endDate = startDate.add(const Duration(days: 6));
         break;
       case 'Tháng':
         startDate = DateTime(selectedDate.year, selectedDate.month, 1);
@@ -235,7 +233,7 @@ class _StatisticState extends ConsumerState<Statistic> {
               maxHeight: 86,
               child: Container(
                 color: AppColors.red,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: const Center(
                   child: Text(
                     'Thống Kê',
@@ -251,7 +249,7 @@ class _StatisticState extends ConsumerState<Statistic> {
           ),
           SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -275,7 +273,7 @@ class _StatisticState extends ConsumerState<Statistic> {
                             ? AppColors.red
                             : AppColors.primaryGray,
                       ),
-                      SizedBox(width: 20),
+                      const SizedBox(width: 20),
                       CustomButton(
                         onTap: () {
                           setState(() {
@@ -295,16 +293,19 @@ class _StatisticState extends ConsumerState<Statistic> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     'Tổng số vụ tai nạn: ${showChart ? (isSearchButtonPressed ? getFilteredAccidents(accidentDataList).length : accidentDataList.length) : accidentDataList.length}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16, 
+                      fontWeight: FontWeight.w600
+                    ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   if (showChart)
                     Container(
                       padding:
-                          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                          const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -313,7 +314,7 @@ class _StatisticState extends ConsumerState<Statistic> {
                             color: Colors.grey.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 5,
-                            offset: Offset(0, 3),
+                            offset: const Offset(0, 3),
                           ),
                         ],
                       ),
@@ -330,14 +331,14 @@ class _StatisticState extends ConsumerState<Statistic> {
                               });
                             },
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             children: [
                               Expanded(
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.only(right: 10),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[200],
+                                    color: AppColors.lightGrey,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
@@ -358,7 +359,8 @@ class _StatisticState extends ConsumerState<Statistic> {
                                           ),
                                         ),
                                       ),
-                                      Container(
+                                      const SizedBox(
+                                        width: 5,
                                         height: 30,
                                         child: VerticalDivider(
                                           color: AppColors.gray,
@@ -366,7 +368,7 @@ class _StatisticState extends ConsumerState<Statistic> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 3,
+                                        flex: 5,
                                         child: GestureDetector(
                                           onTap: () async {
                                             DateTime? pickedDate =
@@ -400,7 +402,7 @@ class _StatisticState extends ConsumerState<Statistic> {
                                                                 ? "Quý ${((selectedDate.month - 1) ~/ 3) + 1}/${selectedDate.year}"
                                                                 : "${selectedDate.year}",
                                               ),
-                                              Icon(
+                                              const Icon(
                                                 AppIcons.calendar,
                                                 color: AppColors.red,
                                               ),
@@ -414,7 +416,7 @@ class _StatisticState extends ConsumerState<Statistic> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           CustomButton(
                             onTap: () {
                               setState(() {

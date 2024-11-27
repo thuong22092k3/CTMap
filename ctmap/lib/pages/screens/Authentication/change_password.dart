@@ -1,14 +1,10 @@
 import 'package:ctmap/pages/routes/routes.dart';
-import 'package:ctmap/pages/screens/Authentication/login.dart';
-import 'package:ctmap/pages/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:flutter/services.dart';
-import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

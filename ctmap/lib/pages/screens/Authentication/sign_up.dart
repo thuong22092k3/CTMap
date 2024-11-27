@@ -5,7 +5,6 @@ import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:go_router/go_router.dart';
 

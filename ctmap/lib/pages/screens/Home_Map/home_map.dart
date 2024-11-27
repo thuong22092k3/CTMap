@@ -1,7 +1,6 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/routes/routes.dart';
-import 'package:ctmap/pages/screens/Authentication/login.dart';
 import 'package:ctmap/pages/screens/Home_Map/detail_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/filter_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
@@ -23,6 +22,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 const mapboxToken =
     'pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw';
 
+const mapAPI = "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw";
 var myPosition = const LatLng(10.870137995752456, 106.8038409948349);
 
 // sửa ở statefulwidget -> ConsumerStatefulWidget
@@ -44,39 +44,8 @@ class HomeState extends ConsumerState<Home> {
   void initState() {
     super.initState();
     getAccidents();
-    //updateMarkers(accidentDataList);
   }
 
-  // Future<void> getAccidents() async {
-  //   List<AccidentData> accidents = await getAllAccidents();
-  //   if (accidents.isNotEmpty) {
-  //     print('Dữ liệu đã được lấy thành công.');
-  //     for (var accident in accidents) {
-  //       print('Date: ${accident.date}');
-  //       print('Deaths: ${accident.deaths}');
-  //       print('Injuries: ${accident.injuries}');
-  //       print('Level: ${accident.level}');
-  //       print('Cause: ${accident.cause}');
-  //       print('Position: ${accident.position}');
-  //       print('Số phương tiện liên quan: ${accident.sophuongtienlienquan}');
-  //       print('Link: ${accident.link}');
-  //       print('Địa điểm: ${accident.location}');
-  //       print('Thành phố: ${accident.city}');
-  //       print('Tên: ${accident.userName}');
-  //       print('Hiển thị: ${accident.showUserName}');
-
-  //       print('-----------------------');
-  //       print('so luong ${accidents.length}');
-  //     }
-  //     print('so luong ${accidents.length}');
-  //   } else {
-  //     print('Không có dữ liệu.');
-  //   }
-  //   ref.read(accidentProvider.notifier).setAccidents(accidents);
-  //   setState(() {
-  //     accidentDataList = accidents;
-  //   });
-  // }
   Future<void> getAccidents() async {
     if (isFirstLoad) {
       // Lấy dữ liệu từ database chỉ lần đầu
@@ -88,6 +57,10 @@ class HomeState extends ConsumerState<Home> {
       });
       updateMarkers(accidentDataList);
     }
+
+    // List<AccidentData> accidents = await getAllAccidents();
+    // ref.read(accidentProvider.notifier).setAccidents(accidents);
+    // updateMarkers(accidents);
   }
 
 //Thêm zoom
@@ -102,7 +75,7 @@ class HomeState extends ConsumerState<Home> {
       builder: (BuildContext context) {
         return FractionallySizedBox(
           heightFactor: 1,
-          child: DetailSheet(accidentData: data),
+          child: DetailSheet(accidentData: data, ),
         );
       },
     );
@@ -111,8 +84,8 @@ class HomeState extends ConsumerState<Home> {
   //DETAIL SHEET
   bool isDetailOpened = false;
 
-  void openDetailSheet(AccidentData data, BuildContext context) {
-    showModalBottomSheet<dynamic>(
+  void openDetailSheet(AccidentData data, BuildContext context) async {
+    await showModalBottomSheet<dynamic>(
         context: context,
         builder: (_) {
           return DetailSheet(accidentData: data);
@@ -222,14 +195,6 @@ class HomeState extends ConsumerState<Home> {
     });
   }
 
-  void onResetFilter() {
-    setState(() {
-      isFilteredMode = false;
-      filteredAccidents = accidentDataList;
-      updateMarkers(accidentDataList);
-    });
-  }
-
   //FILTER SHEET
   bool isFilterOpened = false;
   void openFilterSheet() async {
@@ -249,9 +214,6 @@ class HomeState extends ConsumerState<Home> {
         isFilterOpened = false;
       });
     });
-    // setState(() {
-    //   isFilterOpened = true;
-    // });
   }
 
   //ADD SHEET
@@ -333,23 +295,6 @@ class HomeState extends ConsumerState<Home> {
   LatLng? searchCenter;
   final TextEditingController searchController = TextEditingController();
 
-  List<Marker> getMarkers(List<AccidentData> accidentDataList) {
-    return [
-      for (var accidentData in accidentDataList)
-        Marker(
-          point: accidentData.position,
-          child: GestureDetector(
-            onTap: () {
-              _onMarkerTapped(accidentData, context);
-            },
-            child: NumberedLocationIcon(
-              iconData: AppIcons.location,
-              number: accidentData.level,
-            ),
-          ),
-        ),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -381,8 +326,7 @@ class HomeState extends ConsumerState<Home> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate:
-                        "https://api.mapbox.com/styles/v1/linhchi205/clue6n1k000gd01pec4ie0pcn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibGluaGNoaTIwNSIsImEiOiJjbHVjdzA0YTYwMGQ3Mm5vNDBqY2lmaWN0In0.1JRKpV8uSgIW8rjFkkFQAw",
+                    urlTemplate: mapAPI,
                     additionalOptions: const {
                       'accessToken': mapboxToken,
                       'id': 'mapbox.mapbox-streets-v8',
@@ -398,13 +342,21 @@ class HomeState extends ConsumerState<Home> {
                       //markers: getMarkers(accidentDataList),
                       markers: markers,
                       builder: (context, markers) {
+                        Color clusterColor;
+                        if (markers.length < 10) {
+                          clusterColor = AppColors.danger1;
+                        } else if (markers.length < 20) {
+                          clusterColor = AppColors.danger2;
+                        } else {
+                          clusterColor = AppColors.danger3;
+                        }
                         return Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: Colors.red,
+                              color: clusterColor,
                               boxShadow: const [
                                 BoxShadow(
-                                  color: AppColors.redBlur,
+                                  color: Colors.black26,
                                   spreadRadius: 5,
                                   blurRadius: 7,
                                   offset: Offset(0, 0),

@@ -7,8 +7,6 @@ import 'package:ctmap/widgets/components/Button/Button.dart';
 import 'package:ctmap/widgets/components/Button/TextButton.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
-import 'package:ctmap/pages/screens/Authentication/change_password.dart';
-import 'package:ctmap/pages/screens/Authentication/forgot_password.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:go_router/go_router.dart';
