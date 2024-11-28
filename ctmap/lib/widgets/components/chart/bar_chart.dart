@@ -13,8 +13,7 @@ class CustomBarChart extends StatelessWidget {
   final List<AccidentData> accidentDataList;
 
   const CustomBarChart(
-      {Key? key, required this.dataMode, required this.accidentDataList})
-      : super(key: key);
+      {super.key, required this.dataMode, required this.accidentDataList});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class CustomBarChart extends StatelessWidget {
         borderData: borderData,
         barGroups:
             dataMode == DataMode.level ? barGroupsByLevel : barGroupsByCause,
-        gridData: FlGridData(
+        gridData: const FlGridData(
           show: true,
           horizontalInterval: 10,
           drawVerticalLine: false,
@@ -43,7 +42,7 @@ class CustomBarChart extends StatelessWidget {
 
     final List<BarChartGroupData> groups = [];
 
-    uniqueLevels.forEach((level) {
+    for (var level in uniqueLevels) {
       final levelAccidents = accidentDataList
           .where((accident) => accident.level == level)
           .toList();
@@ -65,7 +64,7 @@ class CustomBarChart extends StatelessWidget {
           showingTooltipIndicators: const [0],
         ),
       );
-    });
+    }
 
     return groups;
   }
@@ -76,7 +75,7 @@ class CustomBarChart extends StatelessWidget {
     uniqueCauses.sort();
     final List<BarChartGroupData> groups = [];
 
-    uniqueCauses.forEach((cause) {
+    for (var cause in uniqueCauses) {
       final causeAccidents = accidentDataList
           .where((accident) => accident.cause == cause)
           .toList();
@@ -98,7 +97,7 @@ class CustomBarChart extends StatelessWidget {
           showingTooltipIndicators: const [0],
         ),
       );
-    });
+    }
 
     return groups;
   }
@@ -117,14 +116,14 @@ class CustomBarChart extends StatelessWidget {
           ) {
             return BarTooltipItem(
               rod.toY.toInt().toString(),
-              TextStyle(color: AppColors.red, fontSize: 10),
+              const TextStyle(color: AppColors.red, fontSize: 10),
             );
           },
         ),
       );
 
   Widget getTitles(double value, TitleMeta meta) {
-    final style = TextStyle(
+    const style = TextStyle(
       color: AppColors.primaryBlack,
       fontWeight: FontWeight.w400,
       fontSize: 8,
@@ -190,7 +189,7 @@ class CustomBarChart extends StatelessWidget {
   Widget customTitleWidget(double value, TitleMeta meta) {
     return Text(
       value.toInt().toString(),
-      style: TextStyle(
+      style: const TextStyle(
         color: AppColors.primaryBlack,
         fontSize: 10,
       ),
@@ -214,17 +213,17 @@ class CustomBarChart extends StatelessWidget {
             getTitlesWidget: customTitleWidget,
           ),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
       );
 
   FlBorderData get borderData => FlBorderData(
         show: true,
-        border: Border(
+        border: const Border(
           bottom: BorderSide(color: Colors.black, width: 1),
           left: BorderSide(color: Colors.black, width: 1),
         ),

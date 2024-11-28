@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ctmap/data/type.dart';
 import 'package:latlong2/latlong.dart';

@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Button/TextButton.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/button/text_button.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/state_management/user_state.dart';
@@ -16,21 +18,21 @@ class Confirm extends ConsumerStatefulWidget {
   final String confirmText;
   final bool showButton;
 
-  Confirm(
-      {Key? key,
+  const Confirm(
+      {super.key,
       this.email,
       this.confirmText = 'Quên mật khẩu',
-      this.showButton = true})
-      : super(key: key);
+      this.showButton = true});
 
   @override
-  _ConfirmState createState() => _ConfirmState();
+  ConfirmState createState() => ConfirmState();
 }
 
-class _ConfirmState extends ConsumerState<Confirm> {
+class ConfirmState extends ConsumerState<Confirm> {
   final TextEditingController _controller = TextEditingController();
   int _remainingTime = 60;
   Timer? _timer;
+  @override
   void initState() {
     super.initState();
     startCountdown();
@@ -47,7 +49,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
       _remainingTime = 60;
     });
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingTime > 0) {
         setState(() {
           _remainingTime--;
@@ -61,13 +63,13 @@ class _ConfirmState extends ConsumerState<Confirm> {
   Future<void> verifyOtpCode(String code) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đang xác thực mã OTP...')),
+        const SnackBar(content: Text('Đang xác thực mã OTP...')),
       );
 
       String email = widget.email ?? ref.read(userStateProvider).email;
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email không hợp lệ.')),
+          const SnackBar(content: Text('Email không hợp lệ.')),
         );
         return;
       }
@@ -101,13 +103,13 @@ class _ConfirmState extends ConsumerState<Confirm> {
         print("OTP is valid: $code");
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mã OTP không hợp lệ. Vui lòng thử lại.')),
+          const SnackBar(content: Text('Mã OTP không hợp lệ. Vui lòng thử lại.')),
         );
         print("Invalid OTP: $code");
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
+        const SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
       );
       print("Error verifying OTP: $error");
     }
@@ -116,29 +118,31 @@ class _ConfirmState extends ConsumerState<Confirm> {
   Future<void> resendCode() async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đang gửi lại mã OTP...')),
+        const SnackBar(content: Text('Đang gửi lại mã OTP...')),
       );
       String email = widget.email ?? ref.read(userStateProvider).email;
-      if (email == null || email.isEmpty) {
+      if (email.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email không hợp lệ.')),
+          const SnackBar(content: Text('Email không hợp lệ.')),
         );
         return;
       }
+
+      final messenger = ScaffoldMessenger.of(context);
       bool success = await sendVerificationCodeToEmail(email);
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mã OTP đã được gửi lại!')),
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Mã OTP đã được gửi lại!')),
         );
         startCountdown();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
         );
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
+        const SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
       );
       print("Error resending OTP: $error");
     }
@@ -164,46 +168,46 @@ class _ConfirmState extends ConsumerState<Confirm> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(25),
+        padding: const EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
                 onTap: _handleBefore,
-                icon: AppIcons.left_arrow,
+                icon: AppIcons.leftArrow,
                 iconSize: 30,
               ),
               Text(
                 widget.confirmText,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 32,
                   color: AppColors.red,
                 ),
               ),
             ]),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Vui lòng nhập mã OTP đã gửi đến email của bạn!',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.primaryGray,
               ),
             ),
-            SizedBox(height: 20),
-            Container(
+            const SizedBox(height: 20),
+            SizedBox(
               width: 300,
               child: TextField(
                 controller: _controller,
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Nhập mã OTP',
                 ),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             CustomButton(
               onTap: () {
                 verifyOtpCode(_controller.text);
@@ -215,7 +219,7 @@ class _ConfirmState extends ConsumerState<Confirm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Chưa nhận được mã?',
                   style: TextStyle(fontSize: 14, color: AppColors.black),
                 ),

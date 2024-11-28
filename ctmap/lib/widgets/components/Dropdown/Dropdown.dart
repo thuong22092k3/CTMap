@@ -11,14 +11,14 @@ class CustomDropdown extends StatelessWidget {
   final double? borderRadius;
 
   const CustomDropdown({
-    Key? key,
+    super.key,
     required this.items,
     required this.selectedItem,
     this.onChanged,
     this.dropdownHeight,
     this.dropdownWidth,
     this.borderRadius = 10,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,8 @@ class CustomDropdown extends StatelessWidget {
       child: DropdownButton<String>(
         value: selectedItem,
         onChanged: onChanged,
-        underline: SizedBox(),
-        icon: Icon(AppIcons.dropdown, color: AppColors.red),
+        underline: const SizedBox(),
+        icon: const Icon(AppIcons.dropdown, color: AppColors.red),
         iconSize: 24,
         isExpanded: true,
         style: const TextStyle(

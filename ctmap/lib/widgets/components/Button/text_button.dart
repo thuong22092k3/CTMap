@@ -10,14 +10,14 @@ class CustomTextButton extends StatelessWidget {
   final double? iconSize;
 
   const CustomTextButton({
-    Key? key,
+    super.key,
     required this.onTap,
     this.btnText,
     this.btnTextColor = AppColors.red,
     this.fontSize = 11,
     this.icon,
     this.iconSize,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

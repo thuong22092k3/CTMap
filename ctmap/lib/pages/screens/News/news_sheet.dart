@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';  // Import the intl package
 
 class NewsSheet extends StatefulWidget {
+  const NewsSheet({super.key});
+
   //const NewsSheet({super.key});
 
   @override
@@ -13,10 +15,9 @@ class NewsSheet extends StatefulWidget {
 }
 
 class NewsSheetState extends State<NewsSheet> {
-  static const String FEED_URL =
+  static const String feedURL =
       'https://www.baogiaothong.vn/rss/an-toan-giao-thong/giao-thong-24h.rss';
   late RssFeed _feed = RssFeed(items: []);
-  late String _title;
   static const String loadingFeedMsg = 'Đang tải tin tức...';
   static const String feedLoadErrorMsg = 'Lỗi tải.';
   static const String feedOpenErrorMsg = 'Không mở được tin tức.';
@@ -29,7 +30,6 @@ class NewsSheetState extends State<NewsSheet> {
 
   updateTitle(title) {
     setState(() {
-      _title = title;
     });
   }
 
@@ -69,7 +69,7 @@ class NewsSheetState extends State<NewsSheet> {
   Future<RssFeed?> loadFeed() async {
     try {
       final client = http.Client();
-      final response = await client.get(Uri.parse(FEED_URL));
+      final response = await client.get(Uri.parse(feedURL));
       return RssFeed.parse(response.body);
     } catch (e) {
       //print('Lỗi tải: $e');

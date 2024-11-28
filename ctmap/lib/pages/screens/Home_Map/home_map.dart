@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/routes/routes.dart';
@@ -7,9 +9,9 @@ import 'package:ctmap/pages/screens/Home_Map/new_sheet.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart' as userState;
-import 'package:ctmap/widgets/components/Animated%20Search%20Bar/Location_Nominatim.dart';
-import 'package:ctmap/widgets/components/Animated%20Search%20Bar/anim_search_bar.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
+import 'package:ctmap/widgets/components/animated_search_bar/location_nominatim.dart';
+import 'package:ctmap/widgets/components/animated_search_bar/anim_search_bar.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -437,6 +439,7 @@ class HomeState extends ConsumerState<Home> {
                           ],
                         ),
                         child: FloatingActionButton(
+                          heroTag: 'filter',
                           backgroundColor: isFilteredMode || isFilterOpened
                               ? AppColors.red
                               : AppColors.white,
@@ -478,6 +481,7 @@ class HomeState extends ConsumerState<Home> {
                           ],
                         ),
                         child: FloatingActionButton(
+                          heroTag: 'add new',
                           backgroundColor: isAddDialogOpened
                               ? AppColors.red
                               : AppColors.white,
@@ -488,7 +492,7 @@ class HomeState extends ConsumerState<Home> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
-                            AppIcons.add_location,
+                            AppIcons.addLocation,
                             size: 30,
                             color: isAddDialogOpened
                                 ? AppColors.white

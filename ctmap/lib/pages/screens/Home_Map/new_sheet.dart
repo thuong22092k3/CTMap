@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/pages/routes/routes.dart';
@@ -5,8 +7,8 @@ import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/dropdown/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -17,13 +19,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class NewSheet extends ConsumerStatefulWidget {
   final LatLng addPosition;
 
-  NewSheet({Key? key, required this.addPosition}) : super(key: key);
+  const NewSheet({super.key, required this.addPosition});
 
   @override
-  _NewSheetState createState() => _NewSheetState();
+  NewSheetState createState() => NewSheetState();
 }
 
-class _NewSheetState extends ConsumerState<NewSheet> {
+class NewSheetState extends ConsumerState<NewSheet> {
   bool showUserName = false;
   List<String> acciType = [
     'Rượu bia/ Ma túy',
@@ -380,7 +382,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 suffixIcon: InkWell(
                   onTap: onTap,
                   child: const Icon(
@@ -472,7 +474,7 @@ class _NewSheetState extends ConsumerState<NewSheet> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               ),
             ),
           ),

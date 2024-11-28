@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class LawSheet extends StatefulWidget {
+  const LawSheet({super.key});
+
   @override
   LawSheetState createState() => LawSheetState();
 }
@@ -41,6 +43,7 @@ class LawSheetState extends State<LawSheet> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: FloatingActionButton(
+                heroTag: 'contents',
                 onPressed: () {
                   showTableOfContents();
                 },
@@ -76,6 +79,7 @@ class LawSheetState extends State<LawSheet> {
   Widget getArticleWidget(int index) {
     int lawIndex = 0;
     int articleIndex = 0;
+    // ignore: unused_local_variable
     int chapterCount = 0;
     for (var law in lawData) {
       if (index < law.articles.length + 1) {

@@ -5,8 +5,7 @@ import 'package:ctmap/assets/colors/colors.dart';
 class CustomTable extends StatelessWidget {
   final List<AccidentData> accidentDataList;
 
-  const CustomTable({Key? key, required this.accidentDataList})
-      : super(key: key);
+  const CustomTable({super.key, required this.accidentDataList});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class CustomTable extends StatelessWidget {
         // width: 350, // Đặt chiều rộng bảng
         child: DataTable(
           columnSpacing: 20,
-          columns: [
+          columns: const [
             DataColumn(
               label: Text(
                 'STT',

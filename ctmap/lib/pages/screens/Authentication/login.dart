@@ -2,10 +2,10 @@ import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
-import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/Checkbox/Checkbox.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/text_input/text_input.dart';
+import 'package:ctmap/widgets/components/button/text_button.dart';
+import 'package:ctmap/widgets/components/checkbox/checkbox.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/services/api.dart';
@@ -14,11 +14,13 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends ConsumerStatefulWidget {
+  const Login({super.key});
+
   @override
-  _LoginState createState() => _LoginState();
+  LoginState createState() => LoginState();
 }
 
-class _LoginState extends ConsumerState<Login> {
+class LoginState extends ConsumerState<Login> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isChecked = false;
@@ -75,12 +77,12 @@ class _LoginState extends ConsumerState<Login> {
         context.go(RoutePaths.home);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
+          const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Đăng nhập thất bại!')),
+        const SnackBar(content: Text('Đăng nhập thất bại!')),
       );
     }
   }
@@ -237,7 +239,7 @@ class _LoginState extends ConsumerState<Login> {
                             backgroundColor: AppColors.lightGrey,
                             iconColor: AppColors.primaryGray,
                             hintTextColor: AppColors.gray,
-                            autofillHints: [AutofillHints.username],
+                            autofillHints: const [AutofillHints.username],
                           ),
                           const SizedBox(height: 10),
                           CustomTextField(
@@ -248,7 +250,7 @@ class _LoginState extends ConsumerState<Login> {
                             iconColor: AppColors.primaryGray,
                             hintTextColor: AppColors.gray,
                             isPassword: true,
-                            autofillHints: [AutofillHints.password],
+                            autofillHints: const [AutofillHints.password],
                           ),
                           const SizedBox(height: 30),
                           Row(

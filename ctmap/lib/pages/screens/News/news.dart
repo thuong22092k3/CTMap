@@ -1,6 +1,6 @@
 import 'package:ctmap/pages/screens/News/law_sheet.dart';
 import 'package:ctmap/pages/screens/News/news_sheet.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
 import 'package:flutter/material.dart';
 import '../../../assets/colors/colors.dart';
 
@@ -17,11 +17,11 @@ class NewsState extends State<News> {
   bool isLawButtonSelected = false;
 
   showNewsSheet() {
-    return NewsSheet();
+    return const NewsSheet();
   }
 
   showLawSheet() {
-    return LawSheet();
+    return const LawSheet();
   }
  
   @override
@@ -36,7 +36,7 @@ class NewsState extends State<News> {
               maxHeight: 86,
               child: Container(
                 color: AppColors.red,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: const Center(
                   child: Text(
                     'An toàn giao thông',

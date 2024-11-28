@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 
@@ -17,7 +16,7 @@ class CustomTextField extends StatefulWidget {
   final List<String>? autofillHints;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     this.hintText,
     this.icon,
     required this.controller,
@@ -29,10 +28,10 @@ class CustomTextField extends StatefulWidget {
     this.textFieldWidth = double.infinity,
     this.textFieldHeight = 50,
     this.autofillHints,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  State <CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
@@ -43,7 +42,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Container(
       width: widget.textFieldWidth,
       height: widget.textFieldHeight,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color: widget.backgroundColor,
         borderRadius: BorderRadius.circular(10),
@@ -52,7 +51,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         children: [
           if (widget.isLeftIcon)
             Padding(
-              padding: EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.only(right: 15),
               child: Icon(widget.icon, color: widget.iconColor),
             ),
           Expanded(
@@ -60,7 +59,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               enableSuggestions: false,
               autocorrect: false,
               controller: widget.controller,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
               obscureText: widget.isPassword ? _obscureText : false,
               decoration: InputDecoration(
                 hintText: widget.hintText,
@@ -73,7 +72,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     ? IconButton(
                         icon: Icon(
                           _obscureText
-                              ? AppIcons.visibility_off
+                              ? AppIcons.visibilityOff
                               : AppIcons.visibility,
                           color: AppColors.primaryGray,
                         ),

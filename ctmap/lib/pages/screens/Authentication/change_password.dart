@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/button/text_button.dart';
+import 'package:ctmap/widgets/components/text_input/text_input.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/services/api.dart';
@@ -15,18 +17,17 @@ class ChangePassword extends ConsumerStatefulWidget {
   final String changePasswordText;
   final bool showButton;
 
-  ChangePassword(
-      {Key? key,
+  const ChangePassword(
+      {super.key,
       required this.email,
       this.changePasswordText = 'Đổi mật khẩu',
-      this.showButton = true})
-      : super(key: key);
+      this.showButton = true});
 
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  ChangePasswordState createState() => ChangePasswordState();
 }
 
-class _ChangePasswordState extends ConsumerState<ChangePassword> {
+class ChangePasswordState extends ConsumerState<ChangePassword> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -37,7 +38,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
 
     if (newPassword != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('Mật khẩu và nhập lại mật khẩu không giống nhau')),
       );
       return;
@@ -48,11 +49,12 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
       String userId = userState.id;
       Map<String, dynamic> userData = {'password': newPassword};
 
+      final messenger = ScaffoldMessenger.of(context);
       final result = await updateUser(userId, userData);
 
       if (result['success']) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        messenger.showSnackBar(
+          const SnackBar(
               content: Text(
             'Đổi mật khẩu thành công',
             style: TextStyle(
@@ -65,17 +67,18 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
         context.go(RoutePaths.profile);
       } else {
         print('Đổi mật khẩu thất bại: ${result['message']}');
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(
               content: Text('Đổi mật khẩu thất bại: ${result['message']}')),
         );
       }
     } else {
+      final messenger = ScaffoldMessenger.of(context);
       final result = await changePassword(widget.email, newPassword);
 
       if (result['success']) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        messenger.showSnackBar(
+          const SnackBar(
               content: Text(
             'Đổi mật khẩu thành công',
             style: TextStyle(
@@ -92,7 +95,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
         context.go(RoutePaths.login);
       } else {
         print('Đổi mật khẩu thất bại: ${result['message']}');
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(
               content: Text('Đổi mật khẩu thất bại: ${result['message']}')),
         );
@@ -216,26 +219,26 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                           children: [
                             CustomTextButton(
                               onTap: _handleBefore,
-                              icon: AppIcons.left_arrow,
+                              icon: AppIcons.leftArrow,
                               iconSize: 30,
                             ),
                             Text(
                               widget.changePasswordText,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 32,
                                 color: AppColors.red,
                               ),
                             ),
                           ]),
-                      SizedBox(height: 20),
-                      Text(
+                      const SizedBox(height: 20),
+                      const Text(
                         'Vui lòng nhập mật khẩu mới!',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.primaryGray,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       CustomTextField(
                         hintText: 'Mật khẩu',
                         icon: AppIcons.lock,
@@ -245,7 +248,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         hintTextColor: AppColors.gray,
                         isPassword: true,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       CustomTextField(
                         hintText: 'Nhập lại mật khẩu',
                         icon: AppIcons.lock,
@@ -255,7 +258,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         hintTextColor: AppColors.gray,
                         isPassword: true,
                       ),
-                      SizedBox(height: 40),
+                      const SizedBox(height: 40),
                       CustomButton(
                         onTap: _handleChangePassword,
                         btnText: 'Đổi mật khẩu',
@@ -263,7 +266,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         btnHeight: 50,
                       ),
                       // SizedBox(height: 20),
-                      Spacer(),
+                      const Spacer(),
                       if (widget.showButton)
                         CustomTextButton(
                           onTap: _handleLater,

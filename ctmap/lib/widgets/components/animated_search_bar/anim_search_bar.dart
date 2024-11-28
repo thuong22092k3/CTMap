@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:latlong2/latlong.dart';
-import 'Location_Nominatim.dart';
+import 'location_nominatim.dart';
 class AnimSearchBar extends StatefulWidget {
   final double width;
   final double height;
@@ -33,7 +35,7 @@ class AnimSearchBar extends StatefulWidget {
   final Color initialIconColor;
 
   const AnimSearchBar({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.textController,
@@ -58,10 +60,10 @@ class AnimSearchBar extends StatefulWidget {
     // Initial colors
     this.initialBackgroundColor = Colors.white,
     this.initialIconColor = Colors.red,
-  }) : super(key: key);
+  });
 
   @override
-  _AnimSearchBarState createState() => _AnimSearchBarState();
+  State <AnimSearchBar> createState() => _AnimSearchBarState();
 }
 
 int toggle = 0;
@@ -92,7 +94,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
   Widget build(BuildContext context) {
     return Container(
       height: widget.height,
-      alignment: widget.rtl ? Alignment.centerRight : Alignment(-1.0, 0.0),
+      alignment: widget.rtl ? Alignment.centerRight : const Alignment(-1.0, 0.0),
       child: AnimatedContainer(
         duration: Duration(milliseconds: widget.animationDurationInMilli),
         height: widget.height,
@@ -174,7 +176,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
               top: 11.0,
               child: AnimatedOpacity(
                 opacity: (toggle == 0) ? 0.0 : 1.0,
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 child: Container(
                   padding: const EdgeInsets.only(left: 10),
                   alignment: Alignment.topCenter,
@@ -187,7 +189,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                       inputFormatters: widget.inputFormatters,
                       focusNode: focusNode,
                       textInputAction: widget.textInputAction,
-                      cursorRadius: Radius.circular(10.0),
+                      cursorRadius: const Radius.circular(10.0),
                       cursorWidth: 1.0,
                       onChanged: (value) {
                         textFieldValue = value;
@@ -206,7 +208,7 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                           toggle = 0;
                         });
                       },
-                      style: widget.style ?? TextStyle(color: Colors.white),
+                      style: widget.style ?? const TextStyle(color: Colors.white),
                       cursorColor: Colors.white,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(bottom: 5),

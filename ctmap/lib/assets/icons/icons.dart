@@ -8,7 +8,7 @@ class AppIcons {
   static const IconData person = Icons.person_outline;
   static const IconData search = Icons.search;
   static const IconData filter = Icons.filter_alt;
-  static const IconData add_location = Icons.add_location_alt_outlined;
+  static const IconData addLocation = Icons.add_location_alt_outlined;
   static const IconData location = Icons.location_on_rounded;
   static const IconData email = Icons.email_outlined;
   static const IconData lock = Icons.lock_outline;
@@ -17,8 +17,8 @@ class AppIcons {
   static const IconData logout = Icons.logout;
   static const IconData dropdown = Icons.keyboard_arrow_down_rounded;
   static const IconData visibility = Icons.visibility_outlined;
-  static const IconData visibility_off = Icons.visibility_off_outlined;
-  static const IconData left_arrow = Icons.arrow_back;
+  static const IconData visibilityOff = Icons.visibility_off_outlined;
+  static const IconData leftArrow = Icons.arrow_back;
   static const IconData edit = Icons.edit_outlined;
   static const IconData camera = Icons.photo_camera_outlined;
   static const IconData delete = Icons.delete_outlined;
@@ -45,7 +45,7 @@ class NumberedLocationIcon extends StatelessWidget {
   final double iconSize;
   final bool isMatched;
 
-  NumberedLocationIcon({
+  const NumberedLocationIcon({super.key, 
     required this.iconData,
     required this.number,
     this.iconSize = 40,
@@ -56,15 +56,15 @@ class NumberedLocationIcon extends StatelessWidget {
   Color getColorBasedOnNumber(int number) {
     switch (number) {
       case 1:
-        return Color(0xFFB7D63E);
+        return const Color(0xFFB7D63E);
       case 2:
-        return Color(0xFFFFD632);
+        return const Color(0xFFFFD632);
       case 3:
-        return Color(0xFFFF914D);
+        return const Color(0xFFFF914D);
       case 4:
-        return Color(0xFFF40F2B);
+        return const Color(0xFFF40F2B);
       case 5:
-        return Color(0xFFA151D1);
+        return const Color(0xFFA151D1);
       default:
         return AppColors.dartGrey;
     }
@@ -86,8 +86,8 @@ class NumberedLocationIcon extends StatelessWidget {
           top: iconSize / 6,
           left: iconSize / 2.8,
           child: Container(
-            padding: EdgeInsets.all(3),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(3),
+            decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),

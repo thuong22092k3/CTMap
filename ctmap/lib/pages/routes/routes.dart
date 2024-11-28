@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/widgets/bottom_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +48,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RoutePaths.home,
-                builder: (context, state) => Home(),
+                builder: (context, state) => const Home(),
               ),
             ],
           ),
@@ -54,7 +56,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RoutePaths.news,
-                builder: (context, state) => News(),
+                builder: (context, state) => const News(),
               ),
             ],
           ),
@@ -62,7 +64,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RoutePaths.statistic,
-                builder: (context, state) => Statistic(),
+                builder: (context, state) => const Statistic(),
               ),
             ],
           ),
@@ -74,13 +76,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   final userState = ref.watch(userStateProvider);
                   print(
                       'Checking if user is logged in: ${userState.isLoggedIn}');
-                  return userState.isLoggedIn ? Profile() : Login();
+                  return userState.isLoggedIn ? const Profile() : const Login();
                 },
                 routes: [
                   // Đặt EditProfile là route con của Profile
                   GoRoute(
                     path: 'edit',
-                    builder: (context, state) => EditProfile(),
+                    builder: (context, state) => const EditProfile(),
                   ),
                   GoRoute(
                     path: 'forgotPassword',
@@ -127,11 +129,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RoutePaths.login,
-        builder: (context, state) => Login(),
+        builder: (context, state) => const Login(),
       ),
       GoRoute(
         path: RoutePaths.signUp,
-        builder: (context, state) => Signup(),
+        builder: (context, state) => const Signup(),
       ),
       GoRoute(
         path: RoutePaths.confirm,

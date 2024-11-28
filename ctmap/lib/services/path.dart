@@ -1,11 +1,11 @@
 class PATH {
-  static const Accident = {
+  static const accident = {
     'ADD_ACCIDENT': '/addAccident',
     'GET_ACCIDENT': '/getAccidents',
     'DELETE_ACCIDENT': '/deleteAccident',
     'UPDATE_ACCIDENT': '/updateAccident',
   };
-  static const User = {
+  static const user = {
     'SIGN_UP': '/singUp',
     'LOGIN': '/login',
     'EDIT': '/edit',

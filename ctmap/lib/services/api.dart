@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:ctmap/services/path.dart';
 import 'package:http/http.dart' as http;
 import 'package:ctmap/data/type.dart';
 import 'package:latlong2/latlong.dart';
 
-const String BASE_URL = 'https://ctmap-be.onrender.com';
+const String baseURL = 'https://ctmap-be.onrender.com';
 
 DateTime parseDate(String dateStr) {
   List<String> parts = dateStr.split('/');
@@ -80,7 +82,7 @@ Future<List<AccidentData>> getAllAccidents() async {
   List<AccidentData> accidents = [];
   try {
     final response =
-        await http.get(Uri.parse('$BASE_URL${PATH.Accident['GET_ACCIDENT']}'));
+        await http.get(Uri.parse('$baseURL${PATH.accident['GET_ACCIDENT']}'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
       if (responseData['success'] == true) {
@@ -104,14 +106,14 @@ Future<List<AccidentData>> getAllAccidents() async {
                   AccidentData accidentData = AccidentData(
                     id: accident['_id'] ?? '',
                     date: parseDate(accident['date'] ?? '01/01/1970'),
-                    deaths: int.parse(accident['deaths'].toString() ?? '0'),
-                    injuries: int.parse(accident['injuries'].toString() ?? '0'),
-                    level: int.parse(accident['level'].toString() ?? '0'),
-                    cause: int.parse(accident['cause'].toString() ?? '0'),
+                    deaths: int.parse(accident['deaths'].toString()),
+                    injuries: int.parse(accident['injuries'].toString()),
+                    level: int.parse(accident['level'].toString()),
+                    cause: int.parse(accident['cause'].toString()),
                     position: LatLng(lat, lng),
                     link: accident['link'] ?? '',
                     sophuongtienlienquan: int.parse(
-                        accident['sophuongtienlienquan'].toString() ?? '0'),
+                        accident['sophuongtienlienquan'].toString()),
                     userName: accident['userName'] ?? '',
                     location: accident['location'] ?? '',
                     city: accident['city'] ?? '',
@@ -150,7 +152,7 @@ Future<List<AccidentData>> getAllAccidents() async {
 Future<void> addAccident(Map<String, dynamic> accidentData) async {
   try {
     final response = await http.post(
-      Uri.parse('$BASE_URL${PATH.Accident['ADD_ACCIDENT']}'),
+      Uri.parse('$baseURL${PATH.accident['ADD_ACCIDENT']}'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -168,7 +170,7 @@ Future<void> addAccident(Map<String, dynamic> accidentData) async {
 
 Future<Map<String, dynamic>> updateAccident(
     String id, Map<String, dynamic> accidentData) async {
-  final String updateUrl = '$BASE_URL${PATH.Accident['UPDATE_ACCIDENT']}';
+  final String updateUrl = '$baseURL${PATH.accident['UPDATE_ACCIDENT']}';
 
   print('Updating accident with ID: $id');
   print('Update URL: $updateUrl');
@@ -212,7 +214,7 @@ Future<Map<String, dynamic>> updateAccident(
 Future<void> deleteAccident(String id) async {
   try {
     final response = await http.delete(
-      Uri.parse('$BASE_URL${PATH.Accident['DELETE_ACCIDENT']}?id=$id'),
+      Uri.parse('$baseURL${PATH.accident['DELETE_ACCIDENT']}?id=$id'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -239,7 +241,7 @@ Future<void> deleteAccident(String id) async {
 Future<void> signUp(Map<String, dynamic> userData) async {
   try {
     final response = await http.post(
-      Uri.parse('$BASE_URL${PATH.User['SIGN_UP']}'),
+      Uri.parse('$baseURL${PATH.user['SIGN_UP']}'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -258,7 +260,7 @@ Future<void> signUp(Map<String, dynamic> userData) async {
 Future<Map<String, dynamic>> login(String login, String password) async {
   try {
     final loginUrl =
-        '$BASE_URL${PATH.User['LOGIN']}?login=$login&password=$password';
+        '$baseURL${PATH.user['LOGIN']}?login=$login&password=$password';
     final response = await http.get(
       Uri.parse(loginUrl),
       headers: {
@@ -287,7 +289,7 @@ Future<Map<String, dynamic>> login(String login, String password) async {
 
 Future<Map<String, dynamic>> updateUser(
     String id, Map<String, dynamic> userData) async {
-  final String updateUrl = '$BASE_URL${PATH.User['EDIT']}';
+  final String updateUrl = '$baseURL${PATH.user['EDIT']}';
 
   print('Updating user with ID: $id');
   print('Update URL: $updateUrl');
@@ -332,7 +334,7 @@ Future<bool> sendVerificationCodeToEmail(String email) async {
   print('Sending verification code to: $email');
   try {
     final response = await http.post(
-      Uri.parse('$BASE_URL${PATH.User['SEND']}'),
+      Uri.parse('$baseURL${PATH.user['SEND']}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email}),
     );
@@ -355,7 +357,7 @@ Future<bool> verifyCode(String email, String code) async {
 
   try {
     final response = await http.post(
-      Uri.parse('$BASE_URL${PATH.User['VERIFY']}'),
+      Uri.parse('$baseURL${PATH.user['VERIFY']}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'code': code}),
     );
@@ -394,7 +396,7 @@ Future<Map<String, dynamic>> changePassword(
     String email, String password) async {
   try {
     final response = await http.post(
-      Uri.parse('$BASE_URL${PATH.User['CHANGE_PASSWORD']}'),
+      Uri.parse('$baseURL${PATH.user['CHANGE_PASSWORD']}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'password': password}),
     );

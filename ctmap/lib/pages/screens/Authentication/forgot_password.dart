@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/button/text_button.dart';
+import 'package:ctmap/widgets/components/text_input/text_input.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/services/api.dart';
@@ -12,15 +14,18 @@ import 'package:go_router/go_router.dart';
 
 class ForgotPassword extends ConsumerStatefulWidget {
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  ForgotPasswordState createState() => ForgotPasswordState();
   final String forgotPasswordText;
   final bool showButton;
 
-  ForgotPassword(
-      {this.forgotPasswordText = 'Quên mật khẩu', this.showButton = true});
+  const ForgotPassword({
+      super.key, 
+      this.forgotPasswordText = 'Quên mật khẩu', 
+      this.showButton = true
+  });
 }
 
-class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
+class ForgotPasswordState extends ConsumerState<ForgotPassword> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> sendVerificationCode(String email) async {
@@ -52,7 +57,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
+        const SnackBar(content: Text('Không thể gửi mã OTP. Vui lòng thử lại.')),
       );
       print("Failed to send OTP");
     }
@@ -75,33 +80,33 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(25),
+        padding: const EdgeInsets.all(25),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               CustomTextButton(
                 onTap: _handleBefore,
-                icon: AppIcons.left_arrow,
+                icon: AppIcons.leftArrow,
                 iconSize: 30,
               ),
               Text(
                 widget.forgotPasswordText,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 32,
                   color: AppColors.red,
                 ),
               ),
             ]),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu!',
               style: TextStyle(
                 fontSize: 14,
                 color: AppColors.primaryGray,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             CustomTextField(
               hintText: 'Email',
               icon: AppIcons.email,
@@ -110,7 +115,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
               iconColor: AppColors.primaryGray,
               hintTextColor: AppColors.gray,
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             CustomButton(
               onTap: () {
                 sendVerificationCode(_controller.text);
@@ -120,7 +125,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
               btnWidth: 300,
               btnHeight: 50,
             ),
-            Spacer(),
+            const Spacer(),
             if (widget.showButton)
               CustomTextButton(
                 onTap: _handleLater,

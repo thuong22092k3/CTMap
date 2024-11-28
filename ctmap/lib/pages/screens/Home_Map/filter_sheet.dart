@@ -3,8 +3,8 @@ import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/data/type.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/filter_state.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/dropdown/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -112,7 +112,7 @@ class FilterSheetState extends ConsumerState<FilterSheet> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 10),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             // boxShadow: [
             //   BoxShadow(

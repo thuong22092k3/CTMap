@@ -12,7 +12,7 @@ class CustomCheckbox extends StatefulWidget {
   final EdgeInsetsGeometry margin; // Thêm thuộc tính margin
 
   const CustomCheckbox({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
     this.borderWidth = 1.0,
@@ -21,10 +21,10 @@ class CustomCheckbox extends StatefulWidget {
     this.activeColor = AppColors.red,
     this.inactiveColor = AppColors.white,
     this.margin = const EdgeInsets.all(0), // Gán giá trị mặc định cho margin
-  }) : super(key: key);
+  });
 
   @override
-  _CustomCheckboxState createState() => _CustomCheckboxState();
+  State <CustomCheckbox> createState() => _CustomCheckboxState();
 }
 
 class _CustomCheckboxState extends State<CustomCheckbox> {
@@ -47,7 +47,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
           color: widget.value ? widget.activeColor : widget.inactiveColor,
         ),
         child: widget.value
-            ? Icon(
+            ? const Icon(
                 Icons.check,
                 size: 12.0,
                 color: Colors.white,

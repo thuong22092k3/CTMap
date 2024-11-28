@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
   final Color? iconColor;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.onTap,
     this.btnText,
     this.btnTextColor = AppColors.white,
@@ -29,7 +29,7 @@ class CustomButton extends StatelessWidget {
     this.iconColor,
     this.textAlign,
     this.borderRadius = 10,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class CustomButton extends StatelessWidget {
         
           children: [
             if (icon != null) Icon(icon, color: iconColor, size: iconSize,),
-            if (icon != null && btnText != null) SizedBox(width: 8),
+            if (icon != null && btnText != null) const SizedBox(width: 8),
             if (btnText != null)
               Text(
                 btnText!,

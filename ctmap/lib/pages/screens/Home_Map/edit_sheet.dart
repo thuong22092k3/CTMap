@@ -1,11 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/data/type.dart';
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:ctmap/state_management/user_state.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Dropdown/Dropdown.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/dropdown/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -16,13 +18,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class EditSheet extends ConsumerStatefulWidget {
   final AccidentData accidentData;
 
-  EditSheet({Key? key, required this.accidentData}) : super(key: key);
+  const EditSheet({super.key, required this.accidentData});
 
   @override
-  _EditSheetState createState() => _EditSheetState();
+  EditSheetState createState() => EditSheetState();
 }
 
-class _EditSheetState extends ConsumerState<EditSheet> {
+class EditSheetState extends ConsumerState<EditSheet> {
   List<String> acciType = [
     'Rượu bia/ Ma túy',
     'Vi phạm tốc độ, thiếu quan sát, vượt đèn đỏ, mất lái…',
@@ -129,16 +131,16 @@ class _EditSheetState extends ConsumerState<EditSheet> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Đã hiểu"),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: TextStyle(fontSize: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                child: const Text("Đã hiểu"),
               ),
             ],
           );
@@ -168,34 +170,34 @@ class _EditSheetState extends ConsumerState<EditSheet> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Hủy"),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.grey,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: TextStyle(fontSize: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                child: const Text("Hủy"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   _submitAccidentData();
                 },
-                child: const Text(
-                  "Xác nhận",
-                  style: TextStyle(color: Colors.white),
-                ),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: AppColors.red,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: TextStyle(fontSize: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
+                ),
+                child: const Text(
+                  "Xác nhận",
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -262,16 +264,16 @@ class _EditSheetState extends ConsumerState<EditSheet> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text("Đã hiểu"),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: TextStyle(fontSize: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                child: const Text("Đã hiểu"),
               ),
             ],
           );
@@ -403,7 +405,7 @@ class _EditSheetState extends ConsumerState<EditSheet> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                 suffixIcon: InkWell(
                   onTap: onTap,
                   child: const Icon(
@@ -495,7 +497,7 @@ class _EditSheetState extends ConsumerState<EditSheet> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               ),
             ),
           ),

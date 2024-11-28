@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/pages/screens/Home_Map/edit_sheet.dart';
 import 'package:ctmap/pages/screens/Home_Map/info_sheet.dart';
 import 'package:ctmap/state_management/accident_state.dart';
@@ -19,13 +21,14 @@ class DetailSheet extends ConsumerStatefulWidget {
   });
 
   @override
-  _DetailSheetState createState() => _DetailSheetState();
+  DetailSheetState createState() => DetailSheetState();
 }
 
-class _DetailSheetState extends ConsumerState<DetailSheet> {
+class DetailSheetState extends ConsumerState<DetailSheet> {
   late final AccidentData accidentData;
 
 
+  @override
   void initState() {
     super.initState();
     accidentData = widget.accidentData;
@@ -47,7 +50,7 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
                 blurRadius: 10,
-                offset: Offset(0, 5),
+                offset: const Offset(0, 5),
               ),
             ],
           ),
@@ -99,7 +102,7 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                   _buildSeverityRow(accidentData.level),
                   const SizedBox(height: 10),
                   _buildInfoRow(
-                      'Loại tai nạn', '${_displayCause(accidentData.cause)}'),
+                      'Loại tai nạn', _displayCause(accidentData.cause)),
                   const SizedBox(height: 10),
                   _buildInfoRow('Số phương tiện liên quan',
                       '${accidentData.sophuongtienlienquan}'),
@@ -109,16 +112,15 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                   _buildInfoRow(
                       'Số người bị thương', '${accidentData.injuries}'),
                   const SizedBox(height: 10),
-                  _buildInfoRow('Địa điểm', '${accidentData.location}'),
+                  _buildInfoRow('Địa điểm', accidentData.location),
                   const SizedBox(height: 10),
-                  _buildInfoRow('Thành phố', '${accidentData.city}'),
+                  _buildInfoRow('Thành phố', accidentData.city),
                   if (accidentData.showUserName &&
-                      accidentData.userName != null &&
                       accidentData.userName.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     _buildInfoRow('Tên người dùng', accidentData.userName),
                   ],
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -131,7 +133,7 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                           _shareAccidentDetails();
                         },
                       ),
-                      if ((username != null && username.isNotEmpty) &&
+                      if ((username.isNotEmpty) &&
                           (username == accidentData.userName ||
                               userState.email == accidentData.userName))
                         Row(
@@ -191,6 +193,8 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
+                //thêm dòng này trước await
+                final messenger = ScaffoldMessenger.of(context);
                 try {
                   await deleteAccident(accidentData.id);
                   ref
@@ -199,13 +203,13 @@ class _DetailSheetState extends ConsumerState<DetailSheet> {
                   
                   //widget.isMarkerDeleted(true);
                   Navigator.of(parentContext).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     const SnackBar(
                         content: Text('Vụ tai nạn đã được xóa thành công')),
                   );
                   // Navigator.of(context).popUntil((route) => route.isFirst);
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     SnackBar(
                         content: Text('Có lỗi xảy ra khi xóa vụ tai nạn: $e')),
                   );

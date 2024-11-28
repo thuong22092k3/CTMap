@@ -1,24 +1,26 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/data/type.dart';
 import 'package:ctmap/state_management/accident_state.dart';
 import 'package:flutter/material.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../widgets/components/Button/Button.dart';
-import '../../widgets/components/Dropdown/Dropdown.dart';
-import '../../widgets/components/Chart/BarChart.dart';
-import '../../widgets/components/Table/Table.dart';
+import '../../widgets/components/button/button.dart';
+import '../../widgets/components/dropdown/dropdown.dart';
+import '../../widgets/components/chart/bar_chart.dart';
+import '../../widgets/components/table/table.dart';
 
 // sửa ở statefulwidget -> ConsumerStatefulWidget
 class Statistic extends ConsumerStatefulWidget {
   const Statistic({super.key});
 
   @override
-  _StatisticState createState() => _StatisticState();
+  StatisticState createState() => StatisticState();
 }
 
 // sửa ở state -> ConsumerState
-class _StatisticState extends ConsumerState<Statistic> {
+class StatisticState extends ConsumerState<Statistic> {
   List<String> cities = ['Tất cả'];
   String selectedCity = 'Tất cả';
   String selectedOption = 'Ngày';
@@ -149,7 +151,7 @@ class _StatisticState extends ConsumerState<Statistic> {
   }
 
   Future<void> fetchAccidents() async {
-    await ref.read(accidentProvider.notifier).getAccidents();
+    ref.read(accidentProvider.notifier).getAccidents();
     final accidentProviderData = ref.watch(accidentProvider);
     Set<String> uniqueCities =
         accidentProviderData.map((accident) => accident.city).toSet();

@@ -1,23 +1,27 @@
+// ignore_for_file: avoid_print
+
 import 'package:ctmap/pages/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:ctmap/widgets/components/Button/Button.dart';
-import 'package:ctmap/widgets/components/Button/TextButton.dart';
-import 'package:ctmap/widgets/components/TextInput/TextInput.dart';
+import 'package:ctmap/widgets/components/button/button.dart';
+import 'package:ctmap/widgets/components/button/text_button.dart';
+import 'package:ctmap/widgets/components/text_input/text_input.dart';
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/services/api.dart';
 import 'package:go_router/go_router.dart';
 
 class Signup extends StatefulWidget {
+  const Signup({super.key});
+
   @override
-  _SignupState createState() => _SignupState();
+  State <Signup> createState() => _SignupState();
 }
 
 class _SignupState extends State<Signup> {
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _passwordConfirmController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
 
   @override
   void dispose() {
@@ -158,7 +162,7 @@ class _SignupState extends State<Signup> {
                         children: [
                           CustomTextButton(
                             onTap: _handleBefore,
-                            icon: AppIcons.left_arrow,
+                            icon: AppIcons.leftArrow,
                             iconSize: 30,
                           ),
                           const SizedBox(width: 25),
@@ -267,7 +271,7 @@ class _SignupState extends State<Signup> {
 
     if (password != passwordConfirm) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('Mật khẩu và nhập lại mật khẩu không giống nhau')),
       );
 
@@ -282,7 +286,7 @@ class _SignupState extends State<Signup> {
       } catch (error) {
         print("Error occurred during sign up: $error");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đã có lỗi xảy ra. Vui lòng thử lại.')),
+          const SnackBar(content: Text('Đã có lỗi xảy ra. Vui lòng thử lại.')),
         );
       }
     }
