@@ -202,6 +202,7 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
                       .removeAccident(accidentData);
                   
                   //widget.isMarkerDeleted(true);
+                  if(!mounted) return;
                   Navigator.of(parentContext).pop();
                   messenger.showSnackBar(
                     const SnackBar(

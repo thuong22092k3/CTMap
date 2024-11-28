@@ -87,6 +87,7 @@ class ConfirmState extends ConsumerState<Confirm> {
         // context.go(RoutePaths.changePassword, extra: email);
         final userState = ref.watch(userStateProvider);
         if (userState.isLoggedIn == false) {
+          if(!mounted) return;
           context.go(
             RoutePaths.changePassword,
             extra: {
@@ -95,6 +96,7 @@ class ConfirmState extends ConsumerState<Confirm> {
             },
           );
         } else {
+          if(!mounted) return;
           context.go(
             '${RoutePaths.profile}/forgotPassword/confirm/changePassword',
             extra: email,
@@ -102,12 +104,14 @@ class ConfirmState extends ConsumerState<Confirm> {
         }
         print("OTP is valid: $code");
       } else {
+        if(!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Mã OTP không hợp lệ. Vui lòng thử lại.')),
         );
         print("Invalid OTP: $code");
       }
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
       );
@@ -141,6 +145,7 @@ class ConfirmState extends ConsumerState<Confirm> {
         );
       }
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Đã xảy ra lỗi. Vui lòng thử lại sau.')),
       );

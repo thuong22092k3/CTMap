@@ -282,6 +282,7 @@ class _SignupState extends State<Signup> {
       try {
         await signUp(userData);
         print("User is successfully created");
+        if(!mounted) return;
         context.go(RoutePaths.login);
       } catch (error) {
         print("Error occurred during sign up: $error");

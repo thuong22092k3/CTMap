@@ -170,6 +170,7 @@ class NewSheetState extends ConsumerState<NewSheet> {
         ref.read(accidentProvider.notifier).addAccident(accidentData);
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => Home()));
+        if(!mounted) return;
         context.push(RoutePaths.home);
       } catch (e) {
         print('Error: $e');
@@ -399,8 +400,7 @@ class NewSheetState extends ConsumerState<NewSheet> {
     );
   }
 
-  Widget _buildDropdownRow(String label, TextEditingController controller,
-      [VoidCallback? onTap]) {
+  Widget _buildDropdownRow(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -437,8 +437,7 @@ class NewSheetState extends ConsumerState<NewSheet> {
     );
   }
 
-  Widget _buildNumberInputRow(String label, TextEditingController controller,
-      [VoidCallback? onTap]) {
+  Widget _buildNumberInputRow(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(

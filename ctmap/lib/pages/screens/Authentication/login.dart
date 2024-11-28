@@ -74,13 +74,16 @@ class LoginState extends ConsumerState<Login> {
             .read(userStateProvider.notifier)
             .logIn(id, userName, email, password);
         await _saveCredentials();
+        if(!mounted) return;
         context.go(RoutePaths.home);
       } else {
+        if(!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
         );
       }
     } else {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Đăng nhập thất bại!')),
       );

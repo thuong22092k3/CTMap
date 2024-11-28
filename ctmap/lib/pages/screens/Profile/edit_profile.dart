@@ -47,9 +47,11 @@ class EditProfileState extends ConsumerState<EditProfile> {
             _emailController.text,
             ref.read(userStateProvider).password,
           );
+      if(!mounted) return;
       context.go(RoutePaths.profile);
     } else {
       print('Update failed: ${result['message']}');
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Update failed: ${result['message']}')),
       );

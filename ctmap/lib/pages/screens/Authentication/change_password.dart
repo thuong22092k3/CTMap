@@ -64,6 +64,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
           )),
         );
         //Sửa ở đây
+        if(!mounted) return;
         context.go(RoutePaths.profile);
       } else {
         print('Đổi mật khẩu thất bại: ${result['message']}');
@@ -92,6 +93,7 @@ class ChangePasswordState extends ConsumerState<ChangePassword> {
         //   MaterialPageRoute(builder: (context) => Login()),
         // );
         //Sửa ở đây
+        if(!mounted) return;
         context.go(RoutePaths.login);
       } else {
         print('Đổi mật khẩu thất bại: ${result['message']}');
