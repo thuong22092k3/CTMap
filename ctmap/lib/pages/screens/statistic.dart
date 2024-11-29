@@ -168,9 +168,9 @@ class StatisticState extends ConsumerState<Statistic> {
     DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
 
     return accidentDataList.where((accident) {
-      bool isInDateRange =
-          accident.date.isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
-              accident.date.isBefore(dateRange.end.add(const Duration(days: 1)));
+      bool isInDateRange = accident.date
+              .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+          accident.date.isBefore(dateRange.end.add(const Duration(days: 1)));
       bool isInCity = selectedCity == 'Tất cả' || accident.city == selectedCity;
       return isInDateRange && isInCity;
     }).toList();
@@ -235,7 +235,8 @@ class StatisticState extends ConsumerState<Statistic> {
               maxHeight: 86,
               child: Container(
                 color: AppColors.red,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 child: const Center(
                   child: Text(
                     'Thống Kê',
@@ -299,15 +300,13 @@ class StatisticState extends ConsumerState<Statistic> {
                   Text(
                     'Tổng số vụ tai nạn: ${showChart ? (isSearchButtonPressed ? getFilteredAccidents(accidentDataList).length : accidentDataList.length) : accidentDataList.length}',
                     style: const TextStyle(
-                      fontSize: 16, 
-                      fontWeight: FontWeight.w600
-                    ),
+                        fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 20),
                   if (showChart)
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -346,7 +345,7 @@ class StatisticState extends ConsumerState<Statistic> {
                                   child: Row(
                                     children: [
                                       Expanded(
-                                        flex: 2,
+                                        flex: 3,
                                         child: SizedBox(
                                           child: CustomDropdown(
                                             items: options,
@@ -370,7 +369,7 @@ class StatisticState extends ConsumerState<Statistic> {
                                         ),
                                       ),
                                       Expanded(
-                                        flex: 5,
+                                        flex: 6,
                                         child: GestureDetector(
                                           onTap: () async {
                                             DateTime? pickedDate =
@@ -403,6 +402,12 @@ class StatisticState extends ConsumerState<Statistic> {
                                                                     'Quý'
                                                                 ? "Quý ${((selectedDate.month - 1) ~/ 3) + 1}/${selectedDate.year}"
                                                                 : "${selectedDate.year}",
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      selectedOption == 'Tuần'
+                                                          ? 12
+                                                          : null,
+                                                ),
                                               ),
                                               const Icon(
                                                 AppIcons.calendar,
