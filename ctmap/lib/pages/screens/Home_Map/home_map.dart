@@ -40,58 +40,51 @@ class HomeState extends ConsumerState<Home> {
   final MapController _mapController = MapController();
 
   List<AccidentData> accidentDataList = [];
-  bool isFirstLoad = true;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    getAccidents();
+    getInitialAccidents();
   }
 
-  Future<void> getAccidents() async {
-    // if (isFirstLoad) {
-    //   // Lấy dữ liệu từ database chỉ lần đầu
-    //   List<AccidentData> accidents = await getAllAccidents();
-    //   ref.read(accidentProvider.notifier).setAccidents(accidents);
-    //   setState(() {
-    //     accidentDataList = accidents;
-    //     isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
-    //   });
-    //   showMarkers(accidentDataList);
-    // }
+  Future<void> getInitialAccidents() async {
+    setState(() {
+      isLoading = true; 
+    });
 
+    try {
+      List<AccidentData> accidents = await getAllAccidents();
+      ref.read(accidentProvider.notifier).setAccidents(accidents);
 
+      setState(() {
+        accidentDataList = accidents;
+      });
+      showMarkers(accidentDataList); 
+    } catch (e) {
+      print('Error fetching accidents: $e');
+    } finally {
+      setState(() {
+        isLoading = false; 
+      });
+    }
+  }
+
+  Future <void> getAccidents() async {
     List<AccidentData> accidents = await getAllAccidents();
     ref.read(accidentProvider.notifier).setAccidents(accidents);
+
     setState(() {
       accidentDataList = accidents;
-      isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
     });
-    showMarkers(accidentDataList);
+
+    showMarkers(accidentDataList); 
   }
 
-//Thêm zoom
+  //Thêm zoom
   void _moveToPosition(LatLng position) {
     _mapController.move(position, 18.0);
   }
-
-  // void _onMarkerTapped(AccidentData data, BuildContext context) async{
-  //   _moveToPosition(data.position);
-  //   await showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return FractionallySizedBox(
-  //         heightFactor: 1,
-  //         child: DetailSheet(
-  //           accidentData: data, 
-  //           // isMarkerDeleted: isMarkerDeleted,
-            
-  //         ),
-  //       );
-  //     },
-  //   );
-  //   await getAccidents();
-  // }
 
   void _onMarkerTapped(AccidentData data, BuildContext context) async{
     _moveToPosition(data.position);
@@ -102,8 +95,6 @@ class HomeState extends ConsumerState<Home> {
           heightFactor: 1,
           child: DetailSheet(
             accId: data.id, 
-            // isMarkerDeleted: isMarkerDeleted,
-            
           ),
         );
       },
@@ -221,9 +212,13 @@ class HomeState extends ConsumerState<Home> {
     await showModalBottomSheet<dynamic>(
       context: context,
       builder: (context) {
-        return FilterSheet(
+        return FractionallySizedBox(
+          heightFactor: 1,
+          child: FilterSheet(
             onFilterApplied: onFilterApplied,
-            onFilterStatusChanged: onFilterStatusChanged);
+            onFilterStatusChanged: onFilterStatusChanged)
+            ,
+        );
       },
     ).then((value) {
       setState(() {
@@ -250,15 +245,9 @@ class HomeState extends ConsumerState<Home> {
         isNewOpened = false;
         isSelfAdd = false;
       });
-      //await getAccidents();
     });
     await getAccidents();
   }
-
-  
-
-
-
 
   late LatLng tapLatlng;
 
@@ -325,9 +314,7 @@ class HomeState extends ConsumerState<Home> {
     print('Accident Data List: $accidentDataList');
     return Consumer(
       builder: (context, ref, _) {
-        // final accidentDataListProvider = ref.watch(accidentProvider);
         return Scaffold(
-          //drawer: buildDrawer(context, ClusteringManyMarkersPage.route),
           body: Stack(
             children: <Widget>[
               FlutterMap(
@@ -525,6 +512,55 @@ class HomeState extends ConsumerState<Home> {
                   ],
                 ),
               ),
+              if (isLoading)
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.grey.withOpacity(0.25),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.red)
+                      ), 
+                    ),
+                  ),
+                ),
+              if (isSelfAdd) 
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 0), 
+                    child: Container(
+                      color: AppColors.red,
+                      padding: const EdgeInsets.all(5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Bạn đang ở chế độ thêm mới!\nChọn trên bản đồ để thêm vụ tai nạn!',
+                            style: TextStyle(
+                              color: AppColors.white, 
+                              fontSize: 14
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                isSelfAdd = false;
+                              });
+                            }, 
+                            child: const Text(
+                              'Thoát',
+                              style: TextStyle(
+                                color: Colors.white, 
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         );

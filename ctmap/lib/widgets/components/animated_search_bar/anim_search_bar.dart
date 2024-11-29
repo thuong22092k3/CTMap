@@ -49,17 +49,17 @@ class AnimSearchBar extends StatefulWidget {
     this.autoFocus = false,
     this.style,
     this.closeSearchOnSuffixTap = false,
-    this.color = Colors.white,
-    this.textFieldColor = Colors.red,
-    this.searchIconColor = Colors.white,
-    this.textFieldIconColor = Colors.white,
+    this.color = AppColors.white,
+    this.textFieldColor = AppColors.red,
+    this.searchIconColor = AppColors.white,
+    this.textFieldIconColor = AppColors.white,
     this.inputFormatters,
     this.boxShadow = true,
     this.textInputAction = TextInputAction.done,
     required this.searchBarOpen,
     // Initial colors
-    this.initialBackgroundColor = Colors.white,
-    this.initialIconColor = Colors.red,
+    this.initialBackgroundColor = AppColors.white,
+    this.initialIconColor = AppColors.red,
   });
 
   @override
@@ -211,15 +211,15 @@ class _AnimSearchBarState extends State<AnimSearchBar>
                                 toggle = 0;
                               });
                             },
-                            style: widget.style ?? const TextStyle(color: Colors.white),
-                            cursorColor: Colors.white,
+                            style: widget.style ?? const TextStyle(color: AppColors.white),
+                            cursorColor: AppColors.white,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.only(bottom: 5),
                               isDense: true,
                               floatingLabelBehavior: FloatingLabelBehavior.never,
                               labelText: widget.helpText,
                               labelStyle: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.white,
                                 fontSize: 17.0,
                                 fontWeight: FontWeight.w500,
                               ),

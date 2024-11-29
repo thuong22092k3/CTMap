@@ -27,126 +27,80 @@ class NewsState extends State<News> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: _SliverHeaderDelegate(
-              minHeight: 86,
-              maxHeight: 86,
-              child: Container(
-                color: AppColors.red,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: const Center(
-                  child: Text(
-                    'An toàn giao thông',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 28,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+      appBar: AppBar(
+        title: const Text(
+          "An Toàn Giao Thông",
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.normal
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.red,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomButton(
-                        onTap: () {
-                          setState(() {
-                            showNews = true;
-                            isNewsButtonSelected = true;
-                            isLawButtonSelected = false;
-                          });
-                        },
-                        btnText: "Tin tức",
-                        btnHeight: 30,
-                        borderRadius: 5,
-                        btnWidth: 140,
-                        fontSize: 14,
-                        btnColor: isNewsButtonSelected
-                            ? AppColors.red
-                            : AppColors.primaryGray,
-                      ),
-                      const SizedBox(width: 20),
-                      CustomButton(
-                        onTap: () {
-                          setState(() {
-                            showNews = false;
-                            isNewsButtonSelected = false;
-                            isLawButtonSelected = true;
-                          });
-                        },
-                        btnText: "Luật TT-ATGTĐB",
-                        btnHeight: 30,
-                        borderRadius: 5,
-                        btnWidth: 140,
-                        fontSize: 14,
-                        btnColor: isLawButtonSelected
-                            ? AppColors.red
-                            : AppColors.primaryGray,
-                      ),
-                    ],
+                  CustomButton(
+                    onTap: () {
+                      setState(() {
+                        showNews = true;
+                        isNewsButtonSelected = true;
+                        isLawButtonSelected = false;
+                      });
+                    },
+                    btnText: "Tin tức",
+                    btnHeight: 30,
+                    borderRadius: 5,
+                    btnWidth: 140,
+                    fontSize: 14,
+                    btnColor: isNewsButtonSelected
+                        ? AppColors.red
+                        : AppColors.primaryGray,
                   ),
-                  //SizedBox(height: 20),                   
-                  if (showNews)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
-                      child: showNewsSheet(),
-                    ),
-                  if (!showNews)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
-                      child: showLawSheet(),
-                    ),
-                  
-
-                  
+                  const SizedBox(width: 20),
+                  CustomButton(
+                    onTap: () {
+                      setState(() {
+                        showNews = false;
+                        isNewsButtonSelected = false;
+                        isLawButtonSelected = true;
+                      });
+                    },
+                    btnText: "Luật TT-ATGTĐB",
+                    btnHeight: 30,
+                    borderRadius: 5,
+                    btnWidth: 140,
+                    fontSize: 14,
+                    btnColor: isLawButtonSelected
+                        ? AppColors.red
+                        : AppColors.primaryGray,
+                  ),
                 ],
               ),
-            ),
+              //SizedBox(height: 20),                   
+              if (showNews)
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
+                  child: showNewsSheet(),
+                ),
+              if (!showNews)
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
+                  child: showLawSheet(),
+                ),       
+            ],
           ),
-        ],
-      ),
+        )
+      )
     );
   }
 }
 
-class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double minHeight;
-  final double maxHeight;
-  final Widget child;
-
-  _SliverHeaderDelegate({
-    required this.minHeight,
-    required this.maxHeight,
-    required this.child,
-  });
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return SizedBox.expand(child: child);
-  }
-
-  @override
-  bool shouldRebuild(_SliverHeaderDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight ||
-        child != oldDelegate.child;
-  }
-}

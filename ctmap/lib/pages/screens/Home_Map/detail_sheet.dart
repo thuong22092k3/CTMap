@@ -50,16 +50,16 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
+          decoration: const BoxDecoration(
+            color: AppColors.white,
             borderRadius: BorderRadius.zero,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.3),
+            //     blurRadius: 10,
+            //     offset: const Offset(0, 5),
+            //   ),
+            // ],
           ),
           child: Stack(
             children: [

@@ -82,26 +82,27 @@ class ForgotPasswordState extends ConsumerState<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.forgotPasswordText,
+          style: const TextStyle(
+            color: AppColors.red,
+            fontSize: 28,
+            fontWeight: FontWeight.normal
+          ),
+        ),
+        centerTitle: true,
+        leading: CustomTextButton(
+          onTap: _handleBefore,
+          icon: AppIcons.leftArrow,
+          iconSize: 30,
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(25),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              CustomTextButton(
-                onTap: _handleBefore,
-                icon: AppIcons.leftArrow,
-                iconSize: 30,
-              ),
-              Text(
-                widget.forgotPasswordText,
-                style: const TextStyle(
-                  fontSize: 32,
-                  color: AppColors.red,
-                ),
-              ),
-            ]),
-            const SizedBox(height: 20),
             const Text(
               'Vui lòng nhập email của tài khoản để nhận mã xác nhận thay đổi mật khẩu!',
               style: TextStyle(

@@ -25,24 +25,27 @@ class CustomTable extends StatelessWidget {
               label: Text(
                 'STT',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    backgroundColor: AppColors.gray),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.red
+                ),
               ),
             ),
             DataColumn(
               label: Text(
                 'Tỉnh thành',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    backgroundColor: AppColors.gray),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.red
+                ),
               ),
             ),
             DataColumn(
               label: Text(
                 'Số lượng tai nạn',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    backgroundColor: AppColors.gray),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.red
+                ),
               ),
             ),
           ],
@@ -52,10 +55,16 @@ class CustomTable extends StatelessWidget {
               cells: [
                 DataCell(Center(child: Text('${index + 1}'))), // STT
                 DataCell(
-                    Center(child: Text(sortedCities[index]))), // Tỉnh thành
-                DataCell(Center(
-                    child: Text(cityAccidentCount[sortedCities[index]]
-                        .toString()))), // Số lượng tai nạn
+                  Align(
+                    alignment: Alignment.centerLeft, // Align text to the left
+                    child: Text(sortedCities[index]),
+                  ),
+                ), // Tỉnh thành
+                DataCell(
+                  Center(
+                    child: Text(cityAccidentCount[sortedCities[index]].toString())
+                  )
+                ), // Số lượng tai nạn
               ],
             ),
           ),

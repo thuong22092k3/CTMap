@@ -13,24 +13,21 @@ class Profile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Tài Khoản",
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.normal
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.red,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header
-          Container(
-            color: AppColors.red,
-            height: 86,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Tài Khoản',
-                  style: TextStyle(fontSize: 28, color: AppColors.primaryWhite),
-                ),
-              ],
-            ),
-          ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
@@ -38,7 +35,6 @@ class Profile extends ConsumerWidget {
               children: [
                 const CircleAvatar(
                   radius: 50,
-                  // You can add image or avatar here
                 ),
                 const SizedBox(height: 10),
                 Text(

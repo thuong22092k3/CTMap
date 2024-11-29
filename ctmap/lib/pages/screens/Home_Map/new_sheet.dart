@@ -166,10 +166,8 @@ class NewSheetState extends ConsumerState<NewSheet> {
 
         await addAccident(accidentData);
         ref.read(accidentProvider.notifier).addAccident(accidentData);
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => Home()));
+
         if(!mounted) return;
-        //context.push(RoutePaths.home);
         Navigator.of(context).pop();
       } catch (e) {
         print('Error: $e');
@@ -220,16 +218,16 @@ class NewSheetState extends ConsumerState<NewSheet> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 10),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.zero,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.3),
+            //     blurRadius: 10,
+            //     offset: const Offset(0, 5),
+            //   ),
+            // ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -65,84 +65,79 @@ class EditProfileState extends ConsumerState<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Header
-          Container(
-            color: AppColors.red,
-            height: 86,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CustomTextButton(
-                  onTap: _handleBefore,
-                  icon: AppIcons.leftArrow,
-                  iconSize: 30,
-                  btnTextColor: AppColors.white,
-                ),
-                const Text(
-                  'Chỉnh sửa thông tin',
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: AppColors.white,
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: const Text(
+          "Chỉnh Sửa Thông Tin",
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.normal
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: const Alignment(1.5, 1.7),
-                  children: [
-                    const CircleAvatar(
-                      radius: 50,
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        // Handle camera icon press
-                      },
-                      icon: const Icon(AppIcons.camera),
-                      color: AppColors.red,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 60),
-                CustomTextField(
-                  hintText: 'Username',
-                  icon: AppIcons.person,
-                  controller: _usernameController,
-                  backgroundColor: AppColors.lightGrey,
-                  iconColor: AppColors.primaryGray,
-                  hintTextColor: AppColors.gray,
-                ),
-                const SizedBox(height: 20),
-                CustomTextField(
-                  hintText: 'Email',
-                  icon: AppIcons.email,
-                  controller: _emailController,
-                  backgroundColor: AppColors.lightGrey,
-                  iconColor: AppColors.primaryGray,
-                  hintTextColor: AppColors.gray,
-                ),
-                const SizedBox(height: 40),
-                CustomButton(
-                  onTap: _handleUpdate,
-                  btnText: 'Xác nhận',
-                  btnWidth: 300,
-                  btnHeight: 50,
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.red,
+        leading: CustomTextButton(
+          onTap: _handleBefore,
+          icon: AppIcons.leftArrow,
+          iconSize: 30,
+          btnTextColor: AppColors.white,
+        ),
       ),
-    ));
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    alignment: const Alignment(1.5, 1.7),
+                    children: [
+                      const CircleAvatar(
+                        radius: 50,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          // Handle camera icon press
+                        },
+                        icon: const Icon(AppIcons.camera),
+                        color: AppColors.red,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 60),
+                  CustomTextField(
+                    hintText: 'Username',
+                    icon: AppIcons.person,
+                    controller: _usernameController,
+                    backgroundColor: AppColors.lightGrey,
+                    iconColor: AppColors.primaryGray,
+                    hintTextColor: AppColors.gray,
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextField(
+                    hintText: 'Email',
+                    icon: AppIcons.email,
+                    controller: _emailController,
+                    backgroundColor: AppColors.lightGrey,
+                    iconColor: AppColors.primaryGray,
+                    hintTextColor: AppColors.gray,
+                  ),
+                  const SizedBox(height: 40),
+                  CustomButton(
+                    onTap: _handleUpdate,
+                    btnText: 'Xác nhận',
+                    btnWidth: 300,
+                    btnHeight: 50,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      )
+    );
   }
 }

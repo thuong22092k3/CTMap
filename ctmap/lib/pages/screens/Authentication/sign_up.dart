@@ -42,106 +42,6 @@ class _SignupState extends State<Signup> {
   }
 
   @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     resizeToAvoidBottomInset: true,
-  //     body: Padding(
-  //       padding: EdgeInsets.all(25),
-  //       child: SingleChildScrollView(
-  //         child: Column(
-  //           children: [
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.start,
-  //               children: [
-  //                 CustomTextButton(
-  //                   onTap: _handleBefore,
-  //                   icon: AppIcons.left_arrow,
-  //                   iconSize: 30,
-  //                 ),
-  //                 SizedBox(width: 25),
-  //                 Text(
-  //                   'Đăng Ký',
-  //                   style: TextStyle(
-  //                     fontSize: 32,
-  //                     color: AppColors.red,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //             SizedBox(height: 60),
-  //             CustomTextField(
-  //               hintText: 'Username',
-  //               icon: AppIcons.person,
-  //               controller: _usernameController,
-  //               backgroundColor: AppColors.lightGrey,
-  //               iconColor: AppColors.primaryGray,
-  //               hintTextColor: AppColors.gray,
-  //             ),
-  //             SizedBox(height: 30),
-  //             CustomTextField(
-  //               hintText: 'Email',
-  //               icon: AppIcons.email,
-  //               controller: _emailController,
-  //               backgroundColor: AppColors.lightGrey,
-  //               iconColor: AppColors.primaryGray,
-  //               hintTextColor: AppColors.gray,
-  //             ),
-  //             SizedBox(height: 30),
-  //             CustomTextField(
-  //               hintText: 'Mật khẩu',
-  //               icon: AppIcons.lock,
-  //               controller: _passwordController,
-  //               backgroundColor: AppColors.lightGrey,
-  //               iconColor: AppColors.primaryGray,
-  //               hintTextColor: AppColors.gray,
-  //               isPassword: true,
-  //             ),
-  //             SizedBox(height: 30),
-  //             CustomTextField(
-  //               hintText: 'Nhập lại mật khẩu',
-  //               icon: AppIcons.lock,
-  //               controller: _passwordConfirmController,
-  //               backgroundColor: AppColors.lightGrey,
-  //               iconColor: AppColors.primaryGray,
-  //               hintTextColor: AppColors.gray,
-  //               isPassword: true,
-  //             ),
-  //             SizedBox(height: 40),
-  //             CustomButton(
-  //               onTap: _signUp,
-  //               btnText: 'Đăng ký',
-  //               btnWidth: 300,
-  //               btnHeight: 50,
-  //             ),
-  //             Row(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 Text(
-  //                   'Đã có tài khoản?',
-  //                   style: TextStyle(fontSize: 14, color: AppColors.black),
-  //                 ),
-  //                 CustomTextButton(
-  //                   onTap: _handleBefore,
-  //                   btnText: 'Đăng nhập',
-  //                   fontSize: 14,
-  //                 )
-  //               ],
-  //             ),
-  //             SizedBox(height: 20),
-  //             //const Spacer(),
-  //             CustomTextButton(
-  //               onTap: _handleLater,
-  //               btnText: 'Lúc khác',
-  //               fontSize: 14,
-  //               btnTextColor: AppColors.primaryGray,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -156,26 +56,18 @@ class _SignupState extends State<Signup> {
                 child: Padding(
                   padding: const EdgeInsets.all(25),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CustomTextButton(
-                            onTap: _handleBefore,
-                            icon: AppIcons.leftArrow,
-                            iconSize: 30,
-                          ),
-                          const SizedBox(width: 25),
-                          const Text(
-                            'Đăng Ký',
-                            style: TextStyle(
-                              fontSize: 32,
-                              color: AppColors.red,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Đăng Ký',
+                        style: TextStyle(
+                          fontSize: 32,
+                          color: AppColors.red,
+                        ),
                       ),
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 30),
                       CustomTextField(
                         hintText: 'Username',
                         icon: AppIcons.person,

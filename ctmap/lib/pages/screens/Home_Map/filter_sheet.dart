@@ -114,6 +114,7 @@ class FilterSheetState extends ConsumerState<FilterSheet> {
           padding: const EdgeInsets.only(left: 10),
           decoration: const BoxDecoration(
             color: Colors.white,
+            borderRadius: BorderRadius.zero,
             // boxShadow: [
             //   BoxShadow(
             //     color: Colors.black.withOpacity(0.3),
@@ -168,12 +169,9 @@ class FilterSheetState extends ConsumerState<FilterSheet> {
 
                       fromDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
                       toDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-                      // selectedLevels = [1, 2, 3, 4, 5]; 
-                      // selectedAcciType = 0;
 
                       widget.onFilterApplied(accidentDataList);  
                       widget.onFilterStatusChanged(false);
-                      //widget.isFiltered = false;
                     },
                     btnColor: AppColors.dartGrey,
                     btnText: "Xóa lọc",
@@ -191,8 +189,6 @@ class FilterSheetState extends ConsumerState<FilterSheet> {
                         );
                         return;
                       }
-
-                      // Apply the filter with current selected conditions
                       widget.onFilterApplied(
                         getFilteredAccidents(
                           accidentDataList,
