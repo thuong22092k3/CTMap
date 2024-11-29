@@ -133,7 +133,8 @@ class EditSheetState extends ConsumerState<EditSheet> {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
@@ -172,7 +173,8 @@ class EditSheetState extends ConsumerState<EditSheet> {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.grey,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
@@ -184,11 +186,12 @@ class EditSheetState extends ConsumerState<EditSheet> {
                 onPressed: () {
                   _submitAccidentData();
                   Navigator.of(context).pop();
-                },          
+                },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: AppColors.red,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
@@ -237,9 +240,9 @@ class EditSheetState extends ConsumerState<EditSheet> {
 
       await updateAccident(id, accidentData);
       ref.read(accidentProvider.notifier).updateAccident(id, accidentData);
-      
+
       // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
-      if(!mounted) return;
+      if (!mounted) return;
       // context.push(RoutePaths.home);
       Navigator.of(context).pop();
     } catch (e) {
@@ -270,7 +273,8 @@ class EditSheetState extends ConsumerState<EditSheet> {
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   textStyle: const TextStyle(fontSize: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
@@ -425,7 +429,10 @@ class EditSheetState extends ConsumerState<EditSheet> {
     );
   }
 
-  Widget _buildDropdownRow(String label, TextEditingController controller,) {
+  Widget _buildDropdownRow(
+    String label,
+    TextEditingController controller,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -462,7 +469,10 @@ class EditSheetState extends ConsumerState<EditSheet> {
     );
   }
 
-  Widget _buildNumberInputRow(String label, TextEditingController controller,) {
+  Widget _buildNumberInputRow(
+    String label,
+    TextEditingController controller,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
