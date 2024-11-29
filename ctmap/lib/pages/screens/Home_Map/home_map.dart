@@ -75,6 +75,24 @@ class HomeState extends ConsumerState<Home> {
     _mapController.move(position, 18.0);
   }
 
+  // void _onMarkerTapped(AccidentData data, BuildContext context) async{
+  //   _moveToPosition(data.position);
+  //   await showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return FractionallySizedBox(
+  //         heightFactor: 1,
+  //         child: DetailSheet(
+  //           accidentData: data, 
+  //           // isMarkerDeleted: isMarkerDeleted,
+            
+  //         ),
+  //       );
+  //     },
+  //   );
+  //   await getAccidents();
+  // }
+
   void _onMarkerTapped(AccidentData data, BuildContext context) async{
     _moveToPosition(data.position);
     await showModalBottomSheet(
@@ -83,7 +101,7 @@ class HomeState extends ConsumerState<Home> {
         return FractionallySizedBox(
           heightFactor: 1,
           child: DetailSheet(
-            accidentData: data, 
+            accId: data.id, 
             // isMarkerDeleted: isMarkerDeleted,
             
           ),
@@ -92,13 +110,6 @@ class HomeState extends ConsumerState<Home> {
     );
     await getAccidents();
   }
-  //DELETE
-  // bool isDeleteMode = false;
-  // void isMarkerDeleted(bool isDeleted) {
-  //   setState(() {
-  //     isDeleteMode = isDeleted;
-  //   });
-  // }
 
   // Add type dialog
   bool isAddDialogOpened = false;

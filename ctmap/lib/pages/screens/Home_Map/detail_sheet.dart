@@ -13,12 +13,12 @@ import 'package:ctmap/assets/colors/colors.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DetailSheet extends ConsumerStatefulWidget {
-  final AccidentData accidentData;
+  final String accId;
   //final Function(bool) isMarkerDeleted; 
 
   const DetailSheet({
     super.key, 
-    required this.accidentData,
+    required this.accId,
     //required this.isMarkerDeleted,
   });
 
@@ -27,19 +27,24 @@ class DetailSheet extends ConsumerStatefulWidget {
 }
 
 class DetailSheetState extends ConsumerState<DetailSheet> {
-  late final AccidentData accidentData;
-
+  //late final AccidentData accidentData;
+  late final String accId;
+  
 
   @override
   void initState() {
     super.initState();
-    accidentData = widget.accidentData;
+    accId = widget.accId;
   }
 
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userStateProvider);
     final username = userState.userName;
+
+    AccidentData accidentData = ref.watch(accidentProvider).firstWhere(
+      (accident) => accident.id == accId,
+    );
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -198,8 +203,8 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
                 //thêm dòng này trước await
                 final messenger = ScaffoldMessenger.of(context);
                 try {
-                  await deleteAccident(accidentData.id);
-                  ref.read(accidentProvider.notifier).removeAccident(accidentData);               
+                  await deleteAccident(accId);
+                  ref.read(accidentProvider.notifier).removeAccident(accId);               
                   if(!parentContext.mounted) return;
                   Navigator.of(parentContext).pop();
                   messenger.showSnackBar(
@@ -222,6 +227,10 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
   }
 
   void _shareAccidentDetails() {
+    AccidentData accidentData = ref.watch(accidentProvider).firstWhere(
+      (accident) => accident.id == accId,
+    );
+    
     String mapUrl =
         "//www.google.com/maps/search/?api=1&query=${accidentData.position.latitude},${accidentData.position.longitude}";
 
