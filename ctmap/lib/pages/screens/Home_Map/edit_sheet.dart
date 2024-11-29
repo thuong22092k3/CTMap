@@ -3,14 +3,13 @@
 import 'package:ctmap/assets/colors/colors.dart';
 import 'package:ctmap/assets/icons/icons.dart';
 import 'package:ctmap/data/type.dart';
-import 'package:ctmap/pages/routes/routes.dart';
 import 'package:ctmap/services/api.dart';
+import 'package:ctmap/state_management/accident_state.dart';
 import 'package:ctmap/state_management/user_state.dart';
 import 'package:ctmap/widgets/components/button/button.dart';
 import 'package:ctmap/widgets/components/dropdown/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -183,9 +182,9 @@ class EditSheetState extends ConsumerState<EditSheet> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
                   _submitAccidentData();
-                },
+                  Navigator.of(context).pop();
+                },          
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: AppColors.red,
@@ -237,9 +236,12 @@ class EditSheetState extends ConsumerState<EditSheet> {
       };
 
       await updateAccident(id, accidentData);
+      ref.read(accidentProvider.notifier).updateAccident(id, accidentData);
+      
       // Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
       if(!mounted) return;
-      context.push(RoutePaths.home);
+      // context.push(RoutePaths.home);
+      Navigator.of(context).pop();
     } catch (e) {
       print('Error: $e');
       showDialog(

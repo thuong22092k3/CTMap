@@ -1,3 +1,4 @@
+import 'package:ctmap/assets/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +29,9 @@ class NewsSheetState extends State<NewsSheet> {
   final int _itemsPerPage = 20;
   int _itemsToShow = 20;
 
+  // Loading state
+  bool _isLoading = true;
+
   updateTitle(title) {
     setState(() {
     });
@@ -36,6 +40,7 @@ class NewsSheetState extends State<NewsSheet> {
   updateFeed(feed) {
     setState(() {
       _feed = feed;
+      _isLoading = false;
     });
   }
 
@@ -54,15 +59,30 @@ class NewsSheetState extends State<NewsSheet> {
     updateTitle(feedOpenErrorMsg);
   }
 
-  load() async {
-    updateTitle(loadingFeedMsg);
+  // load() async {
+  //   updateTitle(loadingFeedMsg);
+  //   loadFeed().then((result) {
+  //     if (null == result || result.toString().isEmpty) {
+  //       updateTitle(feedLoadErrorMsg);
+  //       return;
+  //     }
+  //     updateFeed(result);
+  //     //updateTitle(_feed.title ?? widget.title);
+  //   });
+  // }
+
+  Future<void> load() async {
+    setState(() {
+      _isLoading = true; // Start loading
+    });
     loadFeed().then((result) {
-      if (null == result || result.toString().isEmpty) {
-        updateTitle(feedLoadErrorMsg);
+      if (result == null || result.toString().isEmpty) {
+        setState(() {
+          _isLoading = false; 
+        });
         return;
       }
       updateFeed(result);
-      //updateTitle(_feed.title ?? widget.title);
     });
   }
 
@@ -160,9 +180,11 @@ class NewsSheetState extends State<NewsSheet> {
       children: [
         ..._buildListItems(),
         if (_hasMoreItems())
-          TextButton(
-            onPressed: _loadMoreItems,
-            child: const Text('Xem thêm tin tức'),
+          Center(
+            child: TextButton(
+              onPressed: _loadMoreItems,
+              child: const Text('Xem thêm tin tức'),
+            ),
           ),
       ],
     );
@@ -172,19 +194,41 @@ class NewsSheetState extends State<NewsSheet> {
     return _feed.items == null;
   }
 
-  bodyNews() {
-    return isFeedEmpty()
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : RefreshIndicator(
-            key: _refreshKey,
-            child: list(),
-            onRefresh: () async {
-              _itemsToShow = _itemsPerPage;
-              await load();
-            },
-          );
+  // bodyNews() {
+  //   return isFeedEmpty()
+  //       ? const Center(
+  //           child: CircularProgressIndicator(),
+  //         )
+  //       : RefreshIndicator(
+  //           key: _refreshKey,
+  //           child: list(),
+  //           onRefresh: () async {
+  //             _itemsToShow = _itemsPerPage;
+  //             await load();
+  //           },
+  //         );
+  // }
+    bodyNews() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.red)
+        )
+      );
+    }
+
+    if (_feed.items == null || _feed.items!.isEmpty) {
+      return const Center(child: Text('Không có tin tức nào.'));
+    }
+
+    return RefreshIndicator(
+      key: _refreshKey,
+      child: list(),
+      onRefresh: () async {
+        _itemsToShow = _itemsPerPage;
+        await load();
+      },
+    );
   }
   
   @override

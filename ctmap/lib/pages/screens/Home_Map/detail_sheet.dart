@@ -14,10 +14,12 @@ import 'package:share_plus/share_plus.dart';
 
 class DetailSheet extends ConsumerStatefulWidget {
   final AccidentData accidentData;
+  //final Function(bool) isMarkerDeleted; 
 
   const DetailSheet({
     super.key, 
     required this.accidentData,
+    //required this.isMarkerDeleted,
   });
 
   @override
@@ -148,8 +150,8 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
                             const SizedBox(width: 10,),
                             IconButton(
                               icon: const Icon(AppIcons.edit, color: AppColors.blue),
-                              onPressed: () {
-                                showModalBottomSheet(
+                              onPressed: () async {
+                                await showModalBottomSheet(
                                   context: context,
                                   builder: (context) {
                                     return EditSheet(accidentData: accidentData);
@@ -197,12 +199,8 @@ class DetailSheetState extends ConsumerState<DetailSheet> {
                 final messenger = ScaffoldMessenger.of(context);
                 try {
                   await deleteAccident(accidentData.id);
-                  ref
-                      .read(accidentProvider.notifier)
-                      .removeAccident(accidentData);
-                  
-                  //widget.isMarkerDeleted(true);
-                  if(!mounted) return;
+                  ref.read(accidentProvider.notifier).removeAccident(accidentData);               
+                  if(!parentContext.mounted) return;
                   Navigator.of(parentContext).pop();
                   messenger.showSnackBar(
                     const SnackBar(

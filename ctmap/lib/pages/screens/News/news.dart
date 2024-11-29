@@ -99,14 +99,17 @@ class NewsState extends State<News> {
                   //SizedBox(height: 20),                   
                   if (showNews)
                     SizedBox(
-                      height: 500,
+                      height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
                       child: showNewsSheet(),
                     ),
                   if (!showNews)
                     SizedBox(
-                      height: 500,
+                      height: MediaQuery.of(context).size.height - 86 - 20*4 - MediaQuery.of(context).size.height * 0.06,
                       child: showLawSheet(),
                     ),
+                  
+
+                  
                 ],
               ),
             ),

@@ -49,20 +49,25 @@ class HomeState extends ConsumerState<Home> {
   }
 
   Future<void> getAccidents() async {
-    if (isFirstLoad) {
-      // Lấy dữ liệu từ database chỉ lần đầu
-      List<AccidentData> accidents = await getAllAccidents();
-      ref.read(accidentProvider.notifier).setAccidents(accidents);
-      setState(() {
-        accidentDataList = accidents;
-        isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
-      });
-      updateMarkers(accidentDataList);
-    }
+    // if (isFirstLoad) {
+    //   // Lấy dữ liệu từ database chỉ lần đầu
+    //   List<AccidentData> accidents = await getAllAccidents();
+    //   ref.read(accidentProvider.notifier).setAccidents(accidents);
+    //   setState(() {
+    //     accidentDataList = accidents;
+    //     isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
+    //   });
+    //   showMarkers(accidentDataList);
+    // }
 
-    // List<AccidentData> accidents = await getAllAccidents();
-    // ref.read(accidentProvider.notifier).setAccidents(accidents);
-    // updateMarkers(accidents);
+
+    List<AccidentData> accidents = await getAllAccidents();
+    ref.read(accidentProvider.notifier).setAccidents(accidents);
+    setState(() {
+      accidentDataList = accidents;
+      isFirstLoad = false; // Cập nhật cờ sau khi đã lấy dữ liệu từ database
+    });
+    showMarkers(accidentDataList);
   }
 
 //Thêm zoom
@@ -70,32 +75,30 @@ class HomeState extends ConsumerState<Home> {
     _mapController.move(position, 18.0);
   }
 
-  void _onMarkerTapped(AccidentData data, BuildContext context) {
+  void _onMarkerTapped(AccidentData data, BuildContext context) async{
     _moveToPosition(data.position);
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return FractionallySizedBox(
           heightFactor: 1,
-          child: DetailSheet(accidentData: data, ),
+          child: DetailSheet(
+            accidentData: data, 
+            // isMarkerDeleted: isMarkerDeleted,
+            
+          ),
         );
       },
     );
+    await getAccidents();
   }
-
-  //DETAIL SHEET
-  bool isDetailOpened = false;
-
-  void openDetailSheet(AccidentData data, BuildContext context) async {
-    await showModalBottomSheet<dynamic>(
-        context: context,
-        builder: (_) {
-          return DetailSheet(accidentData: data);
-        });
-    setState(() {
-      isDetailOpened = !isDetailOpened;
-    });
-  }
+  //DELETE
+  // bool isDeleteMode = false;
+  // void isMarkerDeleted(bool isDeleted) {
+  //   setState(() {
+  //     isDeleteMode = isDeleted;
+  //   });
+  // }
 
   // Add type dialog
   bool isAddDialogOpened = false;
@@ -168,7 +171,7 @@ class HomeState extends ConsumerState<Home> {
   void onFilterApplied(List<AccidentData> filteredList) {
     setState(() {
       filteredAccidents = filteredList;
-      updateMarkers(filteredAccidents);
+      showMarkers(filteredAccidents);
     });
   }
 
@@ -178,7 +181,7 @@ class HomeState extends ConsumerState<Home> {
     });
   }
 
-  void updateMarkers(List<AccidentData> accidentList) {
+  void showMarkers(List<AccidentData> accidentList) {
     setState(() {
       markers = accidentList.map((accident) {
         return Marker(
@@ -220,8 +223,11 @@ class HomeState extends ConsumerState<Home> {
 
   //ADD SHEET
   bool isNewOpened = false;
-  void openNewSheet(LatLng position) {
-    showModalBottomSheet<dynamic>(
+  void openNewSheet(LatLng position) async {
+    setState(() {
+      isNewOpened = true;
+    });
+    await showModalBottomSheet<dynamic>(
       context: context,
       builder: (context) {
         return NewSheet(
@@ -233,11 +239,15 @@ class HomeState extends ConsumerState<Home> {
         isNewOpened = false;
         isSelfAdd = false;
       });
+      //await getAccidents();
     });
-    setState(() {
-      isNewOpened = true;
-    });
+    await getAccidents();
   }
+
+  
+
+
+
 
   late LatLng tapLatlng;
 
@@ -377,7 +387,7 @@ class HomeState extends ConsumerState<Home> {
                 ],
               ),
               Positioned(
-                top: 16,
+                top: MediaQuery.of(context).padding.top + 5, //HEIGHT OF STATUS BAR
                 right: 16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

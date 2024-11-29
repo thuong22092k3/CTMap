@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 
 class AccidentData {
@@ -30,6 +31,42 @@ class AccidentData {
     required this.city,
     required this.showUserName,
   });
+
+    AccidentData copyWith(Map<String, Object?> updatedData) {
+    return AccidentData(
+      id: updatedData['id'] as String? ?? id,
+      date: updatedData['date'] != null
+          ? DateFormat('dd/MM/yyyy').parse(updatedData['date'] as String)
+          : date,
+      deaths: updatedData['deaths'] != null
+          ? int.parse(updatedData['deaths'] as String)
+          : deaths,
+      injuries: updatedData['injuries'] != null
+          ? int.parse(updatedData['injuries'] as String)
+          : injuries,
+      level: updatedData['level'] != null
+          ? int.parse(updatedData['level'] as String)
+          : level,
+      cause: updatedData['cause'] != null
+          ? int.parse(updatedData['cause'] as String)
+          : cause,
+      position: updatedData['positionLat'] != null &&
+              updatedData['positionLng'] != null
+          ? LatLng(
+              double.parse(updatedData['positionLat'] as String),
+              double.parse(updatedData['positionLng'] as String),
+            )
+          : position,
+      link: updatedData['link'] as String? ?? link,
+      sophuongtienlienquan: updatedData['sophuongtienlienquan'] != null
+          ? int.parse(updatedData['sophuongtienlienquan'] as String)
+          : sophuongtienlienquan,
+      userName: updatedData['userName'] as String? ?? userName,
+      location: updatedData['location'] as String? ?? location,
+      city: updatedData['city'] as String? ?? city,
+      showUserName: updatedData['showUserName'] as bool? ?? showUserName,
+    );
+  }
 }
 
 class UserData {

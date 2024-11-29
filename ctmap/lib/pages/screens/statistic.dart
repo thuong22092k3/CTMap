@@ -151,7 +151,7 @@ class StatisticState extends ConsumerState<Statistic> {
   }
 
   Future<void> fetchAccidents() async {
-    ref.read(accidentProvider.notifier).getAccidents();
+    await ref.read(accidentProvider.notifier).getAccidents();
     final accidentProviderData = ref.watch(accidentProvider);
     Set<String> uniqueCities =
         accidentProviderData.map((accident) => accident.city).toSet();

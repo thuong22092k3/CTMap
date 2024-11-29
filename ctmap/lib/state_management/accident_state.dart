@@ -12,6 +12,8 @@ class AccidentStateNotifier extends StateNotifier<List<AccidentData>> {
     state = accidents;
   }
 
+  List<AccidentData> getAccidents() => state;
+
   void addAccident(Map<String, Object> accidentData) {
     try {
       final accident = AccidentData(
@@ -41,17 +43,24 @@ class AccidentStateNotifier extends StateNotifier<List<AccidentData>> {
   }
 
   void removeAccident(AccidentData accident) {
-    //state = state.where((a) => a != accident).toList();
     state = state.where((acc) => acc.id != accident.id).toList();
   }
 
-  void updateAccident(AccidentData updatedAccident) {
-    state = state.map((accident) {
-      return accident.id == updatedAccident.id ? updatedAccident : accident;
-    }).toList();
-  }
+  // void updateAccident(AccidentData updatedAccident) {
+  //   state = state.map((accident) {
+  //     return accident.id == updatedAccident.id ? updatedAccident : accident;
+  //   }).toList();
+  // }
 
-  List<AccidentData> getAccidents() => state;
+   void updateAccident(String id, Map<String, Object> updatedData) {
+    state = [
+      for (final accident in state)
+        if (accident.id == id)
+          accident.copyWith(updatedData)
+        else
+          accident
+    ];
+  }
 }
 
 final accidentProvider =
