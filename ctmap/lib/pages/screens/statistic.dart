@@ -77,9 +77,9 @@ class StatisticState extends ConsumerState<Statistic> {
     DateTimeRange dateRange = getDateRange(selectedOption, selectedDate);
 
     return accidentDataList.where((accident) {
-      bool isInDateRange =
-          accident.date.isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
-              accident.date.isBefore(dateRange.end.add(const Duration(days: 1)));
+      bool isInDateRange = accident.date
+              .isAfter(dateRange.start.subtract(const Duration(days: 1))) &&
+          accident.date.isBefore(dateRange.end.add(const Duration(days: 1)));
       bool isInCity = selectedCity == 'Tất cả' || accident.city == selectedCity;
       return isInDateRange && isInCity;
     }).toList();
@@ -244,7 +244,7 @@ class StatisticState extends ConsumerState<Statistic> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    flex: 2,
+                                    flex: 1,
                                     child: SizedBox(
                                       child: CustomDropdown(
                                         items: options,
@@ -268,7 +268,7 @@ class StatisticState extends ConsumerState<Statistic> {
                                     ),
                                   ),
                                   Expanded(
-                                    flex: 5,
+                                    flex: 2,
                                     child: GestureDetector(
                                       onTap: () async {
                                         DateTime? pickedDate =
@@ -301,7 +301,14 @@ class StatisticState extends ConsumerState<Statistic> {
                                                                 'Quý'
                                                             ? "Quý ${((selectedDate.month - 1) ~/ 3) + 1}/${selectedDate.year}"
                                                             : "${selectedDate.year}",
+                                            style: TextStyle(
+                                              fontSize:
+                                                  selectedOption == 'Tuần'
+                                                      ? 12
+                                                      : null,
+                                            ),
                                           ),
+
                                           const Icon(
                                             AppIcons.calendar,
                                             color: AppColors.red,
